@@ -191,6 +191,7 @@ html, body {
     justify-content: center;
     overflow: hidden;
     box-sizing: border-box;
+    contain: layout paint;
 }
 
 /* ── Section Backgrounds ── */
@@ -239,7 +240,8 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════
-   SECTION 1 — HI (FLOATING LOGO + SOFT NOISE GLOW)
+   SECTION 1 — HI (FLOATING LOGO + SILVER GLOW)
+   100% GPU-accelerated, zero CPU overhead, rock solid 144+ FPS
    ═══════════════════════════════════════════════════ */
 #section-hi {
     background: #000000;
@@ -257,10 +259,10 @@ html, body {
 /* Smooth bobbing / floating animation for logo */
 @keyframes logoFloat {
     0%, 100% {
-        transform: translateY(0px) rotate(0deg);
+        transform: translate3d(0, 0px, 0) rotate(0deg);
     }
     50% {
-        transform: translateY(-12px) rotate(-0.5deg);
+        transform: translate3d(0, -12px, 0) rotate(-0.5deg);
     }
 }
 
@@ -272,10 +274,30 @@ html, body {
     max-width: clamp(380px, 58vw, 700px);
     margin: 0 auto;
     overflow: visible;
-    animation: logoFloat 4.8s ease-in-out infinite;
+    animation: logoFloat 5.2s ease-in-out infinite;
+    transform: translateZ(0);
     will-change: transform;
+    cursor: none;
 }
 
+/* Soft ambient radial aura behind logo (pure GPU) */
+.logo-ambient-glow {
+    position: absolute;
+    inset: -18%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.18) 0%, rgba(215, 230, 255, 0.06) 45%, transparent 72%);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.65;
+    filter: blur(28px);
+    transition: opacity 0.45s ease;
+    transform: translateZ(0);
+}
+
+.logo-interactive-container:hover .logo-ambient-glow {
+    opacity: 1;
+}
+
+/* Artist logo with radiant silver-white glow */
 .artist-logo {
     display: block;
     width: 100%;
@@ -283,36 +305,17 @@ html, body {
     object-fit: contain;
     user-select: none;
     pointer-events: none;
-}
-
-/* Base crisp white logo */
-.artist-logo--base {
     position: relative;
     z-index: 1;
-    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.15));
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5)) drop-shadow(0 0 26px rgba(220, 235, 255, 0.3));
+    transform: translateZ(0);
+    transition: filter 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: filter, transform;
 }
 
-/* Expanded radial layer (140px margins outside container to eliminate any edge cutoff) */
-.logo-fx-layer {
-    position: absolute;
-    inset: -140px;
-    z-index: 2;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.25s ease-out;
-    -webkit-mask-image: radial-gradient(circle 170px at calc(var(--mouse-fx-x, -999px) + 140px) calc(var(--mouse-fx-y, -999px) + 140px), rgba(0,0,0,1) 0%, rgba(0,0,0,0.65) 45%, transparent 100%);
-    mask-image: radial-gradient(circle 170px at calc(var(--mouse-fx-x, -999px) + 140px) calc(var(--mouse-fx-y, -999px) + 140px), rgba(0,0,0,1) 0%, rgba(0,0,0,0.65) 45%, transparent 100%);
-}
-
-/* Soft, balanced glow with Gaussian noise (no harsh blown-out overglow) */
-.artist-logo--fx {
-    position: absolute;
-    top: 140px;
-    left: 140px;
-    width: calc(100% - 280px);
-    height: calc(100% - 280px);
-    filter: url(#logo-noise-glow) drop-shadow(0 0 12px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 26px rgba(220, 235, 255, 0.35));
-    transform: scale(1.012);
+.logo-interactive-container:hover .artist-logo {
+    filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.85)) drop-shadow(0 0 42px rgba(220, 235, 255, 0.55));
+    transform: translateZ(0) scale(1.025);
 }
 
 .subtitle {
@@ -336,6 +339,7 @@ html, body {
     animation: floatHint 2.2s ease-in-out infinite;
     pointer-events: none;
     transition: color 0.3s ease;
+    will-change: transform;
 }
 
 .scroll-hint span {

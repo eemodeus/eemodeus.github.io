@@ -92,7 +92,6 @@
     const bottomNav        = document.getElementById('bottom-nav');
     const navBtns          = document.querySelectorAll('.nav-btn');
     const logoContainer    = document.getElementById('logoContainer');
-    const logoFxLayer      = document.getElementById('logoFxLayer');
     const aboutTitle       = document.getElementById('aboutTitle');
     const aboutText        = document.getElementById('aboutText');
 
@@ -104,17 +103,32 @@
     let touchStartY    = 0;
 
     // ═══════════════════════════════════════════════
-    // 1. CS2 CROSSHAIR CURSOR
+    // 1. CS2 CROSSHAIR CURSOR (ULTRA-SMOOTH rAF & GPU)
     // ═══════════════════════════════════════════════
+
+    let mouseX = -100;
+    let mouseY = -100;
+    let cursorRafPending = false;
+
+    function renderCursor() {
+        if (cs2Cursor) {
+            cs2Cursor.style.transform = 'translate3d(' + (mouseX - 16) + 'px, ' + (mouseY - 16) + 'px, 0)';
+        }
+        cursorRafPending = false;
+    }
 
     function initCS2Cursor() {
         if (!cs2Cursor) return;
         cs2Cursor.classList.add('active');
 
         window.addEventListener('mousemove', function (e) {
-            cs2Cursor.style.transform = 'translate(' + (e.clientX - 16) + 'px, ' + (e.clientY - 16) + 'px)';
-            handleLogoRadialEffect(e);
-        });
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            if (!cursorRafPending) {
+                cursorRafPending = true;
+                requestAnimationFrame(renderCursor);
+            }
+        }, { passive: true });
 
         window.addEventListener('mousedown', function () {
             cs2Cursor.classList.add('recoil');
@@ -125,33 +139,7 @@
     }
 
     // ═══════════════════════════════════════════════
-    // 2. RADIAL NOISE + BLUR EFFECT ON LOGO
-    // ═══════════════════════════════════════════════
-
-    function handleLogoRadialEffect(e) {
-        if (!logoContainer || !logoFxLayer || currentSection !== 0) return;
-
-        const rect = logoContainer.getBoundingClientRect();
-        const relX = e.clientX - rect.left;
-        const relY = e.clientY - rect.top;
-
-        // Distance from cursor to logo rectangle bounds
-        const dx = Math.max(rect.left - e.clientX, 0, e.clientX - rect.right);
-        const dy = Math.max(rect.top - e.clientY, 0, e.clientY - rect.bottom);
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        // Within 140px proximity of the logo
-        if (dist < 140) {
-            logoFxLayer.style.opacity = '1';
-            logoFxLayer.style.setProperty('--mouse-fx-x', relX + 'px');
-            logoFxLayer.style.setProperty('--mouse-fx-y', relY + 'px');
-        } else {
-            logoFxLayer.style.opacity = '0';
-        }
-    }
-
-    // ═══════════════════════════════════════════════
-    // 3. PRELOADER (BREATHING ASCII GLOW)
+    // 2. PRELOADER (BREATHING ASCII GLOW)
     // ═══════════════════════════════════════════════
 
     function initPreloader() {
@@ -210,11 +198,6 @@
         navBtns.forEach(function (btn, idx) {
             btn.classList.toggle('active', idx === currentSection);
         });
-
-        // Hide logo fx layer when navigating away from Hi
-        if (logoFxLayer && currentSection !== 0) {
-            logoFxLayer.style.opacity = '0';
-        }
 
         // Trigger Decrypt Text effect when entering About (section index 1)
         if (currentSection === 1) {
