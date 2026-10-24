@@ -287,22 +287,22 @@
     function setupBioSlots() {
         if (!aboutText) return;
 
-        // Render each character wrapped in a span with original text to measure exact widths
-        const chars = ABOUT_BIO_TEXT.split('');
-        aboutText.innerHTML = chars.map(function (ch) {
-            if (ch === ' ') {
-                return '<span class="d-slot d-space"> </span>';
-            }
-            return '<span class="d-slot d-revealed">' + ch + '</span>';
-        }).join('');
+        // Wrap each word in .d-word to strictly prevent breaking words in half
+        const words = ABOUT_BIO_TEXT.split(' ');
+        aboutText.innerHTML = words.map(function (word) {
+            const slots = word.split('').map(function (ch) {
+                return '<span class="d-slot d-revealed">' + ch + '</span>';
+            }).join('');
+            return '<span class="d-word">' + slots + '</span>';
+        }).join('<span class="d-slot d-space"> </span>');
 
         // Lock exact width on each slot to prevent word-wrap shifts during scramble
         const spans = aboutText.querySelectorAll('.d-slot');
         bioSlotData = [];
 
-        spans.forEach(function (span, i) {
-            const ch = chars[i];
-            const isSpace = ch === ' ';
+        spans.forEach(function (span) {
+            const ch = span.textContent;
+            const isSpace = span.classList.contains('d-space');
             const rect = span.getBoundingClientRect();
             const w = Math.ceil(rect.width * 100) / 100;
             span.style.width = w + 'px';
@@ -414,7 +414,403 @@
     }
 
     // ═══════════════════════════════════════════════
-    // 7. INITIALIZATION
+    // 7. SOUNDCLOUD LIQUID GLASS AUDIO PLAYER
+    // ═══════════════════════════════════════════════
+
+    const TRACKS = [
+        {
+            title: "requiem",
+            feat: "takecare04",
+            url: "https://soundcloud.com/emodeus/requiem",
+            date: "02.08.2026",
+            durationStr: "1:47",
+            durationMs: 107248,
+            artwork: "https://i1.sndcdn.com/artworks-86BNqkZ0BhxCHXBG-MC9KfQ-large.jpg"
+        },
+        {
+            title: "паршивый номер",
+            feat: "takuori, daybytheday",
+            url: "https://soundcloud.com/emodeus/parshiviynomer",
+            date: "18.06.2026",
+            durationStr: "1:38",
+            durationMs: 98123,
+            artwork: "https://i1.sndcdn.com/artworks-7BvsFStUyd5vjzSs-yZSWEQ-large.png"
+        },
+        {
+            title: "YOLO",
+            feat: "frayu0",
+            url: "https://soundcloud.com/emodeus/yolo",
+            date: "06.03.2026",
+            durationStr: "1:18",
+            durationMs: 78324,
+            artwork: "https://i1.sndcdn.com/artworks-QyAtbuFbRBxMYdh4-SuRgrw-large.png"
+        },
+        {
+            title: "вспышки",
+            feat: "takecare04, greyrock",
+            url: "https://soundcloud.com/emodeus/vspyshki-takecare04-greyrock",
+            date: "04.09.2025",
+            durationStr: "1:53",
+            durationMs: 113748,
+            artwork: "https://i1.sndcdn.com/artworks-WwhFlJdbjgXEMQim-ONzWmA-large.jpg"
+        },
+        {
+            title: "lips",
+            feat: "forzen, foreless",
+            url: "https://soundcloud.com/emodeus/lips-forzen-foreless",
+            date: "27.07.2025",
+            durationStr: "1:36",
+            durationMs: 96046,
+            artwork: "https://i1.sndcdn.com/artworks-JGdbljXcdit1Lk9x-atOlEQ-large.png"
+        },
+        {
+            title: "armour",
+            feat: "foreless",
+            url: "https://soundcloud.com/emodeus/armour-foreless",
+            date: "02.07.2025",
+            durationStr: "2:16",
+            durationMs: 136661,
+            artwork: "https://i1.sndcdn.com/artworks-tX9vUTyfpbs0tIis-xkCpzQ-large.png"
+        }
+    ];
+
+    let scWidget = null;
+    let currentTrackIdx = 0;
+    let isAudioPlaying = false;
+    let isSeeking = false;
+    let currentVolume = 80;
+    try {
+        const savedVol = localStorage.getItem('modeus_player_volume');
+        if (savedVol !== null) {
+            currentVolume = parseInt(savedVol, 10);
+        }
+    } catch (e) {}
+    let isMuted = false;
+    let prevVolume = currentVolume || 80;
+    let currentDurationMs = 107248;
+    let trackJustLoaded = false;
+
+    const playerCard          = document.querySelector('.player-card');
+    const playerCoverImg      = document.getElementById('playerCoverImg');
+    const playerTrackDate     = document.getElementById('playerTrackDate');
+    const playerTrackTitle    = document.getElementById('playerTrackTitle');
+    const playerCurrentTime   = document.getElementById('playerCurrentTime');
+    const playerTotalTime     = document.getElementById('playerTotalTime');
+    const playerProgressWrap  = document.getElementById('playerProgressContainer');
+    const playerProgressFill  = document.getElementById('playerProgressFill');
+    const playerProgressPin   = document.getElementById('playerProgressPin');
+    const playerPlayBtn       = document.getElementById('playerPlayBtn');
+    const playerPrevBtn       = document.getElementById('playerPrevBtn');
+    const playerNextBtn       = document.getElementById('playerNextBtn');
+    const playerVolToggle     = document.getElementById('playerVolToggle');
+    const playerVolRange      = document.getElementById('playerVolRange');
+    const playerVolumeSection = document.querySelector('.player-volume-section');
+    const playerTracklistEl   = document.getElementById('playerTracklist');
+    const scIframe            = document.getElementById('sc-widget-iframe');
+
+    function applyVolume() {
+        if (!scWidget) return;
+        const targetVol = isMuted ? 0 : currentVolume;
+        try {
+            scWidget.setVolume(targetVol);
+        } catch (e) {}
+    }
+
+    function formatTime(ms) {
+        if (!ms || isNaN(ms) || ms < 0) return "0:00";
+        const totalSec = Math.floor(ms / 1000);
+        const m = Math.floor(totalSec / 60);
+        const s = totalSec % 60;
+        return m + ":" + (s < 10 ? "0" : "") + s;
+    }
+
+    function updatePlayStateUI(playing) {
+        if (!playerCard) return;
+        playerCard.classList.toggle('is-playing', playing);
+    }
+
+    function updateProgressUI(currentMs, fraction) {
+        const pct = Math.max(0, Math.min(fraction * 100, 100));
+        if (playerProgressFill) {
+            playerProgressFill.style.width = pct + '%';
+        }
+        if (playerProgressPin) {
+            playerProgressPin.style.left = pct + '%';
+        }
+        if (playerCurrentTime) {
+            playerCurrentTime.textContent = formatTime(currentMs);
+        }
+    }
+
+    function updateTrackUI(track) {
+        if (playerCoverImg) {
+            playerCoverImg.src = track.artwork;
+            playerCoverImg.alt = track.title;
+        }
+        if (playerTrackTitle) {
+            playerTrackTitle.textContent = track.feat ? track.title + ' (' + track.feat + ')' : track.title;
+        }
+        if (playerTrackDate) {
+            playerTrackDate.textContent = track.date;
+        }
+        if (playerTotalTime) {
+            playerTotalTime.textContent = track.durationStr;
+        }
+        if (playerTracklistEl) {
+            const items = playerTracklistEl.querySelectorAll('.track-item');
+            items.forEach((item, idx) => {
+                item.classList.toggle('active', idx === currentTrackIdx);
+            });
+        }
+    }
+
+    function renderTracklist() {
+        if (!playerTracklistEl) return;
+        playerTracklistEl.innerHTML = TRACKS.map((t, idx) => `
+            <div class="track-item ${idx === currentTrackIdx ? 'active' : ''}" data-idx="${idx}">
+                <span class="track-num">${String(idx + 1).padStart(2, '0')}</span>
+                <div class="track-details">
+                    <span class="track-name">${t.title}</span>
+                    <span class="track-feat">${t.feat ? t.feat : ''}</span>
+                </div>
+                <span class="track-dur">${t.durationStr}</span>
+                <div class="track-playing-indicator"></div>
+            </div>
+        `).join('');
+
+        playerTracklistEl.querySelectorAll('.track-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const idx = parseInt(item.dataset.idx, 10);
+                selectTrack(idx, true);
+            });
+        });
+    }
+
+    function selectTrack(index, autoPlay) {
+        if (index < 0) index = TRACKS.length - 1;
+        if (index >= TRACKS.length) index = 0;
+        currentTrackIdx = index;
+        const track = TRACKS[currentTrackIdx];
+        currentDurationMs = track.durationMs;
+        trackJustLoaded = true;
+
+        updateTrackUI(track);
+        updateProgressUI(0, 0);
+
+        if (scWidget) {
+            scWidget.load(track.url, {
+                auto_play: autoPlay,
+                buying: false,
+                liking: false,
+                download: false,
+                sharing: false,
+                show_artwork: false,
+                show_comments: false,
+                show_playcount: false,
+                show_user: false,
+                callback: function () {
+                    applyVolume();
+                }
+            });
+
+            // Enforce volume persistently across track loading stages
+            applyVolume();
+            [80, 200, 450, 800].forEach(delay => {
+                setTimeout(applyVolume, delay);
+            });
+
+            if (autoPlay) {
+                isAudioPlaying = true;
+                updatePlayStateUI(true);
+            }
+        }
+    }
+
+    function togglePlayPause() {
+        if (!scWidget) return;
+        if (isAudioPlaying) {
+            scWidget.pause();
+        } else {
+            scWidget.play();
+            applyVolume();
+        }
+    }
+
+    function playPrevTrack() {
+        selectTrack(currentTrackIdx - 1, true);
+    }
+
+    function playNextTrack() {
+        selectTrack(currentTrackIdx + 1, true);
+    }
+
+    function setVolume(val) {
+        val = Math.max(0, Math.min(val, 100));
+        currentVolume = val;
+        try {
+            localStorage.setItem('modeus_player_volume', currentVolume);
+        } catch (e) {}
+
+        applyVolume();
+
+        if (playerVolRange) {
+            playerVolRange.value = val;
+        }
+        if (playerVolumeSection) {
+            playerVolumeSection.classList.toggle('is-muted', val === 0 || isMuted);
+        }
+    }
+
+    function setupSeekEvents() {
+        if (!playerProgressWrap) return;
+
+        function seekFromEvent(e) {
+            const rect = playerProgressWrap.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const relX = Math.max(0, Math.min(clientX - rect.left, rect.width));
+            const frac = relX / rect.width;
+            const targetMs = frac * currentDurationMs;
+
+            updateProgressUI(targetMs, frac);
+            if (scWidget) {
+                scWidget.seekTo(targetMs);
+            }
+        }
+
+        playerProgressWrap.addEventListener('mousedown', function (e) {
+            isSeeking = true;
+            playerProgressWrap.classList.add('is-dragging');
+            seekFromEvent(e);
+
+            function onMouseMove(moveEv) {
+                if (isSeeking) {
+                    seekFromEvent(moveEv);
+                }
+            }
+
+            function onMouseUp() {
+                isSeeking = false;
+                playerProgressWrap.classList.remove('is-dragging');
+                window.removeEventListener('mousemove', onMouseMove);
+                window.removeEventListener('mouseup', onMouseUp);
+            }
+
+            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('mouseup', onMouseUp);
+        });
+
+        playerProgressWrap.addEventListener('touchstart', function (e) {
+            isSeeking = true;
+            seekFromEvent(e);
+        }, { passive: true });
+
+        playerProgressWrap.addEventListener('touchmove', function (e) {
+            if (isSeeking) {
+                seekFromEvent(e);
+            }
+        }, { passive: true });
+
+        playerProgressWrap.addEventListener('touchend', function () {
+            isSeeking = false;
+        });
+    }
+
+    function setupVolumeEvents() {
+        if (playerVolRange) {
+            playerVolRange.value = currentVolume;
+        }
+        if (playerVolumeSection) {
+            playerVolumeSection.classList.toggle('is-muted', currentVolume === 0 || isMuted);
+        }
+
+        if (playerVolToggle) {
+            playerVolToggle.addEventListener('click', function () {
+                if (isMuted || currentVolume === 0) {
+                    isMuted = false;
+                    setVolume(prevVolume || 80);
+                } else {
+                    isMuted = true;
+                    prevVolume = currentVolume;
+                    setVolume(0);
+                }
+            });
+        }
+
+        if (playerVolRange) {
+            playerVolRange.addEventListener('input', function () {
+                isMuted = false;
+                setVolume(parseInt(playerVolRange.value, 10));
+            });
+        }
+    }
+
+    function initSoundCloudPlayer() {
+        renderTracklist();
+        setupSeekEvents();
+        setupVolumeEvents();
+
+        if (playerPlayBtn) {
+            playerPlayBtn.addEventListener('click', togglePlayPause);
+        }
+        if (playerPrevBtn) {
+            playerPrevBtn.addEventListener('click', playPrevTrack);
+        }
+        if (playerNextBtn) {
+            playerNextBtn.addEventListener('click', playNextTrack);
+        }
+
+        function bindWidget() {
+            if (!window.SC || !scIframe) {
+                setTimeout(bindWidget, 250);
+                return;
+            }
+
+            try {
+                scWidget = SC.Widget(scIframe);
+
+                scWidget.bind(SC.Widget.Events.READY, function () {
+                    applyVolume();
+                });
+
+                scWidget.bind(SC.Widget.Events.PLAY, function () {
+                    isAudioPlaying = true;
+                    updatePlayStateUI(true);
+                    applyVolume();
+                });
+
+                scWidget.bind(SC.Widget.Events.PAUSE, function () {
+                    isAudioPlaying = false;
+                    updatePlayStateUI(false);
+                });
+
+                scWidget.bind(SC.Widget.Events.FINISH, function () {
+                    playNextTrack();
+                });
+
+                scWidget.bind(SC.Widget.Events.PLAY_PROGRESS, function (data) {
+                    if (trackJustLoaded) {
+                        applyVolume();
+                        trackJustLoaded = false;
+                    }
+                    if (!isSeeking && data) {
+                        const cur = data.currentPosition || 0;
+                        const rel = data.relativePosition || 0;
+                        if (cur && rel) {
+                            currentDurationMs = cur / rel;
+                        }
+                        updateProgressUI(cur, rel);
+                    }
+                });
+            } catch (err) {
+                console.error('[SoundCloud Widget Init Error]:', err);
+            }
+        }
+
+        bindWidget();
+    }
+
+    // ═══════════════════════════════════════════════
+    // 8. INITIALIZATION
     // ═══════════════════════════════════════════════
 
     function init() {
@@ -423,6 +819,9 @@
 
         // Initialize Liquid Glass interactive tracking
         initLiquidGlassCards();
+
+        // Initialize SoundCloud Audio Player
+        initSoundCloudPlayer();
 
         // Initialize bio slots after DOM is loaded and fonts rendered
         if (document.fonts && document.fonts.ready) {

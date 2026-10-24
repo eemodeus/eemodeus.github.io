@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>МОДЕУС</title>
-    <meta name="description" content="МОДЕУС — российский исполнитель и дизайнер. Официальный сайт-визитка.">
+    <title>модеус</title>
     <meta name="theme-color" content="#000000">
     <meta name="color-scheme" content="dark">
 
     <!-- Open Graph / Social Sharing -->
-    <meta property="og:title" content="МОДЕУС">
-    <meta property="og:description" content="Российский исполнитель и дизайнер. Официальный сайт-визитка.">
+    <meta property="og:title" content="модеус">
     <meta property="og:type" content="website">
     <meta property="og:image" content="img/333.png">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="img/333.png">
+
+    <!-- Google Fonts: Cinzel & Cormorant SC (Neo-Gothic Display) + Montserrat (Clean Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+SC:wght@500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -77,35 +80,110 @@
                             <img src="img/1233222_clean.png" alt="" class="artist-logo artist-logo--fx">
                         </div>
                     </div>
-                    <p class="subtitle">scroll to continue</p>
                     <div class="scroll-hint">
                         <span>⟱</span>
                     </div>
                 </div>
             </section>
 
-            <!-- ── SECTION 2: ABOUT (EXPANDED FRAME ALIGNED LEFT) ── -->
+            <!-- ── SECTION 2: ABOUT & MUSIC (FRAME + PLAYER) ── -->
             <section class="section" id="section-about" data-index="1">
                 <div class="section-bg">
                     <img src="img/0f8ceb1b204ef02c5caef62b34f83e7b.jpg" alt="" class="bg-image bg-image--contain" loading="lazy">
                     <div class="bg-overlay bg-overlay--about"></div>
                 </div>
                 <div class="section-content about-content">
-                    <div class="about-frame">
-                        <img src="img/Gemini_Generated_Image_1jnyyx1jnyyx1jny.png" alt="" class="frame-img">
-                        <div class="about-inner">
-                            <div class="about-header" id="aboutHeader">
-                                <h2 class="section-title" id="aboutTitle">ABOUT ME</h2>
-                                <div class="ornament-divider">
-                                    <img src="img/333.png" alt="" class="divider-ornament-img">
+                    <div class="about-grid">
+
+                        <!-- Left: Baroque Frame with Bio -->
+                        <div class="about-frame">
+                            <img src="img/ramka1.png" alt="" class="frame-img">
+                            <div class="about-inner">
+                                <div class="about-header" id="aboutHeader">
+                                    <h2 class="section-title" id="aboutTitle">ABOUT ME</h2>
+                                    <div class="ornament-divider">
+                                        <img src="img/333.png" alt="" class="divider-ornament-img">
+                                    </div>
+                                </div>
+                                <div class="about-text-container">
+                                    <p class="about-text" id="aboutText">
+                                        Морозов Максим Алексеевич (родился 11 октября 2003 года в Томске) — российский исполнитель и дизайнер, бывший участник творческого объединения threehearts.
+                                    </p>
                                 </div>
                             </div>
-                            <div class="about-text-container">
-                                <p class="about-text" id="aboutText">
-                                    Морозов Максим Алексеевич (родился 11 октября 2003 года в Томске) — российский исполнитель и дизайнер, бывший участник творческого объединения threehearts.
-                                </p>
+                        </div>
+
+                        <!-- Right: Liquid Glass Audio Player -->
+                        <div class="about-player-wrap">
+                            <div class="player-card">
+                                <!-- Top Bar / Now Playing Header -->
+                                <div class="player-header">
+                                    <div class="player-cover-box">
+                                        <img src="https://i1.sndcdn.com/artworks-86BNqkZ0BhxCHXBG-MC9KfQ-large.jpg" alt="Track Cover" class="player-cover-img" id="playerCoverImg">
+                                        <div class="player-cover-glow"></div>
+                                    </div>
+                                    <div class="player-meta">
+                                        <div class="player-badge-row">
+                                            <span class="player-badge">SOUNDCLOUD</span>
+                                            <span class="player-track-date" id="playerTrackDate">02.08.2026</span>
+                                        </div>
+                                        <h3 class="player-track-title" id="playerTrackTitle">requiem (takecare04)</h3>
+                                        <p class="player-artist-name">МОДЕУС</p>
+                                    </div>
+                                    <div class="player-eq" id="playerEq" aria-hidden="true">
+                                        <span class="eq-bar"></span>
+                                        <span class="eq-bar"></span>
+                                        <span class="eq-bar"></span>
+                                        <span class="eq-bar"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Seekbar / Timeline -->
+                                <div class="player-timeline-block">
+                                    <span class="player-time-display" id="playerCurrentTime">0:00</span>
+                                    <div class="player-progress-container" id="playerProgressContainer">
+                                        <div class="player-progress-track">
+                                            <div class="player-progress-fill" id="playerProgressFill"></div>
+                                            <div class="player-progress-pin" id="playerProgressPin"></div>
+                                        </div>
+                                    </div>
+                                    <span class="player-time-display" id="playerTotalTime">1:47</span>
+                                </div>
+
+                                <!-- Player Main Controls -->
+                                <div class="player-controls-row">
+                                    <div class="player-main-btns">
+                                        <button class="player-ctrl-btn player-ctrl-btn--prev" id="playerPrevBtn" type="button" title="Предыдущий трек">
+                                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+                                        </button>
+                                        <button class="player-ctrl-btn player-ctrl-btn--play" id="playerPlayBtn" type="button" title="Воспроизвести / Пауза">
+                                            <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                            <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                                        </button>
+                                        <button class="player-ctrl-btn player-ctrl-btn--next" id="playerNextBtn" type="button" title="Следующий трек">
+                                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="m6 18 8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                                        </button>
+                                    </div>
+
+                                    <!-- Volume Slider Section -->
+                                    <div class="player-volume-section">
+                                        <button class="player-vol-toggle" id="playerVolToggle" type="button" title="Звук">
+                                            <svg class="vol-icon-on" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                                            <svg class="vol-icon-off" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                                        </button>
+                                        <div class="player-vol-slider-wrap">
+                                            <input type="range" class="player-vol-range" id="playerVolRange" min="0" max="100" value="80" step="1">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tracklist (Ordered newest to oldest) -->
+                                <div class="player-tracklist" id="playerTracklist">
+                                    <!-- Populated dynamically by script.js -->
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </section>
@@ -172,6 +250,15 @@
         </button>
     </nav>
 
+    <!-- Hidden SoundCloud Widget Iframe Engine -->
+    <iframe id="sc-widget-iframe"
+        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/emodeus/requiem&auto_play=false&buying=false&liking=false&download=false&sharing=false&show_artwork=false&show_comments=false&show_playcount=false&show_user=false&hide_related=true&visual=false"
+        style="position: fixed; width: 1px; height: 1px; opacity: 0; pointer-events: none; border: 0; left: -9999px; top: -9999px;"
+        allow="autoplay"
+        title="SoundCloud Audio Engine"></iframe>
+
+    <!-- SoundCloud Widget API -->
+    <script src="https://w.soundcloud.com/player/api.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
