@@ -283,21 +283,28 @@ html, body {
 /* Soft ambient radial aura behind logo (pure GPU) */
 .logo-ambient-glow {
     position: absolute;
-    inset: -18%;
-    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.18) 0%, rgba(215, 230, 255, 0.06) 45%, transparent 72%);
+    inset: -22%;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.2) 0%, rgba(215, 230, 255, 0.07) 45%, transparent 72%);
     pointer-events: none;
     z-index: 0;
-    opacity: 0.65;
-    filter: blur(28px);
-    transition: opacity 0.45s ease;
+    filter: blur(34px);
     transform: translateZ(0);
+    animation: ambientShimmer 5.8s ease-in-out infinite alternate;
+    will-change: opacity, transform;
 }
 
-.logo-interactive-container:hover .logo-ambient-glow {
-    opacity: 1;
+@keyframes ambientShimmer {
+    0% {
+        opacity: 0.3;
+        transform: translate3d(0, 0, 0) scale(0.93);
+    }
+    100% {
+        opacity: 0.82;
+        transform: translate3d(0, 0, 0) scale(1.07);
+    }
 }
 
-/* Artist logo with radiant silver-white glow */
+/* Artist logo shared styles */
 .artist-logo {
     display: block;
     width: 100%;
@@ -305,17 +312,52 @@ html, body {
     object-fit: contain;
     user-select: none;
     pointer-events: none;
+    transform: translateZ(0);
+}
+
+/* Base crisp white logo */
+.artist-logo--base {
     position: relative;
     z-index: 1;
-    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5)) drop-shadow(0 0 26px rgba(220, 235, 255, 0.3));
-    transform: translateZ(0);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.42)) drop-shadow(0 0 22px rgba(220, 235, 255, 0.24));
     transition: filter 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: filter, transform;
 }
 
-.logo-interactive-container:hover .artist-logo {
-    filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.85)) drop-shadow(0 0 42px rgba(220, 235, 255, 0.55));
-    transform: translateZ(0) scale(1.025);
+/* Shimmering radiant silver aura (autonomous breathing wave, pure GPU composite) */
+.artist-logo--glow {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 28px rgba(220, 238, 255, 0.65)) drop-shadow(0 0 52px rgba(185, 218, 255, 0.38));
+    animation: logoGlowShimmer 3.8s ease-in-out infinite alternate;
+    will-change: opacity, transform;
+    transition: opacity 0.4s ease, filter 0.4s ease;
+}
+
+@keyframes logoGlowShimmer {
+    0% {
+        opacity: 0.2;
+        transform: translate3d(0, 0, 0) scale(1.002);
+    }
+    100% {
+        opacity: 0.96;
+        transform: translate3d(0, 0, 0) scale(1.015);
+    }
+}
+
+/* Interactive hover response (enhances the shimmering bloom) */
+.logo-interactive-container:hover .logo-ambient-glow {
+    opacity: 1;
+}
+
+.logo-interactive-container:hover .artist-logo--glow {
+    opacity: 1 !important;
+    filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 38px rgba(220, 240, 255, 0.8)) drop-shadow(0 0 64px rgba(190, 225, 255, 0.55));
+}
+
+.logo-interactive-container:hover .artist-logo--base {
+    transform: translateZ(0) scale(1.015);
 }
 
 .subtitle {
