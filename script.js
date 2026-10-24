@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════════
    МОДЕУС — MAIN SCRIPT (MONOCHROME & SILVER EDITION)
    Breathing ASCII Preloader + CS2 Crosshair + Radial Noise Logo
    ═══════════════════════════════════════════════════ */
@@ -85,7 +85,7 @@
     // ── DOM REFS ──
     const preloader        = document.getElementById('preloader');
     const asciiArtEl       = document.getElementById('ascii-art');
-    const cs2Cursor        = document.getElementById('cs2-cursor');
+    const customCursor     = document.getElementById('custom-cursor');
     const mainContent      = document.getElementById('main-content');
     const sectionsWrapper  = document.getElementById('sections-wrapper');
     const sections         = document.querySelectorAll('.section');
@@ -96,7 +96,7 @@
     const aboutText        = document.getElementById('aboutText');
 
     const ABOUT_BIO_TEXT   = "Морозов Максим Алексеевич (родился 11 октября 2003 года в Томске) — российский исполнитель и дизайнер, бывший участник творческого объединения threehearts.";
-    const ABOUT_TITLE_TEXT = "ABOUT ME";
+    const ABOUT_TITLE_TEXT = "BIO";
 
     let currentSection = 0;
     let isScrolling    = false;
@@ -111,15 +111,15 @@
     let cursorRafPending = false;
 
     function renderCursor() {
-        if (cs2Cursor) {
-            cs2Cursor.style.transform = 'translate3d(' + (mouseX - 16) + 'px, ' + (mouseY - 16) + 'px, 0)';
+        if (customCursor) {
+            customCursor.style.transform = 'translate3d(' + (mouseX - 3) + 'px, ' + (mouseY - 2) + 'px, 0)';
         }
         cursorRafPending = false;
     }
 
-    function initCS2Cursor() {
-        if (!cs2Cursor) return;
-        cs2Cursor.classList.add('active');
+    function initCustomCursor() {
+        if (!customCursor) return;
+        customCursor.classList.add('active');
 
         window.addEventListener('mousemove', function (e) {
             mouseX = e.clientX;
@@ -131,9 +131,9 @@
         }, { passive: true });
 
         window.addEventListener('mousedown', function () {
-            cs2Cursor.classList.add('recoil');
+            customCursor.classList.add('recoil');
             setTimeout(function () {
-                cs2Cursor.classList.remove('recoil');
+                customCursor.classList.remove('recoil');
             }, 100);
         });
     }
@@ -292,16 +292,21 @@
             return '<span class="d-word">' + slots + '</span>';
         }).join('<span class="d-slot d-space"> </span>');
 
-        // Lock exact width on each slot to prevent word-wrap shifts during scramble
+        // Measure widths safely: only apply min-width if positive, never 0px
         const spans = aboutText.querySelectorAll('.d-slot');
         bioSlotData = [];
+        let allValid = true;
 
         spans.forEach(function (span) {
             const ch = span.textContent;
             const isSpace = span.classList.contains('d-space');
             const rect = span.getBoundingClientRect();
             const w = Math.ceil(rect.width * 100) / 100;
-            span.style.width = w + 'px';
+            if (w > 0) {
+                span.style.minWidth = w + 'px';
+            } else {
+                allValid = false;
+            }
             span.dataset.char = ch;
 
             bioSlotData.push({
@@ -311,7 +316,7 @@
             });
         });
 
-        bioSlotsInitialized = true;
+        bioSlotsInitialized = (allValid && spans.length > 0);
     }
 
     function triggerAboutBioDecrypt() {
@@ -410,15 +415,18 @@
     }
 
     // ═══════════════════════════════════════════════
-    // 7. SOUNDCLOUD LIQUID GLASS AUDIO PLAYER
+    // 7. GOTHIC SILVER AUDIO PLAYER ENGINE
     // ═══════════════════════════════════════════════
 
     const TRACKS = [
         {
             title: "requiem",
             feat: "takecare04",
+            fullHeaderTitle: "requiem (takecare04)",
+            subtitle: "М О Д Е У С",
             url: "https://soundcloud.com/emodeus/requiem",
             date: "02.08.2026",
+            badge: "SOUNDCLOUD",
             durationStr: "1:47",
             durationMs: 107248,
             artwork: "https://i1.sndcdn.com/artworks-86BNqkZ0BhxCHXBG-MC9KfQ-large.jpg"
@@ -426,35 +434,23 @@
         {
             title: "паршивый номер",
             feat: "takuori, daybytheday",
+            fullHeaderTitle: "паршивый номер",
+            subtitle: "T A K U O R I",
             url: "https://soundcloud.com/emodeus/parshiviynomer",
             date: "18.06.2026",
+            badge: "SOUNDCLOUD",
             durationStr: "1:38",
             durationMs: 98123,
             artwork: "https://i1.sndcdn.com/artworks-7BvsFStUyd5vjzSs-yZSWEQ-large.png"
         },
         {
-            title: "YOLO",
-            feat: "frayu0",
-            url: "https://soundcloud.com/emodeus/yolo",
-            date: "06.03.2026",
-            durationStr: "1:18",
-            durationMs: 78324,
-            artwork: "https://i1.sndcdn.com/artworks-QyAtbuFbRBxMYdh4-SuRgrw-large.png"
-        },
-        {
-            title: "вспышки",
-            feat: "takecare04, greyrock",
-            url: "https://soundcloud.com/emodeus/vspyshki-takecare04-greyrock",
-            date: "04.09.2025",
-            durationStr: "1:53",
-            durationMs: 113748,
-            artwork: "https://i1.sndcdn.com/artworks-WwhFlJdbjgXEMQim-ONzWmA-large.jpg"
-        },
-        {
             title: "lips",
             feat: "forzen, foreless",
+            fullHeaderTitle: "lips (forzen, foreless)",
+            subtitle: "F O R Z E N",
             url: "https://soundcloud.com/emodeus/lips-forzen-foreless",
             date: "27.07.2025",
+            badge: "SOUNDCLOUD",
             durationStr: "1:36",
             durationMs: 96046,
             artwork: "https://i1.sndcdn.com/artworks-JGdbljXcdit1Lk9x-atOlEQ-large.png"
@@ -462,8 +458,11 @@
         {
             title: "armour",
             feat: "foreless",
+            fullHeaderTitle: "armour (foreless)",
+            subtitle: "F O R E L E S S",
             url: "https://soundcloud.com/emodeus/armour-foreless",
             date: "02.07.2025",
+            badge: "SOUNDCLOUD",
             durationStr: "2:16",
             durationMs: 136661,
             artwork: "https://i1.sndcdn.com/artworks-tX9vUTyfpbs0tIis-xkCpzQ-large.png"
@@ -485,31 +484,53 @@
     let prevVolume = currentVolume || 80;
     let currentDurationMs = 107248;
     let trackJustLoaded = false;
+    let isBaroqueMode = false;
+    let customAudioEl = null;
 
-    const playerCard          = document.querySelector('.player-card');
+    // DOM Elements
+    const playerWrapper       = document.getElementById('playerWrapper');
     const playerCoverImg      = document.getElementById('playerCoverImg');
     const playerTrackDate     = document.getElementById('playerTrackDate');
     const playerTrackTitle    = document.getElementById('playerTrackTitle');
+    const playerArtistSubtitle= document.getElementById('playerArtistSubtitle');
+    const playerBadge         = document.getElementById('playerBadge');
+    const playerEq            = document.getElementById('playerEq');
+    const eqBars              = [
+        document.getElementById('eqBar0'),
+        document.getElementById('eqBar1'),
+        document.getElementById('eqBar2'),
+        document.getElementById('eqBar3')
+    ];
     const playerCurrentTime   = document.getElementById('playerCurrentTime');
     const playerTotalTime     = document.getElementById('playerTotalTime');
     const playerProgressWrap  = document.getElementById('playerProgressContainer');
     const playerProgressFill  = document.getElementById('playerProgressFill');
     const playerProgressPin   = document.getElementById('playerProgressPin');
     const playerPlayBtn       = document.getElementById('playerPlayBtn');
+    const playIcon            = document.getElementById('playIcon');
+    const pauseIcon           = document.getElementById('pauseIcon');
     const playerPrevBtn       = document.getElementById('playerPrevBtn');
     const playerNextBtn       = document.getElementById('playerNextBtn');
     const playerVolToggle     = document.getElementById('playerVolToggle');
-    const playerVolRange      = document.getElementById('playerVolRange');
-    const playerVolumeSection = document.querySelector('.player-volume-section');
+    const volHighIcon         = document.getElementById('volHighIcon');
+    const volMuteIcon         = document.getElementById('volMuteIcon');
+    const playerVolSliderWrap = document.getElementById('playerVolSliderWrap');
+    const playerVolFill       = document.getElementById('playerVolFill');
+    const playerVolThumb      = document.getElementById('playerVolThumb');
     const playerTracklistEl   = document.getElementById('playerTracklist');
+
     const scIframe            = document.getElementById('sc-widget-iframe');
 
     function applyVolume() {
-        if (!scWidget) return;
         const targetVol = isMuted ? 0 : currentVolume;
-        try {
-            scWidget.setVolume(targetVol);
-        } catch (e) {}
+        if (scWidget) {
+            try {
+                scWidget.setVolume(targetVol);
+            } catch (e) {}
+        }
+        if (customAudioEl) {
+            customAudioEl.volume = targetVol / 100;
+        }
     }
 
     function formatTime(ms) {
@@ -521,8 +542,27 @@
     }
 
     function updatePlayStateUI(playing) {
-        if (!playerCard) return;
-        playerCard.classList.toggle('is-playing', playing);
+        if (playIcon) playIcon.classList.toggle('hidden', playing);
+        if (pauseIcon) pauseIcon.classList.toggle('hidden', !playing);
+        if (playerEq) playerEq.classList.toggle('is-playing', playing);
+        if (!playing && eqBars) {
+            eqBars.forEach(b => { if (b) b.style.transform = 'rotate(45deg) scale(1)'; });
+        }
+    }
+
+    // Mini EQ animation pulse when audio is playing
+    let eqAnimId = null;
+    function animateEq() {
+        if (isAudioPlaying && eqBars[0]) {
+            const t = Date.now() * 0.006;
+            eqBars.forEach((bar, i) => {
+                if (bar) {
+                    const s = 0.85 + Math.abs(Math.sin(t + i * 1.3)) * 0.95;
+                    bar.style.transform = `rotate(45deg) scale(${s.toFixed(2)})`;
+                }
+            });
+        }
+        eqAnimId = requestAnimationFrame(animateEq);
     }
 
     function updateProgressUI(currentMs, fraction) {
@@ -538,48 +578,108 @@
         }
     }
 
+    function updateVolumeUI() {
+        const effectiveVol = isMuted ? 0 : currentVolume;
+        if (playerVolFill) playerVolFill.style.width = effectiveVol + '%';
+        if (playerVolThumb) playerVolThumb.style.left = effectiveVol + '%';
+
+        if (volHighIcon && volMuteIcon) {
+            if (isMuted || effectiveVol === 0) {
+                volHighIcon.classList.add('hidden');
+                volMuteIcon.classList.remove('hidden');
+            } else {
+                volHighIcon.classList.remove('hidden');
+                volMuteIcon.classList.add('hidden');
+            }
+        }
+        applyVolume();
+    }
+
     function updateTrackUI(track) {
         if (playerCoverImg) {
             playerCoverImg.src = track.artwork;
             playerCoverImg.alt = track.title;
         }
         if (playerTrackTitle) {
-            playerTrackTitle.textContent = track.feat ? track.title + ' (' + track.feat + ')' : track.title;
+            playerTrackTitle.textContent = track.fullHeaderTitle || track.title;
+        }
+        if (playerArtistSubtitle) {
+            playerArtistSubtitle.textContent = track.subtitle || (track.feat ? track.feat.toUpperCase() : "М О Д Е У С");
         }
         if (playerTrackDate) {
             playerTrackDate.textContent = track.date;
+        }
+        if (playerBadge) {
+            playerBadge.textContent = track.badge || "SOUNDCLOUD";
         }
         if (playerTotalTime) {
             playerTotalTime.textContent = track.durationStr;
         }
         if (playerTracklistEl) {
-            const items = playerTracklistEl.querySelectorAll('.track-item');
-            items.forEach((item, idx) => {
-                item.classList.toggle('active', idx === currentTrackIdx);
+            const cards = playerTracklistEl.querySelectorAll('.track-card');
+            cards.forEach((card, idx) => {
+                const isActive = idx === currentTrackIdx;
+                card.classList.toggle('active', isActive);
+                const rect1 = card.querySelector('rect:nth-of-type(1)');
+                const rect2 = card.querySelector('rect:nth-of-type(2)');
+                if (rect1) {
+                    rect1.setAttribute('stroke', isActive ? 'url(#silverGrad)' : 'url(#silverDimGrad)');
+                    rect1.setAttribute('stroke-width', isActive ? '1.35' : '0.85');
+                }
+                if (rect2) {
+                    rect2.setAttribute('stroke', isActive ? 'url(#silverGrad)' : 'url(#silverDimGrad)');
+                }
             });
         }
     }
 
     function renderTracklist() {
         if (!playerTracklistEl) return;
-        playerTracklistEl.innerHTML = TRACKS.map((t, idx) => `
-            <div class="track-item ${idx === currentTrackIdx ? 'active' : ''}" data-idx="${idx}">
-                <span class="track-num">${String(idx + 1).padStart(2, '0')}</span>
-                <div class="track-details">
-                    <span class="track-name">${t.title}</span>
-                    <span class="track-feat">${t.feat ? t.feat : ''}</span>
+        playerTracklistEl.innerHTML = TRACKS.map((t, idx) => {
+            const isActive = idx === currentTrackIdx;
+            const strokeUrl = isActive ? 'url(#silverGrad)' : 'url(#silverDimGrad)';
+            const railWidth = isActive ? '1.35' : '0.85';
+            return `
+            <div class="track-card ${isActive ? 'active' : ''}" data-idx="${idx}">
+                <svg class="track-card-svg" viewBox="0 0 340 50" preserveAspectRatio="none">
+                    <rect x="1" y="1" width="338" height="48" rx="2.5" fill="none" stroke="${strokeUrl}" stroke-width="${railWidth}" />
+                    <rect x="3.5" y="3.5" width="333" height="43" rx="1.5" fill="none" stroke="${strokeUrl}" stroke-width="0.45" opacity="0.55" />
+                    <path d="M 1,13 C 1,4 4,1 13,1 M 1,7.5 C 5.5,7.5 7.5,5.5 7.5,1" fill="none" stroke="url(#silverGrad)" stroke-width="1.4" />
+                    <path d="M 339,13 C 339,4 336,1 327,1 M 339,7.5 C 334.5,7.5 332.5,5.5 332.5,1" fill="none" stroke="url(#silverGrad)" stroke-width="1.4" />
+                    <path d="M 1,37 C 1,46 4,49 13,49 M 1,42.5 C 5.5,42.5 7.5,44.5 7.5,49" fill="none" stroke="url(#silverGrad)" stroke-width="1.4" />
+                    <path d="M 339,37 C 339,46 336,49 327,49 M 339,42.5 C 334.5,42.5 332.5,44.5 332.5,49" fill="none" stroke="url(#silverGrad)" stroke-width="1.4" />
+                    <polygon points="1,25 4,22 7,25 4,28" fill="url(#silverGrad)" opacity="0.85" />
+                    <polygon points="339,25 336,22 333,25 336,28" fill="url(#silverGrad)" opacity="0.85" />
+                </svg>
+                <div class="track-card-content">
+                    <span class="track-num">${String(idx + 1).padStart(2, '0')}</span>
+                    <div class="track-card-meta">
+                        <span class="track-title">${t.title}</span>
+                        <span class="track-artist">${t.feat ? t.feat : 'МОДЕУС'}</span>
+                    </div>
                 </div>
-                <span class="track-dur">${t.durationStr}</span>
-                <div class="track-playing-indicator"></div>
-            </div>
-        `).join('');
+                <div class="track-duration">
+                    <span>${t.durationStr}</span>
+                    <span class="active-diamond">
+                        <svg viewBox="0 0 24 24" width="9" height="9" fill="#ffffff">
+                            <path d="M12 0 L15.5 8.5 L24 12 L15.5 15.5 L12 24 L8.5 15.5 L0 12 L8.5 8.5 Z" />
+                        </svg>
+                    </span>
+                </div>
+            </div>`;
+        }).join('');
 
-        playerTracklistEl.querySelectorAll('.track-item').forEach(item => {
+        playerTracklistEl.querySelectorAll('.track-card').forEach(item => {
             item.addEventListener('click', () => {
                 const idx = parseInt(item.dataset.idx, 10);
-                selectTrack(idx, true);
+                if (idx === currentTrackIdx && isAudioPlaying) {
+                    togglePlayPause();
+                } else {
+                    selectTrack(idx, true);
+                }
             });
         });
+
     }
 
     function selectTrack(index, autoPlay) {
@@ -592,6 +692,37 @@
 
         updateTrackUI(track);
         updateProgressUI(0, 0);
+
+        if (customAudioEl) {
+            customAudioEl.pause();
+            customAudioEl = null;
+        }
+
+        if (track.audioFileUrl) {
+            // Local uploaded track
+            if (scWidget) {
+                try { scWidget.pause(); } catch (e) {}
+            }
+            customAudioEl = new Audio(track.audioFileUrl);
+            customAudioEl.volume = (isMuted ? 0 : currentVolume) / 100;
+            customAudioEl.addEventListener('timeupdate', () => {
+                if (!isSeeking && customAudioEl) {
+                    const curMs = customAudioEl.currentTime * 1000;
+                    const frac = customAudioEl.duration ? customAudioEl.currentTime / customAudioEl.duration : 0;
+                    updateProgressUI(curMs, frac);
+                }
+            });
+            customAudioEl.addEventListener('ended', () => {
+                playNextTrack();
+            });
+            if (autoPlay) {
+                customAudioEl.play().then(() => {
+                    isAudioPlaying = true;
+                    updatePlayStateUI(true);
+                }).catch(() => {});
+            }
+            return;
+        }
 
         if (scWidget) {
             scWidget.load(track.url, {
@@ -609,7 +740,6 @@
                 }
             });
 
-            // Enforce volume persistently across track loading stages
             applyVolume();
             [80, 200, 450, 800].forEach(delay => {
                 setTimeout(applyVolume, delay);
@@ -623,6 +753,20 @@
     }
 
     function togglePlayPause() {
+        if (customAudioEl) {
+            if (isAudioPlaying) {
+                customAudioEl.pause();
+                isAudioPlaying = false;
+                updatePlayStateUI(false);
+            } else {
+                customAudioEl.play().then(() => {
+                    isAudioPlaying = true;
+                    updatePlayStateUI(true);
+                }).catch(() => {});
+            }
+            return;
+        }
+
         if (!scWidget) return;
         if (isAudioPlaying) {
             scWidget.pause();
@@ -647,14 +791,7 @@
             localStorage.setItem('modeus_player_volume', currentVolume);
         } catch (e) {}
 
-        applyVolume();
-
-        if (playerVolRange) {
-            playerVolRange.value = val;
-        }
-        if (playerVolumeSection) {
-            playerVolumeSection.classList.toggle('is-muted', val === 0 || isMuted);
-        }
+        updateVolumeUI();
     }
 
     function setupSeekEvents() {
@@ -662,20 +799,23 @@
 
         function seekFromEvent(e) {
             const rect = playerProgressWrap.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientX = (e.touches && e.touches.length > 0) ? e.touches[0].clientX : e.clientX;
             const relX = Math.max(0, Math.min(clientX - rect.left, rect.width));
-            const frac = relX / rect.width;
+            const frac = rect.width > 0 ? (relX / rect.width) : 0;
             const targetMs = frac * currentDurationMs;
 
             updateProgressUI(targetMs, frac);
-            if (scWidget) {
+
+            if (customAudioEl) {
+                customAudioEl.currentTime = (frac * customAudioEl.duration) || 0;
+            } else if (scWidget) {
                 scWidget.seekTo(targetMs);
             }
         }
 
         playerProgressWrap.addEventListener('mousedown', function (e) {
             isSeeking = true;
-            playerProgressWrap.classList.add('is-dragging');
+            playerProgressWrap.classList.add('dragging');
             seekFromEvent(e);
 
             function onMouseMove(moveEv) {
@@ -686,7 +826,7 @@
 
             function onMouseUp() {
                 isSeeking = false;
-                playerProgressWrap.classList.remove('is-dragging');
+                playerProgressWrap.classList.remove('dragging');
                 window.removeEventListener('mousemove', onMouseMove);
                 window.removeEventListener('mouseup', onMouseUp);
             }
@@ -697,27 +837,32 @@
 
         playerProgressWrap.addEventListener('touchstart', function (e) {
             isSeeking = true;
+            playerProgressWrap.classList.add('dragging');
             seekFromEvent(e);
         }, { passive: true });
 
-        playerProgressWrap.addEventListener('touchmove', function (e) {
+        window.addEventListener('touchmove', function (e) {
             if (isSeeking) {
                 seekFromEvent(e);
             }
         }, { passive: true });
 
-        playerProgressWrap.addEventListener('touchend', function () {
-            isSeeking = false;
+        window.addEventListener('touchend', function () {
+            if (isSeeking) {
+                isSeeking = false;
+                playerProgressWrap.classList.remove('dragging');
+            }
+        });
+        window.addEventListener('touchcancel', function () {
+            if (isSeeking) {
+                isSeeking = false;
+                playerProgressWrap.classList.remove('dragging');
+            }
         });
     }
 
     function setupVolumeEvents() {
-        if (playerVolRange) {
-            playerVolRange.value = currentVolume;
-        }
-        if (playerVolumeSection) {
-            playerVolumeSection.classList.toggle('is-muted', currentVolume === 0 || isMuted);
-        }
+        updateVolumeUI();
 
         if (playerVolToggle) {
             playerVolToggle.addEventListener('click', function () {
@@ -732,10 +877,63 @@
             });
         }
 
-        if (playerVolRange) {
-            playerVolRange.addEventListener('input', function () {
+        if (playerVolSliderWrap) {
+            let isDraggingVol = false;
+
+            function setVolFromEvent(e) {
+                const rect = playerVolSliderWrap.getBoundingClientRect();
+                const clientX = (e.touches && e.touches.length > 0) ? e.touches[0].clientX : e.clientX;
+                const relX = Math.max(0, Math.min(clientX - rect.left, rect.width));
+                const pct = rect.width > 0 ? Math.round((relX / rect.width) * 100) : 0;
                 isMuted = false;
-                setVolume(parseInt(playerVolRange.value, 10));
+                setVolume(pct);
+            }
+
+            playerVolSliderWrap.addEventListener('mousedown', function (e) {
+                isDraggingVol = true;
+                playerVolSliderWrap.classList.add('dragging');
+                setVolFromEvent(e);
+
+                function onMouseMove(moveEv) {
+                    if (isDraggingVol) {
+                        setVolFromEvent(moveEv);
+                    }
+                }
+
+                function onMouseUp() {
+                    isDraggingVol = false;
+                    playerVolSliderWrap.classList.remove('dragging');
+                    window.removeEventListener('mousemove', onMouseMove);
+                    window.removeEventListener('mouseup', onMouseUp);
+                }
+
+                window.addEventListener('mousemove', onMouseMove);
+                window.addEventListener('mouseup', onMouseUp);
+            });
+
+            playerVolSliderWrap.addEventListener('touchstart', function (e) {
+                isDraggingVol = true;
+                playerVolSliderWrap.classList.add('dragging');
+                setVolFromEvent(e);
+            }, { passive: true });
+
+            window.addEventListener('touchmove', function (e) {
+                if (isDraggingVol) {
+                    setVolFromEvent(e);
+                }
+            }, { passive: true });
+
+            window.addEventListener('touchend', function () {
+                if (isDraggingVol) {
+                    isDraggingVol = false;
+                    playerVolSliderWrap.classList.remove('dragging');
+                }
+            });
+            window.addEventListener('touchcancel', function () {
+                if (isDraggingVol) {
+                    isDraggingVol = false;
+                    playerVolSliderWrap.classList.remove('dragging');
+                }
             });
         }
     }
@@ -744,6 +942,7 @@
         renderTracklist();
         setupSeekEvents();
         setupVolumeEvents();
+        animateEq();
 
         if (playerPlayBtn) {
             playerPlayBtn.addEventListener('click', togglePlayPause);
@@ -754,6 +953,14 @@
         if (playerNextBtn) {
             playerNextBtn.addEventListener('click', playNextTrack);
         }
+
+        // Spacebar shortcut
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') {
+                e.preventDefault();
+                togglePlayPause();
+            }
+        });
 
         function bindWidget() {
             if (!window.SC || !scIframe) {
@@ -805,13 +1012,137 @@
         bindWidget();
     }
 
-    // ═══════════════════════════════════════════════
-    // 8. INITIALIZATION
-    // ═══════════════════════════════════════════════
+    // в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ
+    // 8. GOTHIC SILVER PARTICLES BACKGROUND
+    // в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ
+
+    function initSilverParticles() {
+        const canvas = document.getElementById('silver-particles');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        let width = 0;
+        let height = 0;
+        let dpr = Math.min(window.devicePixelRatio || 1, 2);
+        let particles = [];
+
+        // РќР°СЃС‚СЂРѕР№РєРё РєРѕР»РёС‡РµСЃС‚РІР° Рё РїРѕРІРµРґРµРЅРёСЏ С‡Р°СЃС‚РёС†
+        const CONFIG = {
+            count: 85,               // РћР±С‰РµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ С‡Р°СЃС‚РёС†
+            starRatio: 0.16,         // Р”РѕР»СЏ С‡РµС‚С‹СЂРµС…РєРѕРЅРµС‡РЅС‹С… РіРѕС‚РёС‡РµСЃРєРёС… РёСЃРєСЂ (вњ¦)
+            baseSpeedY: -0.18,       // РњРµРґР»РµРЅРЅС‹Р№ РїРѕРґСЉРµРј РІРІРµСЂС…
+            driftSpeedX: 0.12        // Р‘РѕРєРѕРІРѕРµ РїРѕРєР°С‡РёРІР°РЅРёРµ
+        };
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+
+        function createParticle(randomY) {
+            if (randomY === undefined) randomY = true;
+            const isStar = Math.random() < CONFIG.starRatio;
+            return {
+                x: Math.random() * width,
+                y: randomY ? Math.random() * height : height + 15,
+                radius: isStar ? Math.random() * 2.4 + 1.8 : Math.random() * 1.5 + 0.4,
+                vx: (Math.random() - 0.5) * CONFIG.driftSpeedX,
+                vy: CONFIG.baseSpeedY * (Math.random() * 0.8 + 0.4),
+                alpha: Math.random() * 0.55 + 0.1,
+                maxAlpha: isStar ? Math.random() * 0.65 + 0.25 : Math.random() * 0.45 + 0.12,
+                phase: Math.random() * Math.PI * 2,
+                pulseSpeed: Math.random() * 0.02 + 0.006,
+                swayAmp: Math.random() * 0.35 + 0.1,
+                isStar: isStar
+            };
+        }
+
+        function initParticles() {
+            resize();
+            particles = [];
+            for (let i = 0; i < CONFIG.count; i++) {
+                particles.push(createParticle(true));
+            }
+        }
+
+        // РћС‚СЂРёСЃРѕРІРєР° С‡РµС‚С‹СЂРµС…РєРѕРЅРµС‡РЅРѕР№ СЃРµСЂРµР±СЂСЏРЅРѕР№ РёСЃРєСЂС‹ (вњ¦)
+        function drawGothicStar(x, y, size, alpha) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.beginPath();
+            const inner = size * 0.22;
+            ctx.moveTo(0, -size);
+            ctx.quadraticCurveTo(inner, -inner, size, 0);
+            ctx.quadraticCurveTo(inner, inner, 0, size);
+            ctx.quadraticCurveTo(-inner, inner, -size, 0);
+            ctx.quadraticCurveTo(-inner, -inner, 0, -size);
+            ctx.closePath();
+
+            ctx.fillStyle = "rgba(232, 238, 250, " + alpha + ")";
+            ctx.shadowColor = 'rgba(215, 225, 245, 0.85)';
+            ctx.shadowBlur = size * 3;
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+
+                // Р”РІРёР¶РµРЅРёРµ Рё РїР»Р°РІРЅРѕРµ СЃРёРЅСѓСЃРѕРёРґР°Р»СЊРЅРѕРµ РїРѕРєР°С‡РёРІР°РЅРёРµ
+                p.phase += p.pulseSpeed;
+                p.x += p.vx + Math.sin(p.phase) * p.swayAmp;
+                p.y += p.vy;
+
+                // РџР»Р°РІРЅРѕРµ РјРµСЂС†Р°РЅРёРµ РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚Рё
+                const currentAlpha =
+                    (Math.sin(p.phase * 1.5) * 0.5 + 0.5) * p.maxAlpha + 0.05;
+
+                // РџРµСЂРµР·Р°РїСѓСЃРє С‡Р°СЃС‚РёС†С‹ РїСЂРё РІС‹С…РѕРґРµ Р·Р° РіСЂР°РЅРёС†С‹ СЌРєСЂР°РЅР°
+                if (p.y < -20) {
+                    p.y = height + 15;
+                    p.x = Math.random() * width;
+                }
+                if (p.x < -20) p.x = width + 15;
+                if (p.x > width + 20) p.x = -15;
+
+                // РћС‚СЂРёСЃРѕРІРєР°
+                if (p.isStar) {
+                    drawGothicStar(p.x, p.y, p.radius, currentAlpha);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = "rgba(215, 222, 235, " + currentAlpha + ")";
+                    ctx.shadowColor = 'rgba(200, 210, 230, 0.5)';
+                    ctx.shadowBlur = p.radius * 3.5;
+                    ctx.fill();
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resize);
+        initParticles();
+        animate();
+    }
+
+    // в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ
+    // 9. INITIALIZATION
+    // в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ
 
     function init() {
-        // Initialize CS2 Crosshair immediately
-        initCS2Cursor();
+        // Initialize Custom Gothic Cursor
+        initCustomCursor();
+
+        // Initialize Gothic Silver Background & Particles
+        initSilverParticles();
 
         // Initialize Liquid Glass interactive tracking
         initLiquidGlassCards();

@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════════
    МОДЕУС — SITE STYLES (MONOCHROME EDITION)
    Font: Igra Sans | CS2 Crosshair | Floating Logo | Large Weapon Frame
    ═══════════════════════════════════════════════════ */
@@ -53,37 +53,109 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════
-   CS2 CROSSHAIR CURSOR
-   White with 1px black outline, instant tracking
+   GOTHIC SILVER BACKGROUND & PARTICLES
    ═══════════════════════════════════════════════════ */
-#cs2-cursor {
+.gothic-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse 55% 65% at 50% 48%, rgba(210, 218, 232, 0.085) 0%, rgba(120, 130, 150, 0.03) 45%, transparent 75%),
+        radial-gradient(circle at 20% 15%, rgba(160, 175, 200, 0.04) 0%, transparent 50%),
+        radial-gradient(circle at 80% 85%, rgba(160, 175, 200, 0.04) 0%, transparent 50%),
+        linear-gradient(180deg, #060609 0%, #020203 50%, #050508 100%);
+}
+
+.gothic-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.22;
+    background-image:
+        radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 0),
+        radial-gradient(rgba(180, 195, 220, 0.04) 1px, transparent 0);
+    background-size: 36px 36px;
+    background-position: 0 0, 18px 18px;
+    mix-blend-mode: screen;
+}
+
+.gothic-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    box-shadow:
+        inset 0 0 140px rgba(0, 0, 0, 0.95),
+        inset 0 0 60px rgba(0, 0, 0, 0.85);
+    background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(0, 0, 0, 0.78) 100%);
+}
+
+.gothic-mist {
+    position: absolute;
+    width: 680px;
+    height: 680px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(215, 222, 238, 0.07) 0%, rgba(140, 150, 175, 0.025) 45%, transparent 70%);
+    filter: blur(45px);
+    animation: pulseMist 9s ease-in-out infinite alternate;
+}
+
+@keyframes pulseMist {
+    0% {
+        transform: translate(-50%, -50%) scale(0.94);
+        opacity: 0.65;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.08);
+        opacity: 1;
+    }
+}
+
+#silver-particles {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════
+   CUSTOM GOTHIC CURSOR (cursor.png)
+   ═══════════════════════════════════════════════════ */
+#custom-cursor {
     position: fixed;
     top: 0;
     left: 0;
-    width: 32px;
-    height: 32px;
+    width: 26px;
+    height: 35px;
     pointer-events: none;
     z-index: 9999999;
-    transform: translate(-16px, -16px);
+    transform: translate3d(-3px, -2px, 0);
     will-change: transform;
     display: none;
 }
 
-#cs2-cursor.active {
+#custom-cursor.active {
     display: block;
 }
 
-#cs2-cursor svg {
+.custom-cursor-img {
     width: 100%;
     height: 100%;
     display: block;
-    transform-origin: center;
+    object-fit: contain;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.45)) drop-shadow(0 3px 6px rgba(0, 0, 0, 0.85));
+    transform-origin: 3px 2px;
     transition: transform 0.08s ease-out;
 }
 
-/* Recoil kick when clicking */
-#cs2-cursor.recoil svg {
-    transform: scale(1.4);
+#custom-cursor.recoil .custom-cursor-img {
+    transform: scale(0.88);
 }
 
 /* ═══════════════════════════════════════════════════
@@ -159,7 +231,7 @@ html, body {
     width: 100vw;
     overflow: hidden;
     position: relative;
-    background: #000000;
+    background: transparent;
     transition: opacity 0.8s ease;
 }
 
@@ -188,38 +260,13 @@ html, body {
     contain: layout paint;
 }
 
-/* ── Section Backgrounds ── */
-.section-bg {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-}
-
-.bg-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.05;
-    filter: invert(1) grayscale(100%) contrast(1.3);
-}
-
-.bg-image--contain {
-    object-fit: contain;
-    opacity: 0.035;
-}
-
-.bg-overlay {
-    position: absolute;
-    inset: 0;
-}
-
-.bg-overlay--about {
-    background: radial-gradient(ellipse at center, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.95) 75%);
-}
-
+/* Unified Seamless Background Everywhere */
+.section-bg,
+.bg-image,
+.bg-overlay,
+.bg-overlay--about,
 .bg-overlay--links {
-    background: radial-gradient(ellipse at center, rgba(5,5,8,0.4) 0%, rgba(0,0,0,0.95) 75%);
+    display: none !important;
 }
 
 /* ── Section Content ── */
@@ -238,7 +285,7 @@ html, body {
    100% GPU-accelerated, zero CPU overhead, rock solid 144+ FPS
    ═══════════════════════════════════════════════════ */
 #section-hi {
-    background: #000000;
+    background: transparent;
 }
 
 .hi-content {
@@ -331,16 +378,7 @@ html, body {
 }
 
 .scroll-hint {
-    position: absolute;
-    bottom: -90px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: var(--text-dim);
-    font-size: 22px;
-    animation: floatHint 2.2s ease-in-out infinite;
-    pointer-events: none;
-    transition: color 0.3s ease;
-    will-change: transform;
+    display: none !important;
 }
 
 .scroll-hint span {
@@ -356,7 +394,7 @@ html, body {
    SECTION 2 — ABOUT & MUSIC (BAROQUE FRAME + LIQUID GLASS PLAYER)
    ═══════════════════════════════════════════════════ */
 #section-about {
-    background: #030305;
+    background: transparent;
     justify-content: center;
     align-items: center;
 }
@@ -383,10 +421,10 @@ html, body {
 /* Baroque silver filigree frame container */
 .about-frame {
     position: relative;
-    width: clamp(420px, 38vw, 540px);
     height: min(84vh, 700px);
     aspect-ratio: 736 / 1104;
-    max-width: min(94vw, 540px);
+    width: auto;
+    max-width: min(46vw, 490px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -410,15 +448,58 @@ html, body {
 .about-inner {
     position: relative;
     z-index: 2;
-    width: 72%;
-    max-width: 72%;
+    width: 74%;
+    max-width: 74%;
+    height: 80%;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 0 6px;
+    padding: 8px 6px;
     margin-top: 0;
     box-sizing: border-box;
+}
+
+.player-inner {
+    position: relative;
+    z-index: 2;
+    width: 76%;
+    max-width: 76%;
+    height: 82%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 4px;
+    box-sizing: border-box;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+#section-about.active .player-inner {
+    opacity: 1;
+}
+
+.player-card {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 10;
+}
+
+/* Plaques container: positioned 15px higher inside frame with 10px reduced spacing */
+.player-plaques-wrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100% - 80px);
+    max-height: calc(100% - 80px);
+    flex: none;
+    transform: translateY(-15px);
+    width: 100%;
 }
 
 /* Header container: smooth independent fade-in with 333.png */
@@ -464,6 +545,10 @@ html, body {
 }
 
 .about-text-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     position: relative;
     text-align: center;
@@ -519,77 +604,84 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════
-   LIQUID GLASS AUDIO PLAYER (SOUNDCLOUD ENGINE)
+   GOTHIC SILVER AUDIO PLAYER (MASTER ORNATE FRAME)
    ═══════════════════════════════════════════════════ */
-.about-player-wrap {
-    width: clamp(340px, 38vw, 440px);
-    max-width: 100%;
-    opacity: 0;
-    transition: opacity 0.6s ease;
-    will-change: opacity;
+:root {
+    --silver-bright: #ffffff;
+    --silver-mid: #cfd3db;
+    --silver-muted: #848892;
+    --silver-dark: #24262c;
+    --font-accent: 'Cormorant Garamond', 'Cinzel', serif;
+    --font-mono: 'JetBrains Mono', monospace;
 }
 
-#section-about.active .about-player-wrap {
-    opacity: 1;
-}
-
-.player-card {
-    font-family: var(--font-player);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.015) 50%, rgba(255, 255, 255, 0.035) 100%);
-    backdrop-filter: blur(24px) saturate(160%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 20px;
-    padding: clamp(16px, 2vw, 22px);
-    box-shadow: 
-        inset 0 1px 1px 0 rgba(255, 255, 255, 0.2),
-        inset 0 -1px 2px 0 rgba(0, 0, 0, 0.5),
-        0 20px 45px -10px rgba(0, 0, 0, 0.9),
-        0 0 30px rgba(255, 255, 255, 0.04);
+/* ── 1. Header: MUSIC + 333.png Divider ── */
+.player-top-header {
+    position: relative;
+    z-index: 10;
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    text-align: left;
+    align-items: center;
+    padding-top: 0;
+}
+
+.player-top-header .ornament-divider {
+    margin: 2px 0 6px 0;
+}
+
+/* ── 2. Now-Playing Plaque & Baroque Locket ── */
+.now-playing-plaque {
     position: relative;
-    overflow: hidden;
+    z-index: 10;
+    padding: 8px 12px;
+    background: linear-gradient(180deg, rgba(20, 21, 25, 0.9) 0%, rgba(8, 9, 11, 0.97) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.18), inset 0 0 16px rgba(255, 255, 255, 0.03), 0 8px 24px rgba(0, 0, 0, 0.9);
+    border-radius: 4px;
+    margin: 2px 0;
+    transform: translateY(15px);
 }
 
-/* Subtle gloss sheen on card */
-.player-card::before {
-    content: '';
+.plaque-border-svg {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 40%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.002) 100%);
-    border-radius: 19px 19px 100px 100px / 19px 19px 30px 30px;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
-    opacity: 0.7;
 }
 
-/* ── Player Header ── */
-.player-header {
+.now-playing-content {
+    position: relative;
+    z-index: 10;
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 10px;
+}
+
+/* Baroque Cast-Silver Portrait Frame for Cover Art */
+.cover-locket {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.22));
+}
+
+.cover-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 3px;
+    overflow: hidden;
+    background: #090a0d;
     position: relative;
     z-index: 1;
 }
 
-.player-cover-box {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
-    flex-shrink: 0;
-    background: #000000;
-}
-
-.player-cover-img {
+.cover-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -597,506 +689,551 @@ html, body {
     transition: transform 0.4s ease;
 }
 
-.player-card.is-playing .player-cover-img {
-    transform: scale(1.05);
-}
-
-.player-cover-glow {
+.cover-locket-svg {
     position: absolute;
     inset: 0;
-    border-radius: 12px;
-    box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.25);
+    width: 100%;
+    height: 100%;
     pointer-events: none;
+    z-index: 3;
 }
 
-.player-meta {
-    flex-grow: 1;
+.player-meta-col {
+    flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 2px;
+    text-align: left;
 }
 
-.player-badge-row {
+.player-badge-line {
     display: flex;
     align-items: center;
     gap: 8px;
     margin-bottom: 2px;
 }
 
-.player-badge {
-    font-size: 9px;
-    letter-spacing: 0.14em;
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    padding: 1px 6px;
+.sc-cartouche {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 10px;
+    font-family: 'Cinzel', serif;
+    font-size: 8px;
     font-weight: 600;
-    line-height: 1.4;
-    text-transform: uppercase;
-}
-
-.player-track-date {
-    color: var(--text-muted);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    font-family: monospace;
-}
-
-.player-track-title {
-    font-family: var(--font-player);
-    font-size: 14px;
-    font-weight: 500;
-    color: #ffffff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    letter-spacing: 0.03em;
-    margin: 0;
-}
-
-.player-artist-name {
-    font-size: 11px;
-    color: var(--text-muted);
     letter-spacing: 0.14em;
-    text-transform: uppercase;
-    margin: 0;
-}
-
-/* ── Equalizer Animation ── */
-.player-eq {
-    display: flex;
-    align-items: flex-end;
-    gap: 3px;
-    height: 18px;
-    padding: 0 4px;
-    flex-shrink: 0;
-}
-
-.player-eq .eq-bar {
-    width: 2.5px;
-    height: 4px;
-    background: #ffffff;
+    color: #eef2f9;
+    background: linear-gradient(180deg, rgba(42, 46, 56, 0.75) 0%, rgba(14, 16, 20, 0.95) 100%);
+    text-shadow: 0 1px 2px #000;
     border-radius: 2px;
-    opacity: 0.35;
-    transition: height 0.2s ease, opacity 0.2s ease;
 }
 
-.player-card.is-playing .player-eq .eq-bar {
-    opacity: 0.9;
-    animation: eqBounce 1.2s ease-in-out infinite alternate;
-}
-
-.player-card.is-playing .player-eq .eq-bar:nth-child(1) { animation-delay: 0.1s; }
-.player-card.is-playing .player-eq .eq-bar:nth-child(2) { animation-delay: 0.4s; }
-.player-card.is-playing .player-eq .eq-bar:nth-child(3) { animation-delay: 0.2s; }
-.player-card.is-playing .player-eq .eq-bar:nth-child(4) { animation-delay: 0.5s; }
-
-@keyframes eqBounce {
-    0% { height: 3px; }
-    50% { height: 16px; }
-    100% { height: 7px; }
-}
-
-/* ── Timeline / Seekbar ── */
-.player-timeline-block {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    position: relative;
-    z-index: 1;
-}
-
-.player-time-display {
-    font-family: monospace;
-    font-size: 10.5px;
-    color: var(--text-muted);
-    min-width: 30px;
-    user-select: none;
-}
-
-#playerTotalTime {
-    text-align: right;
-}
-
-.player-progress-container {
-    flex-grow: 1;
-    height: 22px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    user-select: none;
-}
-
-.player-progress-track {
-    width: 100%;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-    position: relative;
-    transition: height 0.15s ease, background 0.15s ease;
-}
-
-.player-progress-container:hover .player-progress-track {
-    height: 6px;
-    background: rgba(255, 255, 255, 0.16);
-}
-
-.player-progress-fill {
+.cartouche-svg {
     position: absolute;
-    left: 0;
-    top: 0;
+    inset: 0;
+    width: 100%;
     height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, rgba(220, 225, 235, 0.75) 0%, #ffffff 100%);
-    border-radius: 3px;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.45);
     pointer-events: none;
 }
 
-.player-progress-pin {
-    position: absolute;
-    top: 50%;
-    left: 0%;
-    transform: translate(-50%, -50%);
-    width: 12px;
-    height: 12px;
-    background: #ffffff;
-    border-radius: 50%;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 2px rgba(0, 0, 0, 0.8);
-    opacity: 0;
-    transition: opacity 0.15s ease, transform 0.1s ease;
-    pointer-events: none;
+.relative-z {
+    position: relative;
+    z-index: 10;
 }
 
-.player-progress-container:hover .player-progress-pin,
-.player-progress-container.is-dragging .player-progress-pin {
-    opacity: 1;
+.mono-time {
+    font-family: var(--font-mono), monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.03em;
+    color: #858d9c;
 }
 
-/* ── Controls Row ── */
-.player-controls-row {
+.player-title-line {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    width: 100%;
-    position: relative;
-    z-index: 1;
+    gap: 8px;
 }
 
-.player-main-btns {
+.track-headline {
+    font-size: 14.5px;
+    font-weight: 500;
+    color: #f4f7fc;
+    letter-spacing: -0.01em;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: var(--font-player);
+}
+
+.artist-spaced {
+    font-family: var(--font-body);
+    font-size: 10.5px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #8b93a2;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* 4 Sculpted Silver Diamond Equalizer Studs */
+.mini-eq {
+    display: flex;
+    align-items: center;
+    gap: 3.5px;
+    height: 16px;
+    padding: 0 2px;
+    flex-shrink: 0;
+}
+
+.mini-eq-stud {
+    width: 4.5px;
+    height: 4.5px;
+    background: linear-gradient(135deg, #ffffff 0%, #7d8594 100%);
+    transform: rotate(45deg);
+    border-radius: 0.5px;
+    opacity: 0.5;
+    transition: transform 0.12s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mini-eq.is-playing .mini-eq-stud {
+    opacity: 0.95;
+    box-shadow: 0 0 6px rgba(235, 242, 255, 0.85);
+}
+
+/* ── 3. Ornate Timeline / Progress Bar with Gothic Finials ── */
+.player-timeline-section {
+    position: relative;
+    z-index: 10;
+    margin: 2px 0;
+}
+
+.timeline-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.time-num {
+    width: 32px;
+    font-size: 10px;
+}
+
+.finial-svg {
+    flex-shrink: 0;
+}
+
+.seek-wrapper {
+    position: relative;
+    flex: 1;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.seek-track {
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(180deg, #090a0d 0%, #1c1f26 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+    position: relative;
+    margin: 0 4px;
+    overflow: visible;
+}
+
+.seek-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #7a8291 0%, #cfd6e3 60%, #ffffff 100%);
+    position: relative;
+    box-shadow: 0 0 8px rgba(235, 242, 255, 0.65);
+    border-radius: 1px;
+}
+
+/* 4-Pointed Silver Gothic Star Thumb centered on slider progress */
+.seek-thumb {
+    position: absolute;
+    left: 0%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.95)) drop-shadow(0 1px 2px #000);
+    transition: transform 0.18s ease;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.seek-wrapper:hover .seek-thumb,
+.seek-wrapper.dragging .seek-thumb {
+    transform: translate(-50%, -50%) scale(1.22);
+}
+
+/* ── 4. Baroque Transport Medallion & Volume Cartouche Row ── */
+.player-transport-section {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 2px 0;
+}
+
+.transport-main-btns {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.player-ctrl-btn {
-    background: none;
-    border: none;
-    color: #9ea3b2;
+.quatrefoil-nav-btn {
+    position: relative;
+    width: 34px;
+    height: 34px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.22s ease;
-    border-radius: 50%;
+    background: transparent;
+    border: none;
     padding: 0;
+    cursor: pointer;
+    color: #c2c9d6;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.85));
+    transition: all 0.2s ease;
 }
 
-.player-ctrl-btn:hover {
+.quatrefoil-nav-btn:hover {
     color: #ffffff;
-    transform: scale(1.1);
-}
-
-.player-ctrl-btn--prev,
-.player-ctrl-btn--next {
-    width: 32px;
-    height: 32px;
-}
-
-.player-ctrl-btn--prev svg,
-.player-ctrl-btn--next svg {
-    width: 18px;
-    height: 18px;
-}
-
-.player-ctrl-btn--play {
-    width: 44px;
-    height: 44px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    box-shadow: 
-        0 4px 14px rgba(0, 0, 0, 0.5),
-        inset 0 1px 1px rgba(255, 255, 255, 0.4),
-        0 0 16px rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-    position: relative;
-}
-
-.player-ctrl-btn--play svg {
-    width: 20px;
-    height: 20px;
-    transition: transform 0.1s ease;
-}
-
-.player-ctrl-btn--play:hover {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.09) 100%);
-    border-color: rgba(255, 255, 255, 0.65);
-    box-shadow: 0 0 22px rgba(255, 255, 255, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.6);
     transform: scale(1.08);
+    filter: drop-shadow(0 0 10px rgba(235, 242, 255, 0.45));
 }
 
-.player-ctrl-btn--play:active {
+.quatrefoil-nav-btn:active {
+    transform: scale(0.95);
+}
+
+.quatrefoil-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* Baroque Silver Wreath Medallion Play/Pause Button */
+.medallion-play-btn {
+    position: relative;
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #f5f7fc;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 12px rgba(220, 230, 245, 0.2));
+    transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), filter 0.22s ease;
+}
+
+.medallion-play-btn:hover {
+    transform: scale(1.06);
+    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 18px rgba(240, 246, 255, 0.48));
+}
+
+.medallion-play-btn:active {
     transform: scale(0.96);
 }
 
-/* Play / Pause icon toggling */
-.player-ctrl-btn--play .icon-pause {
-    display: none;
+.medallion-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
 }
-.player-ctrl-btn--play .icon-play {
-    display: block;
+
+.play-icon-glyph {
     margin-left: 2px;
 }
 
-.player-card.is-playing .player-ctrl-btn--play .icon-pause {
-    display: block;
-}
-.player-card.is-playing .player-ctrl-btn--play .icon-play {
-    display: none;
-}
-
-/* ── Volume Section ── */
-.player-volume-section {
+/* Baroque Silver Volume Cartouche Plaque */
+.volume-cartouche {
+    position: relative;
+    width: 140px;
+    height: 36px;
+    padding: 0 14px;
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 20px;
-    padding: 4px 12px 4px 8px;
+    gap: 7px;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.8));
 }
 
-.player-vol-toggle {
+.vol-cartouche-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.vol-btn {
     background: none;
     border: none;
-    color: #9ea3b2;
-    width: 22px;
-    height: 22px;
+    padding: 0;
+    cursor: pointer;
+    color: #a8b0bf;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.2s ease, transform 0.2s ease;
-    padding: 0;
+    transition: color 0.15s ease;
 }
 
-.player-vol-toggle:hover {
+.vol-btn:hover {
     color: #ffffff;
-    transform: scale(1.1);
 }
 
-.player-vol-toggle svg {
-    width: 16px;
+.vol-mute-red {
+    color: #f43f5e;
+}
+
+.vol-slider-wrap {
+    position: relative;
+    flex: 1;
     height: 16px;
-}
-
-.player-vol-toggle .vol-icon-off {
-    display: none;
-}
-.player-volume-section.is-muted .player-vol-toggle .vol-icon-on {
-    display: none;
-}
-.player-volume-section.is-muted .player-vol-toggle .vol-icon-off {
-    display: block;
-    color: #e57373;
-}
-
-.player-vol-slider-wrap {
-    width: 72px;
     display: flex;
     align-items: center;
+    cursor: pointer;
+    z-index: 2;
 }
 
-.player-vol-range {
-    -webkit-appearance: none;
-    appearance: none;
+.vol-track {
     width: 100%;
-    height: 3px;
-    background: rgba(255, 255, 255, 0.18);
-    border-radius: 2px;
-    outline: none;
-    transition: background 0.2s ease;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: visible;
 }
 
-.player-vol-range:hover {
-    background: rgba(255, 255, 255, 0.28);
+.vol-fill {
+    height: 100%;
+    width: 80%;
+    background: linear-gradient(90deg, #8b93a2 0%, #f2f5fa 100%);
+    box-shadow: 0 0 6px rgba(240, 245, 255, 0.5);
+    border-radius: 1px;
 }
 
-.player-vol-range::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #ffffff;
-    box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+.vol-thumb {
+    position: absolute;
+    top: 50%;
+    left: 80%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    width: 7.5px;
+    height: 7.5px;
+    background: radial-gradient(circle, #ffffff 30%, #98a0af 100%);
+    border: 1px solid #ffffff;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.95);
     transition: transform 0.15s ease;
+    pointer-events: none;
+    z-index: 5;
 }
 
-.player-vol-range:hover::-webkit-slider-thumb {
-    transform: scale(1.25);
+.vol-slider-wrap:hover .vol-thumb,
+.vol-slider-wrap.dragging .vol-thumb {
+    transform: translate(-50%, -50%) rotate(45deg) scale(1.25);
 }
 
-.player-vol-range::-moz-range-thumb {
-    width: 10px;
-    height: 10px;
-    border: none;
-    border-radius: 50%;
-    background: #ffffff;
-    box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+/* ── 5. Playlist Area with Ornate Track Cards & Custom Scrollbar ── */
+.player-playlist-section {
+    position: relative;
+    z-index: 10;
+    margin-top: 2px;
 }
 
-/* ── Tracklist ── */
-.player-tracklist {
+.playlist-container {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    max-height: 175px;
-    overflow-y: auto;
-    padding-right: 4px;
-    position: relative;
-    z-index: 1;
-}
-
-/* Minimalist scrollbar for tracklist */
-.player-tracklist::-webkit-scrollbar {
-    width: 3px;
-    display: block;
-}
-
-.player-tracklist::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 3px;
-}
-
-.player-tracklist::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 3px;
-}
-
-.player-tracklist::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.track-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 7px 10px;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.018);
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    width: 100%;
     position: relative;
 }
 
-.track-item:hover {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 255, 255, 0.18);
-    transform: translateX(3px);
-}
-
-.track-item.active {
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
-    border-color: rgba(255, 255, 255, 0.35);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
-}
-
-.track-num {
-    font-family: monospace;
-    font-size: 11px;
-    color: var(--text-dim);
-    min-width: 18px;
-    transition: color 0.2s ease;
-}
-
-.track-item.active .track-num {
-    color: #ffffff;
-    font-weight: 600;
-}
-
-.track-details {
-    flex-grow: 1;
-    min-width: 0;
+.tracklist-viewport {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 5px;
+}
+
+/* Individual Ornate Gothic Track Card (Pure Silver Palette matching ramka1) */
+.track-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    height: 38px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, rgba(16, 17, 20, 0.88) 0%, rgba(7, 8, 9, 0.96) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 3px 8px rgba(0, 0, 0, 0.7);
+    cursor: pointer;
+    transition: all 0.22s ease;
+    flex-shrink: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.track-card-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.65;
+    transition: opacity 0.22s ease, filter 0.22s ease;
+}
+
+.track-card:hover {
+    background: linear-gradient(180deg, rgba(28, 30, 36, 0.95) 0%, rgba(12, 13, 16, 0.98) 100%);
+    border-color: rgba(255, 255, 255, 0.35);
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.25), 0 0 14px rgba(255, 255, 255, 0.12);
+}
+
+.track-card:hover .track-card-svg {
+    opacity: 0.9;
+}
+
+/* Active Track Plate */
+.track-card.active {
+    background: linear-gradient(180deg, rgba(34, 37, 44, 0.95) 0%, rgba(16, 17, 21, 0.98) 100%);
+    border-color: rgba(255, 255, 255, 0.55);
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.35), 0 0 16px rgba(255, 255, 255, 0.18);
+}
+
+.track-card.active .track-card-svg {
+    opacity: 1;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.5));
+}
+
+.track-card-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    padding-right: 8px;
+    flex: 1;
     text-align: left;
 }
 
-.track-name {
-    font-family: var(--font-player);
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-silver);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    letter-spacing: 0.02em;
+.track-num {
+    font-family: var(--font-mono), monospace;
+    font-size: 10px;
+    color: #6e727a;
+    width: 22px;
+    flex-shrink: 0;
     transition: color 0.2s ease;
 }
 
-.track-item:hover .track-name {
-    color: #ffffff;
-}
-
-.track-item.active .track-name {
+.track-card.active .track-num {
     color: #ffffff;
     font-weight: 500;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
 }
 
-.track-feat {
-    font-size: 10px;
-    color: var(--text-muted);
+.track-card-meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.track-title {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #d6d9e0;
+    line-height: 1.22;
+    transition: color 0.2s ease;
+    font-family: var(--font-player);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.track-dur {
-    font-family: monospace;
-    font-size: 10.5px;
-    color: var(--text-muted);
+.track-card.active .track-title {
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.45);
+}
+
+.track-artist {
+    font-family: var(--font-body);
+    font-size: 10px;
+    color: #72767e;
+    line-height: 1.22;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.track-card.active .track-artist {
+    color: #a4a9b2;
+}
+
+.track-duration {
+    font-family: var(--font-mono), monospace;
+    font-size: 10px;
+    color: #767a82;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    z-index: 10;
     flex-shrink: 0;
 }
 
-.track-item.active .track-dur {
-    color: #dcdfe6;
+.track-card.active .track-duration {
+    color: #ffffff;
 }
 
-/* Mini indicator on active item */
-.track-playing-indicator {
-    display: none;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #ffffff;
-    box-shadow: 0 0 8px #ffffff;
-    flex-shrink: 0;
+/* Glowing 4-Point Gothic Star on Active Track */
+.active-diamond {
+    display: inline-flex;
+    width: 9px;
+    height: 9px;
+    opacity: 0;
+    transform: scale(0.4) rotate(0deg);
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.track-item.active .track-playing-indicator {
-    display: block;
+.track-card.active .active-diamond {
+    opacity: 1;
+    transform: scale(1) rotate(90deg);
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.95));
+}
+
+.hidden {
+    display: none !important;
+}
+
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* ═══════════════════════════════════════════════════
    SECTION 3 — LINKS (CASCADING LIQUID GLASS BUTTONS)
    ═══════════════════════════════════════════════════ */
 #section-links {
-    background: #020203;
+    background: transparent;
 }
 
 /* Header fade/slide-in on enter */
@@ -1382,10 +1519,10 @@ html, body {
 @media (max-width: 920px) {
     .about-grid {
         flex-direction: column;
-        gap: 14px;
+        gap: 24px;
         overflow-y: auto;
-        max-height: 80vh;
-        padding: 10px 4px 30px 4px;
+        max-height: 82vh;
+        padding: 10px 4px 40px 4px;
     }
 
     .about-grid::-webkit-scrollbar {
@@ -1398,24 +1535,18 @@ html, body {
     }
 
     .about-frame {
-        width: min(94vw, 420px);
-        height: min(52vh, 440px);
-        max-width: 420px;
+        height: min(65vh, 520px);
+        width: auto;
+        max-width: min(94vw, 380px);
     }
 
-    .about-inner {
-        width: 74%;
-        max-width: 74%;
+    .about-inner,
+    .player-inner {
+        width: 76%;
+        max-width: 76%;
     }
 
-    .about-player-wrap {
-        width: 100%;
-        max-width: 440px;
-    }
 
-    .player-tracklist {
-        max-height: 130px;
-    }
 }
 
 @media (max-width: 600px) {
@@ -1425,15 +1556,16 @@ html, body {
     }
 
     .about-frame {
-        width: min(95vw, 340px);
-        height: min(48vh, 380px);
-        max-width: 340px;
+        height: min(62vh, 460px);
+        width: auto;
+        max-width: min(95vw, 340px);
     }
 
-    .about-inner {
-        width: 76%;
-        max-width: 76%;
-        padding: 0;
+    .about-inner,
+    .player-inner {
+        width: 78%;
+        max-width: 78%;
+        padding: 4px 2px;
     }
 
     .about-text {
@@ -1441,19 +1573,29 @@ html, body {
         line-height: 1.6;
     }
 
-    .player-card {
-        padding: 12px;
-        gap: 10px;
-        border-radius: 16px;
-    }
-
-    .player-cover-box {
+    .cover-locket {
         width: 48px;
         height: 48px;
     }
 
-    .player-vol-slider-wrap {
-        width: 50px;
+    .track-headline {
+        font-size: 13px;
+    }
+
+    .volume-cartouche {
+        width: 110px;
+        padding: 0 10px;
+    }
+
+
+    .medallion-play-btn {
+        width: 46px;
+        height: 46px;
+    }
+
+    .quatrefoil-nav-btn {
+        width: 28px;
+        height: 28px;
     }
 
     .link-card {
