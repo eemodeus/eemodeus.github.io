@@ -1113,10 +1113,25 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════
-   SECTION 3 — LINKS (LIQUID GLASS BUTTONS)
+   SECTION 3 — LINKS (CASCADING LIQUID GLASS BUTTONS)
    ═══════════════════════════════════════════════════ */
 #section-links {
     background: #020203;
+}
+
+/* Header fade/slide-in on enter */
+.links-content .section-title,
+.links-content .ornament-divider {
+    opacity: 0;
+    transform: translate3d(0, -16px, 0);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+#section-links.active .links-content .section-title,
+#section-links.active .links-content .ornament-divider {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
 }
 
 .links-grid {
@@ -1128,7 +1143,7 @@ html, body {
     width: 90%;
 }
 
-/* Liquid Glass Cards */
+/* Liquid Glass Cards (Initial hidden state for cascade) */
 .link-card {
     display: flex;
     align-items: center;
@@ -1147,10 +1162,38 @@ html, body {
         inset 0 1px 1px 0 rgba(255, 255, 255, 0.14),
         inset 0 -1px 2px 0 rgba(0, 0, 0, 0.5),
         0 10px 30px -5px rgba(0, 0, 0, 0.65);
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    
+    /* Cascading entry: hidden and shifted down by default */
+    opacity: 0;
+    transform: translate3d(0, 45px, 0);
+    transition: 
+        opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        background 0.35s ease,
+        border-color 0.35s ease,
+        box-shadow 0.35s ease;
+    will-change: opacity, transform;
 }
 
-/* Curved liquid gloss reflection along top half - subtle in inactive state */
+/* Staggered slide-in when section-links is active */
+#section-links.active .link-card {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+#section-links.active .link-card:nth-child(1) {
+    transition-delay: 0.16s, 0.16s, 0s, 0s, 0s;
+}
+
+#section-links.active .link-card:nth-child(2) {
+    transition-delay: 0.32s, 0.32s, 0s, 0s, 0s;
+}
+
+#section-links.active .link-card:nth-child(3) {
+    transition-delay: 0.48s, 0.48s, 0s, 0s, 0s;
+}
+
+/* Curved liquid gloss reflection along top half */
 .link-card::before {
     content: '';
     position: absolute;
@@ -1162,7 +1205,7 @@ html, body {
     border-radius: 15px 15px 80% 80% / 15px 15px 20px 20px;
     pointer-events: none;
     transition: opacity 0.4s ease, background 0.4s ease;
-    opacity: 0.16; /* Subdued and non-distracting when inactive */
+    opacity: 0.16;
 }
 
 /* Dynamic fluid light ripple behind cursor */
@@ -1177,8 +1220,9 @@ html, body {
     transition: opacity 0.3s ease;
 }
 
-.link-card:hover {
-    transform: translateY(-3px) scale(1.015);
+#section-links.active .link-card:hover {
+    transform: translate3d(0, -4px, 0) scale(1.015);
+    transition-delay: 0s, 0s, 0s, 0s, 0s;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.025) 50%, rgba(255, 255, 255, 0.07) 100%);
     border-color: rgba(255, 255, 255, 0.35);
     box-shadow: 
@@ -1190,7 +1234,7 @@ html, body {
 }
 
 .link-card:hover::before {
-    opacity: 0.85; /* Active glossy sheen on hover */
+    opacity: 0.85;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.01) 100%);
 }
 
@@ -1233,11 +1277,12 @@ html, body {
     display: block;
 }
 
+/* Modern clean sans-serif typography for button labels */
 .link-label {
-    font-family: var(--font-display);
-    font-size: 17px;
+    font-family: var(--font-player);
+    font-size: 16px;
     font-weight: 500;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.08em;
     flex-grow: 1;
     position: relative;
     z-index: 1;
@@ -1248,8 +1293,8 @@ html, body {
 
 .link-card:hover .link-label {
     color: #ffffff;
-    letter-spacing: 0.15em;
-    text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.11em;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 /* Liquid Circular Arrow Button */
