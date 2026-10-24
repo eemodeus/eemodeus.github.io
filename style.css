@@ -280,50 +280,21 @@ html, body {
     cursor: none;
 }
 
-/* Soft ambient radial aura behind logo (pure GPU) */
+/* Soft ambient radial aura behind logo (very subtle in idle) */
 .logo-ambient-glow {
     position: absolute;
-    inset: -22%;
-    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.2) 0%, rgba(215, 230, 255, 0.07) 45%, transparent 72%);
+    inset: -20%;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.12) 0%, rgba(215, 230, 255, 0.04) 45%, transparent 72%);
     pointer-events: none;
     z-index: 0;
-    filter: blur(34px);
+    filter: blur(32px);
     transform: translateZ(0);
-    animation: ambientShimmer 5.8s ease-in-out infinite alternate;
+    opacity: 0.18;
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: opacity, transform;
-    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes ambientShimmer {
-    0% {
-        opacity: 0.3;
-        transform: translate3d(0, 0, 0) scale(0.93);
-    }
-    100% {
-        opacity: 0.82;
-        transform: translate3d(0, 0, 0) scale(1.07);
-    }
-}
-
-/* Concentrated inner core plasma glow (ignites inside the hollow letters on hover) */
-.logo-core-glow {
-    position: absolute;
-    top: 20%;
-    left: 15%;
-    right: 15%;
-    bottom: 20%;
-    z-index: 0;
-    pointer-events: none;
-    border-radius: 50%;
-    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.95) 0%, rgba(225, 240, 255, 0.8) 25%, rgba(185, 215, 255, 0.35) 52%, transparent 72%);
-    filter: blur(14px);
-    opacity: 0.08;
-    transform: translateZ(0) scale(0.92);
-    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
-    will-change: opacity, transform, filter;
-}
-
-/* Single crisp artist logo with autonomous shimmering silver glow */
+/* Single crisp artist logo: very subtle idle glow */
 .artist-logo {
     display: block;
     width: 100%;
@@ -334,41 +305,24 @@ html, body {
     position: relative;
     z-index: 1;
     transform: translateZ(0);
-    animation: logoGlowShimmer 3.8s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.2)) drop-shadow(0 0 14px rgba(220, 235, 255, 0.1));
+    transition: filter 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: filter, transform;
-    transition: filter 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes logoGlowShimmer {
-    0% {
-        filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.45)) drop-shadow(0 0 20px rgba(220, 235, 255, 0.25));
-    }
-    100% {
-        filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 34px rgba(220, 240, 255, 0.7)) drop-shadow(0 0 58px rgba(185, 218, 255, 0.45));
-    }
-}
-
-/* Interactive hover response: logo ignites with brilliant inner glow & radiant core */
+/* Hover response: glow increases by ~30-40% cleanly and tastefully */
 .logo-interactive-container:hover .logo-ambient-glow {
-    opacity: 0.95;
-    transform: translate3d(0, 0, 0) scale(1.12);
-}
-
-.logo-interactive-container:hover .logo-core-glow {
-    opacity: 0.95;
-    transform: translateZ(0) scale(1.1);
-    filter: blur(10px);
+    opacity: 0.42;
+    transform: translate3d(0, 0, 0) scale(1.06);
 }
 
 .logo-interactive-container:hover .artist-logo {
     filter: 
-        brightness(1.7) 
-        contrast(1.1) 
-        drop-shadow(0 0 4px #ffffff) 
-        drop-shadow(0 0 14px rgba(255, 255, 255, 1)) 
-        drop-shadow(0 0 32px rgba(220, 240, 255, 0.85)) 
-        drop-shadow(0 0 60px rgba(185, 220, 255, 0.6));
-    transform: translateZ(0) scale(1.025);
+        brightness(1.08) 
+        drop-shadow(0 0 8px rgba(255, 255, 255, 0.5)) 
+        drop-shadow(0 0 20px rgba(220, 235, 255, 0.32)) 
+        drop-shadow(0 0 36px rgba(185, 215, 255, 0.18));
+    transform: translateZ(0) scale(1.018);
 }
 
 .subtitle {
