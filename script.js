@@ -147,18 +147,15 @@
             asciiArtEl.textContent = FLEUR_ASCII.join('\n');
         }
 
-        // Prepare content beneath so it reveals seamlessly without any black flash
-        showMainContent();
-
-        // Slower, atmospheric breath: reaches full glow at ~1.0s, stays bright until ~1.65s,
-        // then dissolves gently over 1.05s as the page beneath reveals.
+        // Smooth breathing glow cycle, then fade out and show content
         setTimeout(function () {
             if (preloader) preloader.classList.add('fade-out');
 
             setTimeout(function () {
                 if (preloader) preloader.style.display = 'none';
-            }, 1050);
-        }, 1650);
+                showMainContent();
+            }, 800);
+        }, 2200);
     }
 
     function showMainContent() {

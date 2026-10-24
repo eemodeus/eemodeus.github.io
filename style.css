@@ -97,14 +97,12 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 1.05s cubic-bezier(0.33, 1, 0.68, 1), visibility 1.05s ease;
-    pointer-events: all;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
 }
 
 #preloader.fade-out {
     opacity: 0;
     visibility: hidden;
-    pointer-events: none;
 }
 
 .preloader-content {
@@ -123,22 +121,19 @@ html, body {
     line-height: 1;
 }
 
-/* Single smooth breathing glow wave (calm, slower, pure light without jitter) */
-@keyframes asciiBreathSmooth {
-    0% {
-        opacity: 0.12;
-        color: #383c48;
-        text-shadow: 0 0 0 rgba(255, 255, 255, 0);
+/* Breathing animation for the ASCII Fleur-de-lis */
+@keyframes asciiBreath {
+    0%, 100% {
+        opacity: 0.22;
+        color: #555a68;
+        text-shadow: 0 0 4px rgba(255, 255, 255, 0.1);
+        transform: scale(0.995);
     }
-    38%, 62% {
+    50% {
         opacity: 1;
         color: #ffffff;
-        text-shadow: 0 0 16px rgba(255, 255, 255, 0.95), 0 0 36px rgba(215, 230, 255, 0.7);
-    }
-    100% {
-        opacity: 0;
-        color: #383c48;
-        text-shadow: 0 0 0 rgba(255, 255, 255, 0);
+        text-shadow: 0 0 12px rgba(255, 255, 255, 0.95), 0 0 28px rgba(210, 225, 255, 0.55);
+        transform: scale(1.006);
     }
 }
 
@@ -151,9 +146,8 @@ html, body {
     padding: 0;
     display: block;
     letter-spacing: 0px;
-    animation: asciiBreathSmooth 2.8s cubic-bezier(0.4, 0, 0.2, 1) 1 forwards;
+    animation: asciiBreath 2.2s ease-in-out infinite;
     user-select: none;
-    will-change: opacity, color, text-shadow;
 }
 
 /* ═══════════════════════════════════════════════════
