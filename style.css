@@ -240,27 +240,11 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════
-   SECTION 1 — HI (FLOATING LOGO + SILVER GLOW + CINEMATIC GRAIN)
-   100% GPU-accelerated, static cached noise tile, locked 144+ FPS
+   SECTION 1 — HI (FLOATING LOGO + SILVER GLOW)
+   100% GPU-accelerated, zero CPU overhead, rock solid 144+ FPS
    ═══════════════════════════════════════════════════ */
 #section-hi {
     background: #000000;
-    position: relative;
-    overflow: hidden;
-}
-
-/* Subtle 35mm cinematic film grain across Section 1 (static GPU texture) */
-.cinematic-grain-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='cinematicNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23cinematicNoise)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 160px 160px;
-    opacity: 0.055;
-    mix-blend-mode: screen;
-    transform: translateZ(0);
 }
 
 .hi-content {
@@ -300,7 +284,7 @@ html, body {
 .logo-ambient-glow {
     position: absolute;
     inset: -22%;
-    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.22) 0%, rgba(215, 230, 255, 0.08) 45%, transparent 72%);
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.2) 0%, rgba(215, 230, 255, 0.07) 45%, transparent 72%);
     pointer-events: none;
     z-index: 0;
     filter: blur(34px);
@@ -309,22 +293,15 @@ html, body {
     will-change: opacity, transform;
 }
 
-/* Localized tactile film noise cloud in the logo glow falloff */
-.logo-noise-texture {
-    position: absolute;
-    inset: -26%;
-    z-index: 1;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='logoGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23logoGrain)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 130px 130px;
-    -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.95) 15%, rgba(0, 0, 0, 0.45) 45%, transparent 72%);
-    mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.95) 15%, rgba(0, 0, 0, 0.45) 45%, transparent 72%);
-    opacity: 0.16;
-    mix-blend-mode: screen;
-    transform: translateZ(0);
-    animation: ambientShimmer 5.8s ease-in-out infinite alternate;
-    will-change: opacity, transform;
+@keyframes ambientShimmer {
+    0% {
+        opacity: 0.3;
+        transform: translate3d(0, 0, 0) scale(0.93);
+    }
+    100% {
+        opacity: 0.82;
+        transform: translate3d(0, 0, 0) scale(1.07);
+    }
 }
 
 /* Artist logo shared styles */
