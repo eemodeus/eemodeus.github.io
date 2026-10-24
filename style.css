@@ -97,12 +97,14 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.8s ease, visibility 0.8s ease;
+    transition: opacity 1.05s cubic-bezier(0.33, 1, 0.68, 1), visibility 1.05s ease;
+    pointer-events: all;
 }
 
 #preloader.fade-out {
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
 }
 
 .preloader-content {
@@ -121,19 +123,22 @@ html, body {
     line-height: 1;
 }
 
-/* Breathing animation for the ASCII Fleur-de-lis */
-@keyframes asciiBreath {
-    0%, 100% {
-        opacity: 0.22;
-        color: #555a68;
-        text-shadow: 0 0 4px rgba(255, 255, 255, 0.1);
-        transform: scale(0.995);
+/* Single smooth breathing glow wave (calm, slower, pure light without jitter) */
+@keyframes asciiBreathSmooth {
+    0% {
+        opacity: 0.12;
+        color: #383c48;
+        text-shadow: 0 0 0 rgba(255, 255, 255, 0);
     }
-    50% {
+    38%, 62% {
         opacity: 1;
         color: #ffffff;
-        text-shadow: 0 0 12px rgba(255, 255, 255, 0.95), 0 0 28px rgba(210, 225, 255, 0.55);
-        transform: scale(1.006);
+        text-shadow: 0 0 16px rgba(255, 255, 255, 0.95), 0 0 36px rgba(215, 230, 255, 0.7);
+    }
+    100% {
+        opacity: 0;
+        color: #383c48;
+        text-shadow: 0 0 0 rgba(255, 255, 255, 0);
     }
 }
 
@@ -146,8 +151,9 @@ html, body {
     padding: 0;
     display: block;
     letter-spacing: 0px;
-    animation: asciiBreath 2.2s ease-in-out infinite;
+    animation: asciiBreathSmooth 2.8s cubic-bezier(0.4, 0, 0.2, 1) 1 forwards;
     user-select: none;
+    will-change: opacity, color, text-shadow;
 }
 
 /* ═══════════════════════════════════════════════════
@@ -172,7 +178,7 @@ html, body {
     width: 100%;
     height: 300vh;
     transform: translateY(0vh);
-    transition: transform 0.85s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
     will-change: transform;
 }
 
@@ -416,14 +422,12 @@ html, body {
     flex-direction: column;
     align-items: center;
     opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: opacity, transform;
+    transition: opacity 0.6s ease;
+    will-change: opacity;
 }
 
 #section-about.active .about-header {
     opacity: 1;
-    transform: translateY(0);
 }
 
 .section-title {
@@ -516,14 +520,12 @@ html, body {
     width: clamp(340px, 38vw, 440px);
     max-width: 100%;
     opacity: 0;
-    transform: translateY(16px);
-    transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
-    will-change: opacity, transform;
+    transition: opacity 0.6s ease;
+    will-change: opacity;
 }
 
 #section-about.active .about-player-wrap {
     opacity: 1;
-    transform: translateY(0);
 }
 
 .player-card {

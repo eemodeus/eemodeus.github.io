@@ -159,15 +159,18 @@
             asciiArtEl.textContent = FLEUR_ASCII.join('\n');
         }
 
-        // Smooth breathing glow cycle, then fade out and show content
+        // Prepare content beneath so it reveals seamlessly without any black flash
+        showMainContent();
+
+        // Slower, atmospheric breath: reaches full glow at ~1.0s, stays bright until ~1.65s,
+        // then dissolves gently over 1.05s as the page beneath reveals.
         setTimeout(function () {
             if (preloader) preloader.classList.add('fade-out');
 
             setTimeout(function () {
                 if (preloader) preloader.style.display = 'none';
-                showMainContent();
-            }, 800);
-        }, 2200);
+            }, 1050);
+        }, 1650);
     }
 
     function showMainContent() {
@@ -182,8 +185,11 @@
     }
 
     // ═══════════════════════════════════════════════
-    // 4. BULLETPROOF FULLPAGE SCROLL
+    // 4. BULLETPROOF FULLPAGE SCROLL (SILKY SMOOTH)
     // ═══════════════════════════════════════════════
+
+    let wheelAccumulator = 0;
+    let wheelResetTimer  = null;
 
     function goToSection(index) {
         if (index < 0 || index >= sections.length || index === currentSection || isScrolling) return;
@@ -191,7 +197,7 @@
         isScrolling = true;
         currentSection = index;
 
-        // Slide the fullpage wrapper cleanly
+        // Slide the fullpage wrapper cleanly with soft cubic-bezier glide
         if (sectionsWrapper) {
             sectionsWrapper.style.transform = 'translateY(-' + (currentSection * 100) + 'vh)';
         }
@@ -215,19 +221,29 @@
             triggerAboutBioDecrypt();
         }
 
-        // Cooldown for scroll lock
+        // Smooth cooldown matching the 1.1s velvet curve
         setTimeout(function () {
             isScrolling = false;
-        }, 850);
+        }, 1100);
     }
 
     function onWheel(e) {
         e.preventDefault();
         if (isScrolling) return;
 
-        if (e.deltaY > 25) {
+        wheelAccumulator += e.deltaY;
+
+        clearTimeout(wheelResetTimer);
+        wheelResetTimer = setTimeout(function () {
+            wheelAccumulator = 0;
+        }, 220);
+
+        // Gentle intentional threshold: avoids jitter, glides smoothly
+        if (wheelAccumulator > 35) {
+            wheelAccumulator = 0;
             goToSection(currentSection + 1);
-        } else if (e.deltaY < -25) {
+        } else if (wheelAccumulator < -35) {
+            wheelAccumulator = 0;
             goToSection(currentSection - 1);
         }
     }
