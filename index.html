@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>МОДЕУС</title>
+    <meta name="description" content="МОДЕУС — российский исполнитель и дизайнер. Официальный сайт-визитка.">
+    <meta name="theme-color" content="#000000">
+    <meta name="color-scheme" content="dark">
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:title" content="МОДЕУС">
+    <meta property="og:description" content="Российский исполнитель и дизайнер. Официальный сайт-визитка.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="img/333.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="img/333.png">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ═══════════════════ SVG FILTERS ═══════════════════ -->
+    <svg style="position: absolute; width: 0; height: 0; pointer-events: none;" aria-hidden="true">
+        <defs>
+            <!-- Gaussian Noise + Soft Glow Filter -->
+            <filter id="logo-noise-glow" x="-60%" y="-60%" width="220%" height="220%" color-interpolation-filters="sRGB">
+                <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="7" xChannelSelector="R" yChannelSelector="G" result="noisy" />
+                <feGaussianBlur in="noisy" stdDeviation="2.5" result="blurred" />
+                <feMerge>
+                    <feMergeNode in="blurred" />
+                    <feMergeNode in="noisy" />
+                </feMerge>
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- ═══════════════════ CS2 CROSSHAIR CURSOR ═══════════════════ -->
+    <div id="cs2-cursor" aria-hidden="true">
+        <svg viewBox="0 0 32 32">
+            <!-- Top tick -->
+            <rect x="15" y="4" width="2" height="7" fill="#ffffff" stroke="#000000" stroke-width="1" shape-rendering="crispEdges"/>
+            <!-- Bottom tick -->
+            <rect x="15" y="21" width="2" height="7" fill="#ffffff" stroke="#000000" stroke-width="1" shape-rendering="crispEdges"/>
+            <!-- Left tick -->
+            <rect x="4" y="15" width="7" height="2" fill="#ffffff" stroke="#000000" stroke-width="1" shape-rendering="crispEdges"/>
+            <!-- Right tick -->
+            <rect x="21" y="15" width="7" height="2" fill="#ffffff" stroke="#000000" stroke-width="1" shape-rendering="crispEdges"/>
+            <!-- Center dot -->
+            <rect x="15" y="15" width="2" height="2" fill="#ffffff" stroke="#000000" stroke-width="1" shape-rendering="crispEdges"/>
+        </svg>
+    </div>
+
+    <!-- ═══════════════════ PRELOADER (BREATHING ASCII GLOW) ═══════════════════ -->
+    <div id="preloader">
+        <div class="preloader-content">
+            <div class="ascii-container">
+                <pre class="ascii-breathing" id="ascii-art" aria-hidden="true"></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
+    <main id="main-content" class="hidden">
+        <div id="sections-wrapper">
+
+            <!-- ── SECTION 1: HI ── -->
+            <section class="section active" id="section-hi" data-index="0">
+                <div class="section-content hi-content">
+                    <div class="logo-interactive-container" id="logoContainer">
+                        <!-- Clean base logo -->
+                        <img src="img/1233222_clean.png" alt="МОДЕУС" class="artist-logo artist-logo--base">
+                        <!-- Radial noise + blur + glow layer -->
+                        <div class="logo-fx-layer" id="logoFxLayer">
+                            <img src="img/1233222_clean.png" alt="" class="artist-logo artist-logo--fx">
+                        </div>
+                    </div>
+                    <p class="subtitle">scroll to continue</p>
+                    <div class="scroll-hint">
+                        <span>⟱</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── SECTION 2: ABOUT (EXPANDED FRAME ALIGNED LEFT) ── -->
+            <section class="section" id="section-about" data-index="1">
+                <div class="section-bg">
+                    <img src="img/0f8ceb1b204ef02c5caef62b34f83e7b.jpg" alt="" class="bg-image bg-image--contain" loading="lazy">
+                    <div class="bg-overlay bg-overlay--about"></div>
+                </div>
+                <div class="section-content about-content">
+                    <div class="about-frame">
+                        <img src="img/Gemini_Generated_Image_1jnyyx1jnyyx1jny.png" alt="" class="frame-img">
+                        <div class="about-inner">
+                            <div class="about-header" id="aboutHeader">
+                                <h2 class="section-title" id="aboutTitle">ABOUT ME</h2>
+                                <div class="ornament-divider">
+                                    <img src="img/333.png" alt="" class="divider-ornament-img">
+                                </div>
+                            </div>
+                            <div class="about-text-container">
+                                <p class="about-text" id="aboutText">
+                                    Морозов Максим Алексеевич (родился 11 октября 2003 года в Томске) — российский исполнитель и дизайнер, бывший участник творческого объединения threehearts.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── SECTION 3: LINKS (CONNECT) ── -->
+            <section class="section" id="section-links" data-index="2">
+                <div class="section-bg">
+                    <div class="bg-overlay bg-overlay--links"></div>
+                </div>
+                <div class="section-content links-content">
+                    <h2 class="section-title">CONNECT</h2>
+                    <div class="ornament-divider">
+                        <img src="img/333.png" alt="" class="divider-ornament-img">
+                    </div>
+                    <div class="links-grid">
+                        <a href="https://t.me/emodeus" target="_blank" rel="noopener" class="link-card">
+                            <div class="link-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.96 6.504-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                            </div>
+                            <span class="link-label">Telegram</span>
+                            <span class="link-arrow">→</span>
+                        </a>
+                        <a href="https://www.tiktok.com/@em0deus1" target="_blank" rel="noopener" class="link-card">
+                            <div class="link-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+                            </div>
+                            <span class="link-label">TikTok</span>
+                            <span class="link-arrow">→</span>
+                        </a>
+                        <a href="https://soundcloud.com/emodeus" target="_blank" rel="noopener" class="link-card">
+                            <div class="link-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="0.5" y="12" width="1.2" height="4.5" rx="0.6"/>
+                                    <rect x="2.5" y="10.8" width="1.2" height="5.7" rx="0.6"/>
+                                    <rect x="4.5" y="9.8" width="1.2" height="6.7" rx="0.6"/>
+                                    <rect x="6.5" y="9.2" width="1.2" height="7.3" rx="0.6"/>
+                                    <rect x="8.5" y="8.8" width="1.2" height="7.7" rx="0.6"/>
+                                    <rect x="10.5" y="8.2" width="1.2" height="8.3" rx="0.6"/>
+                                    <path d="M12.5 8.2V16.5H20.8C22.29 16.5 23.5 15.29 23.5 13.8C23.5 12.39 22.42 11.23 21.03 11.11C20.78 8.94 18.96 7.25 16.73 7.25C15.74 7.25 14.83 7.61 14.12 8.21C13.67 7.82 13.08 7.58 12.44 7.58C12.46 7.79 12.48 8 12.5 8.2Z"/>
+                                </svg>
+                            </div>
+                            <span class="link-label">SoundCloud</span>
+                            <span class="link-arrow">→</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ═══════════════════ BOTTOM NAV ═══════════════════ -->
+    <nav id="bottom-nav" class="hidden">
+        <button class="nav-btn active" data-target="0">
+            <span class="nav-label">Hi</span>
+        </button>
+        <span class="nav-separator">⚜</span>
+        <button class="nav-btn" data-target="1">
+            <span class="nav-label">About</span>
+        </button>
+        <span class="nav-separator">⚜</span>
+        <button class="nav-btn" data-target="2">
+            <span class="nav-label">Links</span>
+        </button>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>
