@@ -291,6 +291,7 @@ html, body {
     transform: translateZ(0);
     animation: ambientShimmer 5.8s ease-in-out infinite alternate;
     will-change: opacity, transform;
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes ambientShimmer {
@@ -302,6 +303,24 @@ html, body {
         opacity: 0.82;
         transform: translate3d(0, 0, 0) scale(1.07);
     }
+}
+
+/* Concentrated inner core plasma glow (ignites inside the hollow letters on hover) */
+.logo-core-glow {
+    position: absolute;
+    top: 20%;
+    left: 15%;
+    right: 15%;
+    bottom: 20%;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.95) 0%, rgba(225, 240, 255, 0.8) 25%, rgba(185, 215, 255, 0.35) 52%, transparent 72%);
+    filter: blur(14px);
+    opacity: 0.08;
+    transform: translateZ(0) scale(0.92);
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+    will-change: opacity, transform, filter;
 }
 
 /* Single crisp artist logo with autonomous shimmering silver glow */
@@ -317,7 +336,7 @@ html, body {
     transform: translateZ(0);
     animation: logoGlowShimmer 3.8s ease-in-out infinite alternate;
     will-change: filter, transform;
-    transition: transform 0.4s ease;
+    transition: filter 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes logoGlowShimmer {
@@ -329,14 +348,27 @@ html, body {
     }
 }
 
-/* Interactive hover response (enhances the shimmering bloom) */
+/* Interactive hover response: logo ignites with brilliant inner glow & radiant core */
 .logo-interactive-container:hover .logo-ambient-glow {
-    opacity: 1;
+    opacity: 0.95;
+    transform: translate3d(0, 0, 0) scale(1.12);
+}
+
+.logo-interactive-container:hover .logo-core-glow {
+    opacity: 0.95;
+    transform: translateZ(0) scale(1.1);
+    filter: blur(10px);
 }
 
 .logo-interactive-container:hover .artist-logo {
-    filter: drop-shadow(0 0 18px rgba(255, 255, 255, 1)) drop-shadow(0 0 42px rgba(220, 240, 255, 0.85)) drop-shadow(0 0 68px rgba(190, 225, 255, 0.6));
-    transform: translateZ(0) scale(1.02);
+    filter: 
+        brightness(1.7) 
+        contrast(1.1) 
+        drop-shadow(0 0 4px #ffffff) 
+        drop-shadow(0 0 14px rgba(255, 255, 255, 1)) 
+        drop-shadow(0 0 32px rgba(220, 240, 255, 0.85)) 
+        drop-shadow(0 0 60px rgba(185, 220, 255, 0.6));
+    transform: translateZ(0) scale(1.025);
 }
 
 .subtitle {
