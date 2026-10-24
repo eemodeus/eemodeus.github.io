@@ -1,4 +1,4 @@
-﻿/* ═══════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════
    МОДЕУС — MAIN SCRIPT (MONOCHROME & SILVER EDITION)
    Breathing ASCII Preloader + CS2 Crosshair + Radial Noise Logo
    ═══════════════════════════════════════════════════ */
@@ -100,7 +100,16 @@
 
     let currentSection = 0;
     let isScrolling    = false;
+    let touchStartX    = 0;
     let touchStartY    = 0;
+    let touchTargetEl  = null;
+    let isSeeking      = false;
+    let isDraggingVol  = false;
+
+    function updateAppHeight() {
+        const vh = window.innerHeight;
+        document.documentElement.style.setProperty('--app-height', vh + 'px');
+    }
 
     // ═══════════════════════════════════════════════
     // 1. CS2 CROSSHAIR CURSOR (ULTRA-SMOOTH rAF & GPU)
@@ -119,6 +128,10 @@
 
     function initCustomCursor() {
         if (!customCursor) return;
+        // Don't initialize custom cursor on touch devices
+        if (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
+            return;
+        }
         customCursor.classList.add('active');
 
         window.addEventListener('mousemove', function (e) {
@@ -184,7 +197,7 @@
 
         // Slide the fullpage wrapper cleanly with soft cubic-bezier glide
         if (sectionsWrapper) {
-            sectionsWrapper.style.transform = 'translateY(-' + (currentSection * 100) + 'vh)';
+            sectionsWrapper.style.transform = 'translateY(calc(-' + currentSection + ' * var(--app-height, 100vh)))';
         }
 
         // Update active class on sections & navigation buttons
@@ -208,6 +221,22 @@
     }
 
     function onWheel(e) {
+        // Allow smooth native mousewheel/trackpad scrolling inside .about-grid
+        if (currentSection === 1) {
+            const aboutGrid = document.querySelector('.about-grid');
+            if (aboutGrid && e.target && aboutGrid.contains(e.target)) {
+                const isScrollable = aboutGrid.scrollHeight > aboutGrid.clientHeight;
+                if (isScrollable) {
+                    const canScrollUp = aboutGrid.scrollTop > 4;
+                    const canScrollDown = (aboutGrid.scrollHeight - aboutGrid.scrollTop - aboutGrid.clientHeight) > 4;
+
+                    if ((e.deltaY > 0 && canScrollDown) || (e.deltaY < 0 && canScrollUp)) {
+                        return; // Native scroll inside about-grid
+                    }
+                }
+            }
+        }
+
         e.preventDefault();
         if (isScrolling) return;
 
@@ -229,19 +258,50 @@
     }
 
     function onTouchStart(e) {
-        touchStartY = e.touches[0].clientY;
+        if (!e.touches || e.touches.length === 0) return;
+        touchStartX   = e.touches[0].clientX;
+        touchStartY   = e.touches[0].clientY;
+        touchTargetEl = e.target;
     }
 
     function onTouchEnd(e) {
         if (isScrolling) return;
-        const diff = touchStartY - e.changedTouches[0].clientY;
+        if (!e.changedTouches || e.changedTouches.length === 0) return;
 
-        if (Math.abs(diff) > 45) {
-            if (diff > 0) {
-                goToSection(currentSection + 1);
-            } else {
-                goToSection(currentSection - 1);
+        // Never trigger fullpage slide if user was scrubbing progress or volume slider
+        if (isSeeking || isDraggingVol) return;
+
+        // Never trigger fullpage slide if tap/touch was on an interactive control
+        if (touchTargetEl && touchTargetEl.closest(
+            '#playerProgressContainer, #playerVolSliderWrap, .medallion-play-btn, .quatrefoil-nav-btn, .vol-btn, .track-card, .nav-btn, .link-card'
+        )) {
+            return;
+        }
+
+        const diffY = touchStartY - e.changedTouches[0].clientY;
+        const diffX = touchStartX - e.changedTouches[0].clientX;
+
+        // Must be a deliberate vertical swipe (not horizontal drag or tiny twitch)
+        if (Math.abs(diffY) < 50 || Math.abs(diffY) < Math.abs(diffX) * 1.35) return;
+
+        // Check scrollable content in Section 1 (About / Bio / Music)
+        if (currentSection === 1) {
+            const aboutGrid = document.querySelector('.about-grid');
+            if (aboutGrid && touchTargetEl && aboutGrid.contains(touchTargetEl)) {
+                const canScrollUp = aboutGrid.scrollTop > 8;
+                const canScrollDown = (aboutGrid.scrollHeight - aboutGrid.scrollTop - aboutGrid.clientHeight) > 8;
+
+                // Swiping UP to scroll down: if about-grid has space below, let it scroll
+                if (diffY > 0 && canScrollDown) return;
+                // Swiping DOWN to scroll up: if about-grid has space above, let it scroll
+                if (diffY < 0 && canScrollUp) return;
             }
+        }
+
+        if (diffY > 0) {
+            goToSection(currentSection + 1);
+        } else {
+            goToSection(currentSection - 1);
         }
     }
 
@@ -251,7 +311,6 @@
         switch (e.key) {
             case 'ArrowDown':
             case 'PageDown':
-            case ' ':
                 e.preventDefault();
                 goToSection(currentSection + 1);
                 break;
@@ -472,7 +531,7 @@
     let scWidget = null;
     let currentTrackIdx = 0;
     let isAudioPlaying = false;
-    let isSeeking = false;
+    isSeeking = false;
     let currentVolume = 80;
     try {
         const savedVol = localStorage.getItem('modeus_player_volume');
@@ -878,7 +937,7 @@
         }
 
         if (playerVolSliderWrap) {
-            let isDraggingVol = false;
+            isDraggingVol = false;
 
             function setVolFromEvent(e) {
                 const rect = playerVolSliderWrap.getBoundingClientRect();
@@ -1138,6 +1197,9 @@
     // в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ
 
     function init() {
+        // Dynamic viewport height adaptation for all platforms & mobile browsers
+        updateAppHeight();
+
         // Initialize Custom Gothic Cursor
         initCustomCursor();
 
@@ -1159,9 +1221,22 @@
             setTimeout(setupBioSlots, 500);
         }
 
+        let resizeTimer = null;
         window.addEventListener('resize', function () {
-            bioSlotsInitialized = false;
-            setupBioSlots();
+            updateAppHeight();
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () {
+                bioSlotsInitialized = false;
+                setupBioSlots();
+            }, 120);
+        });
+
+        window.addEventListener('orientationchange', function () {
+            setTimeout(updateAppHeight, 100);
+            setTimeout(function () {
+                bioSlotsInitialized = false;
+                setupBioSlots();
+            }, 200);
         });
 
         // Navigation button listeners

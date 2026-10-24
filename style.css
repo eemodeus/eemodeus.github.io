@@ -1,4 +1,4 @@
-﻿/* ═══════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════
    МОДЕУС — SITE STYLES (MONOCHROME EDITION)
    Font: Igra Sans | CS2 Crosshair | Floating Logo | Large Weapon Frame
    ═══════════════════════════════════════════════════ */
@@ -21,6 +21,11 @@
 }
 
 :root {
+    --app-height: 100vh;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
     --bg-black: #000000;
     --bg-dark: #050507;
     --bg-surface: #0a0b10;
@@ -36,15 +41,38 @@
     --font-player: 'Igra Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
+@supports (height: 100dvh) {
+    :root {
+        --app-height: 100dvh;
+    }
+}
+
 html, body {
     width: 100%;
     height: 100%;
+    height: var(--app-height);
     overflow: hidden;
     background: var(--bg-black);
     color: var(--text-silver);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+/* Touch devices & small touchscreens: restore system cursor & clean taps */
+@media (hover: none) and (pointer: coarse) {
+    *, *::before, *::after {
+        cursor: auto !important;
+    }
+    #custom-cursor {
+        display: none !important;
+    }
+    button, a, [role="slider"], [role="button"], .track-card, .nav-btn, .link-card {
+        cursor: pointer !important;
+        -webkit-tap-highlight-color: transparent;
+    }
 }
 
 .hidden {
@@ -228,7 +256,9 @@ html, body {
    ═══════════════════════════════════════════════════ */
 #main-content {
     height: 100vh;
+    height: var(--app-height);
     width: 100vw;
+    width: 100%;
     overflow: hidden;
     position: relative;
     background: transparent;
@@ -242,15 +272,17 @@ html, body {
 
 #sections-wrapper {
     width: 100%;
-    height: 300vh;
-    transform: translateY(0vh);
+    height: calc(var(--app-height) * 3);
+    transform: translateY(0);
     transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
     will-change: transform;
 }
 
 .section {
     width: 100vw;
+    width: 100%;
     height: 100vh;
+    height: var(--app-height);
     position: relative;
     display: flex;
     align-items: center;
@@ -1456,8 +1488,10 @@ html, body {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 18px 20px;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.6) 70%, transparent 100%);
+    padding: 14px 20px calc(14px + var(--safe-bottom)) 20px;
+    padding-left: max(20px, var(--safe-left));
+    padding-right: max(20px, var(--safe-right));
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.96) 0%, rgba(0, 0, 0, 0.65) 70%, transparent 100%);
     transition: opacity 0.8s ease;
 }
 
@@ -1514,15 +1548,47 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════
-   RESPONSIVE DESIGN
+   RESPONSIVE DESIGN (ALL PLATFORMS)
    ═══════════════════════════════════════════════════ */
+
+/* ── 1. Compact Laptops & Small Desktops (<= 1100px) ── */
+@media (max-width: 1100px) {
+    .about-frame {
+        height: min(80vh, 640px);
+        max-width: min(47vw, 450px);
+    }
+    .about-grid {
+        gap: clamp(16px, 2.5vw, 36px);
+    }
+}
+
+/* ── 2. Tablets & Mobile Stacking (<= 920px) ── */
 @media (max-width: 920px) {
+    .section-content {
+        padding: 20px 14px calc(65px + var(--safe-bottom)) 14px;
+        max-width: 600px;
+    }
+
+    .about-content {
+        padding: 10px 8px calc(65px + var(--safe-bottom)) 8px !important;
+        max-width: 100% !important;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
     .about-grid {
         flex-direction: column;
-        gap: 24px;
+        align-items: center;
+        gap: 28px;
         overflow-y: auto;
-        max-height: 82vh;
-        padding: 10px 4px 40px 4px;
+        overflow-x: hidden;
+        max-height: calc(var(--app-height) - 78px - var(--safe-bottom));
+        padding: 14px 6px calc(45px + var(--safe-bottom)) 6px;
+        width: 100%;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
     }
 
     .about-grid::-webkit-scrollbar {
@@ -1530,47 +1596,79 @@ html, body {
         display: block;
     }
     .about-grid::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.2);
         border-radius: 2px;
     }
 
     .about-frame {
-        height: min(65vh, 520px);
+        height: clamp(500px, 68vh, 580px);
+        aspect-ratio: 736 / 1104;
         width: auto;
-        max-width: min(94vw, 380px);
+        max-width: min(92vw, 385px);
+        margin: 0 auto;
+        flex-shrink: 0;
     }
 
     .about-inner,
     .player-inner {
-        width: 76%;
-        max-width: 76%;
+        width: 77%;
+        max-width: 77%;
     }
 
+    .player-plaques-wrap {
+        height: calc(100% - 72px);
+        max-height: calc(100% - 72px);
+        transform: translateY(-12px);
+    }
 
+    .now-playing-plaque {
+        transform: translateY(12px);
+    }
 }
 
+/* ── 3. Smartphones (<= 600px) ── */
 @media (max-width: 600px) {
     .ascii-breathing {
-        font-size: clamp(2.2px, 0.75vw, 4px);
+        font-size: clamp(2px, 0.7vw, 3.8px);
         line-height: 1.1;
     }
 
+    .hi-content {
+        padding: 16px 12px calc(65px + var(--safe-bottom)) 12px;
+    }
+
+    .logo-interactive-container {
+        max-width: min(92vw, 420px);
+    }
+
     .about-frame {
-        height: min(62vh, 460px);
+        height: clamp(470px, 66vh, 530px);
+        aspect-ratio: 736 / 1104;
         width: auto;
-        max-width: min(95vw, 340px);
+        max-width: min(94vw, 350px);
     }
 
     .about-inner,
     .player-inner {
-        width: 78%;
-        max-width: 78%;
+        width: 79%;
+        max-width: 79%;
         padding: 4px 2px;
+    }
+
+    .player-plaques-wrap {
+        height: calc(100% - 66px);
+        max-height: calc(100% - 66px);
+        transform: translateY(-8px);
+    }
+
+    .now-playing-plaque {
+        transform: translateY(8px);
+        padding: 7px 10px;
     }
 
     .about-text {
         font-size: 11.5px;
-        line-height: 1.6;
+        line-height: 1.62;
     }
 
     .cover-locket {
@@ -1582,11 +1680,14 @@ html, body {
         font-size: 13px;
     }
 
-    .volume-cartouche {
-        width: 110px;
-        padding: 0 10px;
+    .artist-spaced {
+        font-size: 8px;
     }
 
+    .volume-cartouche {
+        width: 114px;
+        padding: 0 10px;
+    }
 
     .medallion-play-btn {
         width: 46px;
@@ -1598,17 +1699,242 @@ html, body {
         height: 28px;
     }
 
-    .link-card {
-        padding: 14px 20px;
+    .track-card {
+        height: 35px;
+        padding: 4px 10px;
+    }
+
+    .track-title {
+        font-size: 12px;
+    }
+
+    .track-artist {
+        font-size: 8px;
+    }
+
+    .track-duration {
+        font-size: 9.5px;
     }
 
     .links-grid {
-        gap: 12px;
+        gap: 13px;
+        max-width: 360px;
+    }
+
+    .link-card {
+        padding: 13px 18px;
+        border-radius: 14px;
+        gap: 14px;
+    }
+
+    .link-icon {
+        width: 34px;
+        height: 34px;
+        padding: 6px;
+        border-radius: 9px;
+    }
+
+    .link-label {
+        font-size: 14px;
+    }
+
+    .link-arrow {
+        width: 26px;
+        height: 26px;
+        font-size: 12px;
     }
 
     .nav-btn {
         padding: 6px 12px;
         font-size: 13px;
+    }
+}
+
+/* ── 4. Compact & Narrow Screens (<= 380px) ── */
+@media (max-width: 380px) {
+    .about-frame {
+        height: clamp(430px, 63vh, 485px);
+        max-width: 95vw;
+    }
+
+    .about-inner,
+    .player-inner {
+        width: 82%;
+        max-width: 82%;
+    }
+
+    .section-title {
+        font-size: 18px;
+    }
+
+    .divider-ornament-img {
+        width: 60px;
+    }
+
+    .player-plaques-wrap {
+        height: calc(100% - 60px);
+        max-height: calc(100% - 60px);
+        transform: translateY(-5px);
+    }
+
+    .now-playing-plaque {
+        transform: translateY(5px);
+        padding: 5px 8px;
+    }
+
+    .cover-locket {
+        width: 42px;
+        height: 42px;
+    }
+
+    .track-headline {
+        font-size: 12px;
+    }
+
+    .artist-spaced {
+        font-size: 7.5px;
+    }
+
+    .track-card {
+        height: 32px;
+        padding: 2px 7px;
+    }
+
+    .track-title {
+        font-size: 11px;
+    }
+
+    .volume-cartouche {
+        width: 104px;
+        padding: 0 8px;
+    }
+
+    .medallion-play-btn {
+        width: 42px;
+        height: 42px;
+    }
+
+    .quatrefoil-nav-btn {
+        width: 26px;
+        height: 26px;
+    }
+
+    .nav-btn {
+        padding: 4px 8px;
+        font-size: 12px;
+        letter-spacing: 0.16em;
+    }
+
+    .nav-separator {
+        font-size: 8px;
+    }
+}
+
+/* ── 5. Low-Height Landscape Orientation (Mobile Landscape <= 520px) ── */
+@media (max-height: 520px) and (orientation: landscape) {
+    .section-content {
+        padding: 8px 12px calc(42px + var(--safe-bottom)) 12px;
+    }
+
+    .hi-content {
+        padding: 6px 12px calc(42px + var(--safe-bottom)) 12px;
+    }
+
+    .artist-logo {
+        max-height: 48vh;
+    }
+
+    .about-grid {
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+        overflow-y: auto;
+        max-height: calc(var(--app-height) - 48px - var(--safe-bottom));
+        padding: 6px 10px calc(38px + var(--safe-bottom)) 10px;
+    }
+
+    .about-frame {
+        height: min(84vh, 370px);
+        aspect-ratio: 736 / 1104;
+        max-width: min(44vw, 250px);
+    }
+
+    .about-inner,
+    .player-inner {
+        width: 80%;
+        max-width: 80%;
+        padding: 2px;
+    }
+
+    .player-plaques-wrap {
+        height: calc(100% - 48px);
+        max-height: calc(100% - 48px);
+        transform: translateY(0);
+    }
+
+    .now-playing-plaque {
+        transform: translateY(0);
+        padding: 3px 6px;
+    }
+
+    .cover-locket {
+        width: 34px;
+        height: 34px;
+    }
+
+    .track-headline {
+        font-size: 11px;
+    }
+
+    .artist-spaced {
+        font-size: 7px;
+    }
+
+    .track-card {
+        height: 27px;
+        padding: 1px 6px;
+    }
+
+    .track-title {
+        font-size: 10px;
+    }
+
+    .volume-cartouche {
+        width: 95px;
+        height: 28px;
+        padding: 0 6px;
+    }
+
+    .medallion-play-btn {
+        width: 34px;
+        height: 34px;
+    }
+
+    .quatrefoil-nav-btn {
+        width: 22px;
+        height: 22px;
+    }
+
+    .links-grid {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        max-width: 600px;
+    }
+
+    .link-card {
+        padding: 8px 14px;
+        gap: 10px;
+    }
+
+    #bottom-nav {
+        padding: 4px 16px calc(4px + var(--safe-bottom)) 16px;
+    }
+
+    .nav-btn {
+        padding: 3px 8px;
+        font-size: 11px;
     }
 }
 
