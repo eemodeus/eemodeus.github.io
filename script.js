@@ -1089,6 +1089,13 @@
 
         video.muted = true;
         video.defaultMuted = true;
+        video.loop = true;
+
+        // Guaranteed loop across all browser engines (iOS Safari, Android Chrome, desktop)
+        video.addEventListener('ended', function () {
+            video.currentTime = 0;
+            video.play().catch(function () {});
+        });
 
         const tryPlay = function () {
             const promise = video.play();
