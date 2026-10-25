@@ -187,8 +187,66 @@
     }
 
     // ═══════════════════════════════════════════════
-    // 4. SMOOTH ANCHOR NAVIGATION & SECTION TRACKING
+    // 4. LENIS SMOOTH SCROLL & ANCHOR NAVIGATION
     // ═══════════════════════════════════════════════
+
+    let lenis = null;
+
+    function getHeaderOffset() {
+        const headerEl = document.getElementById('site-header');
+        const h = headerEl ? headerEl.offsetHeight : 64;
+        return h + 12; // breathing room under fixed header
+    }
+
+    function initLenis() {
+        if (typeof Lenis === 'undefined') return;
+
+        try {
+            lenis = new Lenis({
+                duration: 1.15,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // exponential velvet glide
+                direction: 'vertical',
+                gestureDirection: 'vertical',
+                smoothWheel: true,
+                wheelMultiplier: 1.0,
+                touchMultiplier: 1.2,
+                syncTouch: false,
+                autoRaf: false
+            });
+
+            function lenisRaf(time) {
+                if (lenis) {
+                    lenis.raf(time);
+                }
+                requestAnimationFrame(lenisRaf);
+            }
+            requestAnimationFrame(lenisRaf);
+        } catch (err) {
+            console.warn('Lenis init error:', err);
+            lenis = null;
+        }
+    }
+
+    function scrollToTarget(targetSelector, idx) {
+        const offset = -getHeaderOffset();
+
+        if (lenis) {
+            lenis.scrollTo(targetSelector, {
+                offset: offset,
+                duration: 1.2,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+            });
+        } else {
+            const targetEl = document.querySelector(targetSelector);
+            if (targetEl) {
+                targetEl.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        if (typeof idx === 'number' && !isNaN(idx)) {
+            updateActiveSection(idx);
+        }
+    }
 
     function updateActiveSection(index) {
         if (index < 0 || index >= sections.length || index === currentSection) return;
@@ -211,12 +269,14 @@
         if (index < 0 || index >= sections.length) return;
         const target = sections[index];
         if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
-            updateActiveSection(index);
+            scrollToTarget('#' + target.id, index);
         }
     }
 
     function initSmoothScroll() {
+        // Initialize Lenis Smooth Scroll engine
+        initLenis();
+
         // Track visible section with IntersectionObserver
         if ('IntersectionObserver' in window) {
             const observer = new IntersectionObserver(function (entries) {
@@ -244,19 +304,12 @@
             btn.addEventListener('click', function (e) {
                 const href = btn.getAttribute('href');
                 if (href && href.startsWith('#')) {
-                    const targetEl = document.querySelector(href);
-                    if (targetEl) {
-                        e.preventDefault();
-                        targetEl.scrollIntoView({ behavior: 'smooth' });
+                    e.preventDefault();
+                    const idx = parseInt(btn.dataset.target, 10);
+                    scrollToTarget(href, idx);
 
-                        const idx = parseInt(btn.dataset.target, 10);
-                        if (!isNaN(idx)) {
-                            updateActiveSection(idx);
-                        }
-
-                        if (history.pushState) {
-                            history.pushState(null, null, href);
-                        }
+                    if (history.pushState) {
+                        history.pushState(null, null, href);
                     }
                 }
             });
@@ -264,12 +317,10 @@
 
         // Check if page was opened with an anchor hash in URL
         if (window.location.hash) {
-            const hashTarget = document.querySelector(window.location.hash);
-            if (hashTarget) {
-                setTimeout(function () {
-                    hashTarget.scrollIntoView({ behavior: 'smooth' });
-                }, 700);
-            }
+            const hash = window.location.hash;
+            setTimeout(function () {
+                scrollToTarget(hash);
+            }, 700);
         }
     }
 
