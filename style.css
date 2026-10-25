@@ -112,75 +112,41 @@ html.lenis body {
 }
 
 /* ═══════════════════════════════════════════════════
-   GOTHIC SILVER BACKGROUND & PARTICLES
+   VIDEO BACKGROUND (bg/bg-vid.mp4)
    ═══════════════════════════════════════════════════ */
-.gothic-bg {
+.video-bg-container {
     position: fixed;
     inset: 0;
+    width: 100%;
+    height: 100%;
     z-index: 0;
     pointer-events: none;
     overflow: hidden;
-    background:
-        radial-gradient(ellipse 55% 65% at 50% 48%, rgba(210, 218, 232, 0.085) 0%, rgba(120, 130, 150, 0.03) 45%, transparent 75%),
-        radial-gradient(circle at 20% 15%, rgba(160, 175, 200, 0.04) 0%, transparent 50%),
-        radial-gradient(circle at 80% 85%, rgba(160, 175, 200, 0.04) 0%, transparent 50%),
-        linear-gradient(180deg, #060609 0%, #020203 50%, #050508 100%);
+    background-color: #030305;
 }
 
-.gothic-bg::before {
-    content: "";
+.bg-video {
     position: absolute;
-    inset: 0;
-    opacity: 0.22;
-    background-image:
-        radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 0),
-        radial-gradient(rgba(180, 195, 220, 0.04) 1px, transparent 0);
-    background-size: 36px 36px;
-    background-position: 0 0, 18px 18px;
-    mix-blend-mode: screen;
-}
-
-.gothic-bg::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    box-shadow:
-        inset 0 0 140px rgba(0, 0, 0, 0.95),
-        inset 0 0 60px rgba(0, 0, 0, 0.85);
-    background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(0, 0, 0, 0.78) 100%);
-}
-
-.gothic-mist {
-    position: absolute;
-    width: 680px;
-    height: 680px;
-    left: 50%;
     top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: 100%;
+    height: 100%;
     transform: translate(-50%, -50%);
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(215, 222, 238, 0.07) 0%, rgba(140, 150, 175, 0.025) 45%, transparent 70%);
-    filter: blur(45px);
-    animation: pulseMist 9s ease-in-out infinite alternate;
+    object-fit: cover;
+    pointer-events: none;
+    filter: brightness(0.8) contrast(1.05);
 }
 
-@keyframes pulseMist {
-    0% {
-        transform: translate(-50%, -50%) scale(0.94);
-        opacity: 0.65;
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(1.08);
-        opacity: 1;
-    }
-}
-
-#silver-particles {
+.video-bg-overlay {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
     pointer-events: none;
+    background: radial-gradient(circle at 50% 50%, rgba(3, 3, 5, 0.42) 0%, rgba(0, 0, 0, 0.78) 100%);
+    box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.9);
 }
 
 /* ═══════════════════════════════════════════════════

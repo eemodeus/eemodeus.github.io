@@ -1083,121 +1083,29 @@
     // 8. GOTHIC SILVER PARTICLES BACKGROUND
     // в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ
 
-    function initSilverParticles() {
-        const canvas = document.getElementById('silver-particles');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
+    function initVideoBg() {
+        const video = document.getElementById('bgVideo');
+        if (!video) return;
 
-        let width = 0;
-        let height = 0;
-        let dpr = Math.min(window.devicePixelRatio || 1, 2);
-        let particles = [];
+        video.muted = true;
+        video.defaultMuted = true;
 
-        // РќР°СЃС‚СЂРѕР№РєРё РєРѕР»РёС‡РµСЃС‚РІР° Рё РїРѕРІРµРґРµРЅРёСЏ С‡Р°СЃС‚РёС†
-        const CONFIG = {
-            count: 85,               // РћР±С‰РµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ С‡Р°СЃС‚РёС†
-            starRatio: 0.16,         // Р”РѕР»СЏ С‡РµС‚С‹СЂРµС…РєРѕРЅРµС‡РЅС‹С… РіРѕС‚РёС‡РµСЃРєРёС… РёСЃРєСЂ (вњ¦)
-            baseSpeedY: -0.18,       // РњРµРґР»РµРЅРЅС‹Р№ РїРѕРґСЉРµРј РІРІРµСЂС…
-            driftSpeedX: 0.12        // Р‘РѕРєРѕРІРѕРµ РїРѕРєР°С‡РёРІР°РЅРёРµ
+        const tryPlay = function () {
+            const promise = video.play();
+            if (promise !== undefined) {
+                promise.catch(function () {
+                    const playOnUserGesture = function () {
+                        video.play().catch(function () {});
+                        window.removeEventListener('touchstart', playOnUserGesture);
+                        window.removeEventListener('click', playOnUserGesture);
+                    };
+                    window.addEventListener('touchstart', playOnUserGesture, { once: true, passive: true });
+                    window.addEventListener('click', playOnUserGesture, { once: true, passive: true });
+                });
+            }
         };
 
-        function resize() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            dpr = Math.min(window.devicePixelRatio || 1, 2);
-            canvas.width = width * dpr;
-            canvas.height = height * dpr;
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        }
-
-        function createParticle(randomY) {
-            if (randomY === undefined) randomY = true;
-            const isStar = Math.random() < CONFIG.starRatio;
-            return {
-                x: Math.random() * width,
-                y: randomY ? Math.random() * height : height + 15,
-                radius: isStar ? Math.random() * 2.4 + 1.8 : Math.random() * 1.5 + 0.4,
-                vx: (Math.random() - 0.5) * CONFIG.driftSpeedX,
-                vy: CONFIG.baseSpeedY * (Math.random() * 0.8 + 0.4),
-                alpha: Math.random() * 0.55 + 0.1,
-                maxAlpha: isStar ? Math.random() * 0.65 + 0.25 : Math.random() * 0.45 + 0.12,
-                phase: Math.random() * Math.PI * 2,
-                pulseSpeed: Math.random() * 0.02 + 0.006,
-                swayAmp: Math.random() * 0.35 + 0.1,
-                isStar: isStar
-            };
-        }
-
-        function initParticles() {
-            resize();
-            particles = [];
-            for (let i = 0; i < CONFIG.count; i++) {
-                particles.push(createParticle(true));
-            }
-        }
-
-        // РћС‚СЂРёСЃРѕРІРєР° С‡РµС‚С‹СЂРµС…РєРѕРЅРµС‡РЅРѕР№ СЃРµСЂРµР±СЂСЏРЅРѕР№ РёСЃРєСЂС‹ (вњ¦)
-        function drawGothicStar(x, y, size, alpha) {
-            ctx.save();
-            ctx.translate(x, y);
-            ctx.beginPath();
-            const inner = size * 0.22;
-            ctx.moveTo(0, -size);
-            ctx.quadraticCurveTo(inner, -inner, size, 0);
-            ctx.quadraticCurveTo(inner, inner, 0, size);
-            ctx.quadraticCurveTo(-inner, inner, -size, 0);
-            ctx.quadraticCurveTo(-inner, -inner, 0, -size);
-            ctx.closePath();
-
-            ctx.fillStyle = "rgba(232, 238, 250, " + alpha + ")";
-            ctx.shadowColor = 'rgba(215, 225, 245, 0.85)';
-            ctx.shadowBlur = size * 3;
-            ctx.fill();
-            ctx.restore();
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, width, height);
-
-            for (let i = 0; i < particles.length; i++) {
-                const p = particles[i];
-
-                // Р”РІРёР¶РµРЅРёРµ Рё РїР»Р°РІРЅРѕРµ СЃРёРЅСѓСЃРѕРёРґР°Р»СЊРЅРѕРµ РїРѕРєР°С‡РёРІР°РЅРёРµ
-                p.phase += p.pulseSpeed;
-                p.x += p.vx + Math.sin(p.phase) * p.swayAmp;
-                p.y += p.vy;
-
-                // РџР»Р°РІРЅРѕРµ РјРµСЂС†Р°РЅРёРµ РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚Рё
-                const currentAlpha =
-                    (Math.sin(p.phase * 1.5) * 0.5 + 0.5) * p.maxAlpha + 0.05;
-
-                // РџРµСЂРµР·Р°РїСѓСЃРє С‡Р°СЃС‚РёС†С‹ РїСЂРё РІС‹С…РѕРґРµ Р·Р° РіСЂР°РЅРёС†С‹ СЌРєСЂР°РЅР°
-                if (p.y < -20) {
-                    p.y = height + 15;
-                    p.x = Math.random() * width;
-                }
-                if (p.x < -20) p.x = width + 15;
-                if (p.x > width + 20) p.x = -15;
-
-                // РћС‚СЂРёСЃРѕРІРєР°
-                if (p.isStar) {
-                    drawGothicStar(p.x, p.y, p.radius, currentAlpha);
-                } else {
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = "rgba(215, 222, 235, " + currentAlpha + ")";
-                    ctx.shadowColor = 'rgba(200, 210, 230, 0.5)';
-                    ctx.shadowBlur = p.radius * 3.5;
-                    ctx.fill();
-                }
-            }
-
-            requestAnimationFrame(animate);
-        }
-
-        window.addEventListener('resize', resize);
-        initParticles();
-        animate();
+        tryPlay();
     }
 
     // в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ
@@ -1211,8 +1119,8 @@
         // Initialize Custom Gothic Cursor
         initCustomCursor();
 
-        // Initialize Gothic Silver Background & Particles
-        initSilverParticles();
+        // Initialize Video Background
+        initVideoBg();
 
         // Initialize Liquid Glass interactive tracking
         initLiquidGlassCards();

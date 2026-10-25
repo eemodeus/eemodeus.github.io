@@ -25,14 +25,16 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <link rel="stylesheet" href="style.css?v=20261025_05">
+    <link rel="stylesheet" href="style.css?v=20261025_06">
 </head>
 <body>
 
-    <!-- GOTHIC SILVER BACKGROUND & PARTICLES -->
-    <div class="gothic-bg" aria-hidden="true">
-        <div class="gothic-mist"></div>
-        <canvas id="silver-particles"></canvas>
+    <!-- VIDEO BACKGROUND (bg/bg-vid.mp4) -->
+    <div class="video-bg-container" aria-hidden="true">
+        <video class="bg-video" id="bgVideo" autoplay loop muted playsinline disablepictureinpicture preload="auto">
+            <source src="bg/bg-vid.mp4" type="video/mp4">
+        </video>
+        <div class="video-bg-overlay"></div>
     </div>
 
     <!-- CUSTOM GOTHIC CURSOR (cursor.png) -->
@@ -412,6 +414,6 @@
     <script src="lenis.min.js"></script>
     <!-- SoundCloud Widget API -->
     <script src="https://w.soundcloud.com/player/api.js"></script>
-    <script src="script.js?v=20261025_05"></script>
+    <script src="script.js?v=20261025_06"></script>
 </body>
 </html>
