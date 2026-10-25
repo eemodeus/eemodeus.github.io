@@ -22,12 +22,12 @@
 
 :root {
     --app-height: 100vh;
-    --header-height: 64px;
+    --header-height: 60px;
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
     --safe-left: env(safe-area-inset-left, 0px);
     --safe-right: env(safe-area-inset-right, 0px);
-    --scroll-margin-top: calc(var(--header-height) + var(--safe-top));
+    --scroll-margin-top: var(--safe-top, 0px);
     --bg-black: #000000;
     --bg-dark: #050507;
     --bg-surface: #0a0b10;
@@ -316,6 +316,7 @@ html.lenis body {
     justify-content: center;
     box-sizing: border-box;
     scroll-margin-top: var(--scroll-margin-top);
+    padding-bottom: calc(var(--header-height) + 16px + var(--safe-bottom));
     contain: layout paint;
 }
 
@@ -1508,11 +1509,12 @@ html.lenis body {
 }
 
 /* ═══════════════════════════════════════════════════
-   FIXED SITE HEADER (TOP NAVIGATION)
+   FIXED BOTTOM NAVIGATION
    ═══════════════════════════════════════════════════ */
 .site-header {
     position: fixed;
-    top: 0;
+    bottom: 0;
+    top: auto;
     left: 0;
     right: 0;
     height: var(--header-height);
@@ -1520,21 +1522,23 @@ html.lenis body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-top: var(--safe-top);
+    padding-bottom: calc(10px + var(--safe-bottom));
+    padding-top: 8px;
     padding-left: max(20px, var(--safe-left));
     padding-right: max(20px, var(--safe-right));
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.95) 0%, rgba(5, 5, 8, 0.78) 75%, transparent 100%);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.96) 0%, rgba(5, 5, 8, 0.78) 75%, transparent 100%);
     backdrop-filter: blur(14px) saturate(160%);
     -webkit-backdrop-filter: blur(14px) saturate(160%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.65);
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    border-bottom: none;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.65);
     transition: opacity 0.8s ease, transform 0.4s ease;
 }
 
 .site-header.hidden {
     opacity: 0;
     pointer-events: none;
-    transform: translateY(-8px);
+    transform: translateY(10px);
 }
 
 .site-header.visible {
@@ -1548,7 +1552,7 @@ html.lenis body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: clamp(14px, 4vw, 32px);
     background: none;
     padding: 0;
 }
@@ -1599,10 +1603,7 @@ html.lenis body {
 }
 
 .nav-separator {
-    color: var(--text-dim);
-    font-size: 10px;
-    opacity: 0.35;
-    user-select: none;
+    display: none !important;
 }
 
 /* ═══════════════════════════════════════════════════
@@ -1999,14 +2000,22 @@ html.lenis body {
 
 /* ═══════════════════════════════════════════════════
    SCROLLBAR & SELECTION
+   Completely hide page scrollbar across all browsers
    ═══════════════════════════════════════════════════ */
-::-webkit-scrollbar {
-    display: none;
+html,
+body {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
 }
 
-body {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+::-webkit-scrollbar,
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
 }
 
 ::selection {

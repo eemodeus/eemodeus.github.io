@@ -228,7 +228,8 @@
     }
 
     function scrollToTarget(targetSelector, idx) {
-        const offset = -getHeaderOffset();
+        // Navigation is fixed at the bottom, so section scrolls to top (y = 0)
+        const offset = 0;
 
         if (lenis) {
             lenis.scrollTo(targetSelector, {
