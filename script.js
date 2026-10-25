@@ -87,6 +87,7 @@
     const asciiArtEl       = document.getElementById('ascii-art');
     const customCursor     = document.getElementById('custom-cursor');
     const mainContent      = document.getElementById('main-content');
+    const siteHeader       = document.getElementById('site-header');
     const sectionsWrapper  = document.getElementById('sections-wrapper');
     const sections         = document.querySelectorAll('.section');
     const bottomNav        = document.getElementById('bottom-nav');
@@ -176,31 +177,23 @@
             mainContent.classList.remove('hidden');
             mainContent.classList.add('visible');
         }
-        if (bottomNav) {
+        if (siteHeader) {
+            siteHeader.classList.remove('hidden');
+            siteHeader.classList.add('visible');
+        } else if (bottomNav) {
             bottomNav.classList.remove('hidden');
             bottomNav.classList.add('visible');
         }
     }
 
     // ═══════════════════════════════════════════════
-    // 4. BULLETPROOF FULLPAGE SCROLL (SILKY SMOOTH)
+    // 4. SMOOTH ANCHOR NAVIGATION & SECTION TRACKING
     // ═══════════════════════════════════════════════
 
-    let wheelAccumulator = 0;
-    let wheelResetTimer  = null;
-
-    function goToSection(index) {
-        if (index < 0 || index >= sections.length || index === currentSection || isScrolling) return;
-
-        isScrolling = true;
+    function updateActiveSection(index) {
+        if (index < 0 || index >= sections.length || index === currentSection) return;
         currentSection = index;
 
-        // Slide the fullpage wrapper cleanly with soft cubic-bezier glide
-        if (sectionsWrapper) {
-            sectionsWrapper.style.transform = 'translateY(calc(-' + currentSection + ' * var(--app-height, 100vh)))';
-        }
-
-        // Update active class on sections & navigation buttons
         sections.forEach(function (sec, idx) {
             sec.classList.toggle('active', idx === currentSection);
         });
@@ -209,116 +202,79 @@
             btn.classList.toggle('active', idx === currentSection);
         });
 
-        // Trigger Decrypt Text effect when entering About (section index 1)
         if (currentSection === 1) {
             triggerAboutBioDecrypt();
         }
-
-        // Smooth cooldown matching the 1.1s velvet curve
-        setTimeout(function () {
-            isScrolling = false;
-        }, 1100);
     }
 
-    function onWheel(e) {
-        // Allow smooth native mousewheel/trackpad scrolling inside .about-grid
-        if (currentSection === 1) {
-            const aboutGrid = document.querySelector('.about-grid');
-            if (aboutGrid && e.target && aboutGrid.contains(e.target)) {
-                const isScrollable = aboutGrid.scrollHeight > aboutGrid.clientHeight;
-                if (isScrollable) {
-                    const canScrollUp = aboutGrid.scrollTop > 4;
-                    const canScrollDown = (aboutGrid.scrollHeight - aboutGrid.scrollTop - aboutGrid.clientHeight) > 4;
+    function goToSection(index) {
+        if (index < 0 || index >= sections.length) return;
+        const target = sections[index];
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+            updateActiveSection(index);
+        }
+    }
 
-                    if ((e.deltaY > 0 && canScrollDown) || (e.deltaY < 0 && canScrollUp)) {
-                        return; // Native scroll inside about-grid
+    function initSmoothScroll() {
+        // Track visible section with IntersectionObserver
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        const idx = parseInt(entry.target.dataset.index, 10);
+                        if (!isNaN(idx)) {
+                            updateActiveSection(idx);
+                        }
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: '-25% 0px -25% 0px',
+                threshold: 0.15
+            });
+
+            sections.forEach(function (sec) {
+                observer.observe(sec);
+            });
+        }
+
+        // Smooth scroll on clicking anchor links in navigation
+        navBtns.forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                const href = btn.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    const targetEl = document.querySelector(href);
+                    if (targetEl) {
+                        e.preventDefault();
+                        targetEl.scrollIntoView({ behavior: 'smooth' });
+
+                        const idx = parseInt(btn.dataset.target, 10);
+                        if (!isNaN(idx)) {
+                            updateActiveSection(idx);
+                        }
+
+                        if (history.pushState) {
+                            history.pushState(null, null, href);
+                        }
                     }
                 }
+            });
+        });
+
+        // Check if page was opened with an anchor hash in URL
+        if (window.location.hash) {
+            const hashTarget = document.querySelector(window.location.hash);
+            if (hashTarget) {
+                setTimeout(function () {
+                    hashTarget.scrollIntoView({ behavior: 'smooth' });
+                }, 700);
             }
-        }
-
-        e.preventDefault();
-        if (isScrolling) return;
-
-        wheelAccumulator += e.deltaY;
-
-        clearTimeout(wheelResetTimer);
-        wheelResetTimer = setTimeout(function () {
-            wheelAccumulator = 0;
-        }, 220);
-
-        // Gentle intentional threshold: avoids jitter, glides smoothly
-        if (wheelAccumulator > 35) {
-            wheelAccumulator = 0;
-            goToSection(currentSection + 1);
-        } else if (wheelAccumulator < -35) {
-            wheelAccumulator = 0;
-            goToSection(currentSection - 1);
-        }
-    }
-
-    function onTouchStart(e) {
-        if (!e.touches || e.touches.length === 0) return;
-        touchStartX   = e.touches[0].clientX;
-        touchStartY   = e.touches[0].clientY;
-        touchTargetEl = e.target;
-    }
-
-    function onTouchEnd(e) {
-        if (isScrolling) return;
-        if (!e.changedTouches || e.changedTouches.length === 0) return;
-
-        // Never trigger fullpage slide if user was scrubbing progress or volume slider
-        if (isSeeking || isDraggingVol) return;
-
-        // Never trigger fullpage slide if tap/touch was on an interactive control
-        if (touchTargetEl && touchTargetEl.closest(
-            '#playerProgressContainer, #playerVolSliderWrap, .medallion-play-btn, .quatrefoil-nav-btn, .vol-btn, .track-card, .nav-btn, .link-card'
-        )) {
-            return;
-        }
-
-        const diffY = touchStartY - e.changedTouches[0].clientY;
-        const diffX = touchStartX - e.changedTouches[0].clientX;
-
-        // Must be a deliberate vertical swipe (not horizontal drag or tiny twitch)
-        if (Math.abs(diffY) < 50 || Math.abs(diffY) < Math.abs(diffX) * 1.35) return;
-
-        // Check scrollable content in Section 1 (About / Bio / Music)
-        if (currentSection === 1) {
-            const aboutGrid = document.querySelector('.about-grid');
-            if (aboutGrid && touchTargetEl && aboutGrid.contains(touchTargetEl)) {
-                const canScrollUp = aboutGrid.scrollTop > 8;
-                const canScrollDown = (aboutGrid.scrollHeight - aboutGrid.scrollTop - aboutGrid.clientHeight) > 8;
-
-                // Swiping UP to scroll down: if about-grid has space below, let it scroll
-                if (diffY > 0 && canScrollDown) return;
-                // Swiping DOWN to scroll up: if about-grid has space above, let it scroll
-                if (diffY < 0 && canScrollUp) return;
-            }
-        }
-
-        if (diffY > 0) {
-            goToSection(currentSection + 1);
-        } else {
-            goToSection(currentSection - 1);
         }
     }
 
     function onKeyDown(e) {
-        if (isScrolling) return;
-
         switch (e.key) {
-            case 'ArrowDown':
-            case 'PageDown':
-                e.preventDefault();
-                goToSection(currentSection + 1);
-                break;
-            case 'ArrowUp':
-            case 'PageUp':
-                e.preventDefault();
-                goToSection(currentSection - 1);
-                break;
             case 'Home':
                 e.preventDefault();
                 goToSection(0);
@@ -1239,18 +1195,10 @@
             }, 200);
         });
 
-        // Navigation button listeners
-        navBtns.forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                const target = parseInt(btn.dataset.target, 10);
-                goToSection(target);
-            });
-        });
+        // Initialize Smooth Anchor Scrolling & Section Observer
+        initSmoothScroll();
 
-        // Scroll listeners (wheel, touch, keyboard)
-        window.addEventListener('wheel', onWheel, { passive: false });
-        window.addEventListener('touchstart', onTouchStart, { passive: true });
-        window.addEventListener('touchend', onTouchEnd, { passive: true });
+        // Keyboard navigation (Home / End)
         window.addEventListener('keydown', onKeyDown);
 
         // Start preloader with glowing breathing cycle
