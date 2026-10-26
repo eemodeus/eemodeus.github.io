@@ -232,6 +232,7 @@
     function initListenDropdown() {
         const toggleBtn = document.getElementById('listenToggleBtn');
         const collapseEl = document.getElementById('musicCollapse');
+        const badgeEl = document.getElementById('listenBadge');
         if (!toggleBtn || !collapseEl) return;
 
         toggleBtn.addEventListener('click', function () {
@@ -239,6 +240,9 @@
             toggleBtn.classList.toggle('is-open', isOpen);
             toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
             collapseEl.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+            if (badgeEl) {
+                badgeEl.textContent = isOpen ? '[-] CLOSE' : '[+] EXPAND';
+            }
 
             if (lenis && typeof lenis.resize === 'function') {
                 setTimeout(function () {
@@ -417,7 +421,7 @@
             });
         }
 
-        const INTERACTIVE_SELECTOR = 'button, a, .control-btn, .nav-btn, .link-card, .logo-interactive-container, .preloader-enter-btn';
+        const INTERACTIVE_SELECTOR = 'button, a, .control-btn, .nav-btn, .link-card, .link-item, .logo-interactive-container, .preloader-enter-btn';
         let lastSoundTime = 0;
 
         document.addEventListener('mouseover', function (e) {
