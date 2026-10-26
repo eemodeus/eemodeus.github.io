@@ -36,7 +36,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <link rel="stylesheet" href="style.css?v=20261026_07">
+    <link rel="stylesheet" href="style.css?v=20261026_08">
 </head>
 <body>
 
@@ -56,8 +56,24 @@
         <img src="img/cursor.png" alt="" class="custom-cursor-img">
     </div>
 
-    <!-- ═══════════════════ TOP SITE CONTROLS (THEME) ═══════════════════ -->
-    <aside class="site-controls" role="toolbar" aria-label="Управление темой">
+    <!-- ═══════════════════ TOP SITE CONTROLS (AMBIENT & THEME) ═══════════════════ -->
+    <aside class="site-controls" role="toolbar" aria-label="Управление звуком и темой">
+        <!-- Ambient Sound Toggle (On / Off) -->
+        <button id="ambientToggleBtn" class="control-btn" aria-label="Включить или выключить фоновый звук" title="Фоновый эмбиент (Вкл / Выкл)">
+            <!-- Sound On icon (active) -->
+            <svg id="ambientOnIcon" class="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+            <!-- Sound Muted icon (hidden by default) -->
+            <svg id="ambientMuteIcon" class="control-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <line x1="22" y1="9" x2="16" y2="15"></line>
+                <line x1="16" y1="9" x2="22" y2="15"></line>
+            </svg>
+        </button>
+
         <!-- Theme Toggle (Dark / Light) -->
         <button id="themeToggleBtn" class="control-btn" aria-label="Сменить тему сайта" title="Сменить тему (Светлая / Тёмная)">
             <!-- Moon icon (active in Dark mode) -->
@@ -79,11 +95,16 @@
         </button>
     </aside>
 
-    <!-- ═══════════════════ PRELOADER (BREATHING ASCII GLOW) ═══════════════════ -->
-    <div id="preloader">
+    <!-- ═══════════════════ PRELOADER (BREATHING ASCII GLOW & INTERACTIVE ENTER) ═══════════════════ -->
+    <div id="preloader" role="button" tabindex="0" aria-label="Войти на сайт">
         <div class="preloader-content">
             <div class="ascii-container">
                 <pre class="ascii-breathing" id="ascii-art" aria-hidden="true"></pre>
+            </div>
+            <div class="preloader-enter-btn" id="preloaderEnterBtn">
+                <span class="enter-bracket">[</span>
+                <span class="enter-text">ENTER</span>
+                <span class="enter-bracket">]</span>
             </div>
         </div>
     </div>

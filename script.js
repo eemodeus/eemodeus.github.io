@@ -95,6 +95,8 @@
     const logoContainer    = document.getElementById('logoContainer');
     const siteControls     = document.querySelector('.site-controls');
 
+    let startAmbientAfterPreloader = null;
+
     function updateAppHeight() {
         const vh = window.innerHeight;
         document.documentElement.style.setProperty('--app-height', vh + 'px');
@@ -107,6 +109,7 @@
     let mouseX = -100;
     let mouseY = -100;
     let cursorRafPending = false;
+    let cursorVisible = false;
 
     function renderCursor() {
         if (customCursor) {
@@ -120,15 +123,35 @@
         if (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
             return;
         }
-        customCursor.classList.add('active');
 
         window.addEventListener('mousemove', function (e) {
             mouseX = e.clientX;
             mouseY = e.clientY;
+
+            if (!cursorVisible) {
+                cursorVisible = true;
+                // Position immediately at exact mouse coordinates on first movement
+                customCursor.style.transform = 'translate3d(' + (mouseX - 3) + 'px, ' + (mouseY - 2) + 'px, 0)';
+                customCursor.classList.add('active');
+            }
+
             if (!cursorRafPending) {
                 cursorRafPending = true;
                 requestAnimationFrame(renderCursor);
             }
+        }, { passive: true });
+
+        document.addEventListener('mouseenter', function (e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            customCursor.style.transform = 'translate3d(' + (mouseX - 3) + 'px, ' + (mouseY - 2) + 'px, 0)';
+            customCursor.classList.add('active');
+            cursorVisible = true;
+        }, { passive: true });
+
+        document.addEventListener('mouseleave', function () {
+            customCursor.classList.remove('active');
+            cursorVisible = false;
         }, { passive: true });
 
         window.addEventListener('mousedown', function () {
@@ -148,16 +171,31 @@
             asciiArtEl.textContent = FLEUR_ASCII.join('\n');
         }
 
-        // Breathing cycle, then dissolve into pure darkness and smoothly emerge the main content
-        setTimeout(function () {
-            if (preloader) preloader.classList.add('fade-out');
+        let entered = false;
 
-            setTimeout(function () {
-                if (preloader) preloader.style.display = 'none';
-            }, 1200);
+        function enterSite() {
+            if (entered) return;
+            entered = true;
+
+            if (preloader) {
+                preloader.classList.add('fade-out');
+                setTimeout(function () {
+                    preloader.style.display = 'none';
+                }, 1200);
+            }
 
             showMainContent();
-        }, 2200);
+        }
+
+        if (preloader) {
+            preloader.addEventListener('click', enterSite);
+        }
+
+        window.addEventListener('keydown', function (e) {
+            if (!entered && (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar')) {
+                enterSite();
+            }
+        });
     }
 
     function showMainContent() {
@@ -172,6 +210,11 @@
         if (siteControls) {
             siteControls.classList.remove('hidden');
             siteControls.classList.add('visible');
+        }
+
+        // Trigger ambient sound loop immediately after preloader completes & main content appears
+        if (typeof startAmbientAfterPreloader === 'function') {
+            startAmbientAfterPreloader();
         }
     }
 
@@ -226,8 +269,12 @@
         const themeBtn  = document.getElementById('themeToggleBtn');
         const moonIcon  = document.getElementById('themeMoonIcon');
         const sunIcon   = document.getElementById('themeSunIcon');
+        let transitionTimer = null;
 
-        function applyTheme(theme) {
+        function applyTheme(theme, animate = false) {
+            if (animate) {
+                document.documentElement.classList.add('theme-transitioning');
+            }
             document.documentElement.setAttribute('data-theme', theme);
             try {
                 localStorage.setItem('modeus_theme', theme);
@@ -242,18 +289,188 @@
                 if (sunIcon) sunIcon.classList.add('hidden');
                 if (themeBtn) themeBtn.title = "Переключить на дневную тему";
             }
+
+            if (animate) {
+                clearTimeout(transitionTimer);
+                transitionTimer = setTimeout(function () {
+                    document.documentElement.classList.remove('theme-transitioning');
+                }, 600);
+            }
         }
 
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-        applyTheme(currentTheme);
+        applyTheme(currentTheme, false);
 
         if (themeBtn) {
             themeBtn.addEventListener('click', function () {
                 const nowTheme = document.documentElement.getAttribute('data-theme') || 'dark';
                 const nextTheme = nowTheme === 'dark' ? 'light' : 'dark';
-                applyTheme(nextTheme);
+                applyTheme(nextTheme, true);
             });
         }
+    }
+
+    // ═══════════════════════════════════════════════
+    // 4.5 AUDIO ENGINE (AMBIENT, HOVER & CLICK SFX)
+    // ═══════════════════════════════════════════════
+
+    function initAudioEngine() {
+        const ambientToggleBtn = document.getElementById('ambientToggleBtn');
+        const ambientOnIcon    = document.getElementById('ambientOnIcon');
+        const ambientMuteIcon  = document.getElementById('ambientMuteIcon');
+
+        // 1. Ambient Audio Loop (sounds/amb1.wav, permanent 30% volume)
+        const ambientAudio = new Audio('sounds/amb1.wav');
+        ambientAudio.loop = true;
+        ambientAudio.volume = 0.3;
+
+        let isAmbientMuted = false;
+        let preloaderDone = false;
+
+        startAmbientAfterPreloader = function () {
+            preloaderDone = true;
+            getAudioContext();
+            if (!isAmbientMuted && ambientAudio.paused) {
+                ambientAudio.volume = 0;
+                ambientAudio.play().then(() => {
+                    // Smooth cinematic fade-in to 0.3 over 1.2s
+                    const targetVolume = 0.3;
+                    const steps = 24;
+                    const volumeStep = targetVolume / steps;
+                    let currentStep = 0;
+                    const fadeTimer = setInterval(() => {
+                        if (isAmbientMuted) {
+                            clearInterval(fadeTimer);
+                            return;
+                        }
+                        currentStep++;
+                        ambientAudio.volume = Math.min(targetVolume, ambientAudio.volume + volumeStep);
+                        if (currentStep >= steps) {
+                            ambientAudio.volume = targetVolume;
+                            clearInterval(fadeTimer);
+                        }
+                    }, 50);
+
+                    window.removeEventListener('pointerdown', unlockAudioOnInteraction);
+                    window.removeEventListener('keydown', unlockAudioOnInteraction);
+                }).catch(() => {
+                    // Browser autoplay policy holds playback until user interaction
+                });
+            }
+        };
+
+        // 2. Web Audio API for instantaneous 0ms latency SFX (navod.mp3, click.ogg)
+        let audioCtx = null;
+        let navBuffer = null;
+        let clickBuffer = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => {});
+            }
+            return audioCtx;
+        }
+
+        async function loadBuffer(url) {
+            try {
+                const res = await fetch(url);
+                const arrayBuf = await res.arrayBuffer();
+                const ctx = getAudioContext();
+                if (ctx) {
+                    return await ctx.decodeAudioData(arrayBuf);
+                }
+            } catch (e) {}
+            return null;
+        }
+
+        function playSfx(buffer, volume = 0.4) {
+            try {
+                const ctx = getAudioContext();
+                if (!ctx || !buffer) return;
+                const source = ctx.createBufferSource();
+                source.buffer = buffer;
+                const gain = ctx.createGain();
+                gain.gain.value = volume;
+                source.connect(gain);
+                gain.connect(ctx.destination);
+                source.start(0);
+            } catch (e) {}
+        }
+
+        // Preload sound buffers
+        loadBuffer('sounds/navod.mp3').then(buf => { navBuffer = buf; });
+        loadBuffer('sounds/click.ogg').then(buf => { clickBuffer = buf; });
+
+        // User gesture unlocks audio context & plays ambient if preloader finished
+        function unlockAudioOnInteraction() {
+            getAudioContext();
+            if (preloaderDone && !isAmbientMuted && ambientAudio.paused) {
+                ambientAudio.play().then(() => {
+                    window.removeEventListener('pointerdown', unlockAudioOnInteraction);
+                    window.removeEventListener('keydown', unlockAudioOnInteraction);
+                }).catch(() => {});
+            }
+        }
+
+        window.addEventListener('pointerdown', unlockAudioOnInteraction, { passive: true });
+        window.addEventListener('keydown', unlockAudioOnInteraction, { passive: true });
+
+        // 3. Ambient Mute/Unmute Toggle Button
+        if (ambientToggleBtn) {
+            ambientToggleBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                isAmbientMuted = !isAmbientMuted;
+
+                if (isAmbientMuted) {
+                    ambientAudio.pause();
+                    if (ambientOnIcon) ambientOnIcon.classList.add('hidden');
+                    if (ambientMuteIcon) ambientMuteIcon.classList.remove('hidden');
+                    ambientToggleBtn.title = "Включить фоновый эмбиент";
+                } else {
+                    ambientAudio.play().catch(() => {});
+                    if (ambientOnIcon) ambientOnIcon.classList.remove('hidden');
+                    if (ambientMuteIcon) ambientMuteIcon.classList.add('hidden');
+                    ambientToggleBtn.title = "Выключить фоновый эмбиент";
+                }
+            });
+        }
+
+        // 4. Hover Sound (navod.mp3) on all buttons, links and interactive components
+        // Prevent multiple triggers when cursor moves across internal children of the same button
+        const INTERACTIVE_SELECTOR = 'button, a, .control-btn, .nav-btn, .link-card, .logo-interactive-container, .preloader-enter-btn';
+        let lastSoundTime = 0;
+
+        document.addEventListener('mouseover', function (e) {
+            const targetBtn = e.target.closest(INTERACTIVE_SELECTOR);
+            if (!targetBtn) return;
+
+            const fromBtn = e.relatedTarget ? e.relatedTarget.closest(INTERACTIVE_SELECTOR) : null;
+            if (fromBtn === targetBtn) {
+                // Moving between children of the same interactive element -> do not replay
+                return;
+            }
+
+            const now = performance.now();
+            if (now - lastSoundTime < 35) return; // Debounce rapid consecutive border hits
+            lastSoundTime = now;
+
+            if (navBuffer) {
+                playSfx(navBuffer, 0.35);
+            }
+        }, { passive: true });
+
+        // 5. Global Click Sound (click.ogg) on every mouse click
+        document.addEventListener('pointerdown', function () {
+            if (clickBuffer) {
+                playSfx(clickBuffer, 0.45);
+            }
+        }, { passive: true });
     }
 
     // ═══════════════════════════════════════════════
@@ -606,6 +823,9 @@
 
         // Theme Inversion (Dark / Light)
         initThemeToggle();
+
+        // Audio Engine (Ambient loop 30%, Hover navod.mp3, Click click.ogg)
+        initAudioEngine();
 
         // Listen Accordion Dropdown
         initListenDropdown();

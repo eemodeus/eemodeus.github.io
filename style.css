@@ -47,11 +47,11 @@
     --header-glass-bg: linear-gradient(to top, rgba(3, 3, 5, 0.55) 0%, rgba(3, 3, 5, 0.25) 45%, rgba(3, 3, 5, 0) 100%);
 
     /* Image Filters */
-    --logo-filter: none;
+    --logo-filter: invert(0) brightness(1);
     --logo-hover-filter: brightness(1.06) drop-shadow(0 0 10px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 24px rgba(255, 255, 255, 0.35));
-    --ramka-filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.75)) drop-shadow(0 0 24px rgba(255, 255, 255, 0.45)) drop-shadow(0 0 42px rgba(220, 235, 255, 0.3)) drop-shadow(0 20px 45px rgba(0, 0, 0, 0.95));
-    --divider-filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.35));
-    --cursor-filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.45)) drop-shadow(0 3px 6px rgba(0, 0, 0, 0.85));
+    --ramka-filter: invert(0) brightness(1) drop-shadow(0 0 10px rgba(255, 255, 255, 0.75)) drop-shadow(0 0 24px rgba(255, 255, 255, 0.45)) drop-shadow(0 0 42px rgba(220, 235, 255, 0.3)) drop-shadow(0 20px 45px rgba(0, 0, 0, 0.95));
+    --divider-filter: invert(0) brightness(1) drop-shadow(0 0 8px rgba(255, 255, 255, 0.35));
+    --cursor-filter: invert(0) brightness(1) drop-shadow(0 0 4px rgba(255, 255, 255, 0.45)) drop-shadow(0 3px 6px rgba(0, 0, 0, 0.85));
     --easter-egg-filter: brightness(0) invert(1) drop-shadow(0 0 22px rgba(255, 255, 255, 0.55)) drop-shadow(0 15px 35px rgba(0, 0, 0, 0.95));
 
     /* Film Grain Settings (Prominent 35mm Analog Grain) */
@@ -112,6 +112,59 @@
     :root, [data-theme="dark"], [data-theme="light"] {
         --app-height: 100dvh;
     }
+}
+
+/* ═══════════════════════════════════════════════════
+   SMOOTH THEME TRANSITION CONTROLLER
+   ═══════════════════════════════════════════════════ */
+html.theme-transitioning,
+html.theme-transitioning body,
+html.theme-transitioning .section,
+html.theme-transitioning .site-header,
+html.theme-transitioning .site-header-glass,
+html.theme-transitioning .site-nav,
+html.theme-transitioning .nav-btn,
+html.theme-transitioning .nav-btn::after,
+html.theme-transitioning .site-controls,
+html.theme-transitioning .control-btn,
+html.theme-transitioning .link-card,
+html.theme-transitioning .link-card::before,
+html.theme-transitioning .link-card::after,
+html.theme-transitioning .link-icon,
+html.theme-transitioning .link-label,
+html.theme-transitioning .link-arrow,
+html.theme-transitioning .artist-logo,
+html.theme-transitioning .section-title,
+html.theme-transitioning .divider-ornament-img,
+html.theme-transitioning .about-content,
+html.theme-transitioning .photo-ramka,
+html.theme-transitioning .about-text,
+html.theme-transitioning .preloader-enter-btn,
+html.theme-transitioning svg,
+html.theme-transitioning path,
+html.theme-transitioning circle,
+html.theme-transitioning line,
+html.theme-transitioning polyline,
+html.theme-transitioning polygon,
+html.theme-transitioning rect {
+    transition: 
+        background-color 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+        color 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+        fill 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+        stroke 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+        filter 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+        text-shadow 0.55s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Guard custom cursor transform and pointer smoothness from any transition delay */
+html.theme-transitioning #custom-cursor {
+    transition: none !important;
+}
+html.theme-transitioning .custom-cursor-img {
+    transition: filter 0.55s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 /* ── RESET & BASE ── */
@@ -207,7 +260,7 @@ html.lenis body {
     pointer-events: none;
     overflow: hidden;
     background-color: var(--bg-page);
-    transition: background-color 0.45s ease;
+    transition: background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .bg-video {
@@ -222,7 +275,7 @@ html.lenis body {
     object-fit: cover;
     pointer-events: none;
     filter: var(--video-filter);
-    transition: filter 0.5s ease;
+    transition: filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .video-bg-overlay {
@@ -231,9 +284,24 @@ html.lenis body {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    background: var(--video-overlay);
-    box-shadow: var(--video-vignette);
-    transition: background 0.5s ease, box-shadow 0.5s ease;
+    background: radial-gradient(circle at 50% 50%, rgba(3, 3, 5, 0.45) 0%, rgba(0, 0, 0, 0.85) 100%);
+    box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.95);
+    transition: box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.video-bg-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% 50%, rgba(245, 245, 248, 0.76) 0%, rgba(228, 229, 235, 0.95) 100%);
+    box-shadow: inset 0 0 120px rgba(180, 185, 200, 0.55);
+    opacity: 0;
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="light"] .video-bg-overlay::after {
+    opacity: 1;
 }
 
 /* ═══════════════════════════════════════════════════
@@ -263,13 +331,16 @@ html.lenis body {
     height: 35px;
     pointer-events: none;
     z-index: 9999999;
-    transform: translate3d(-3px, -2px, 0);
-    will-change: transform;
-    display: none;
+    transform: translate3d(-100px, -100px, 0);
+    opacity: 0;
+    visibility: hidden;
+    will-change: transform, opacity;
+    transition: opacity 0.15s ease, visibility 0.15s ease;
 }
 
 #custom-cursor.active {
-    display: block;
+    opacity: 1;
+    visibility: visible;
 }
 
 .custom-cursor-img {
@@ -349,22 +420,23 @@ html.lenis body {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    opacity: 1;
     display: block;
     stroke: currentColor;
     pointer-events: none;
-    transition: transform 0.25s ease, opacity 0.25s ease;
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
 }
 
 .control-icon.hidden {
-    display: none !important;
     opacity: 0 !important;
     visibility: hidden !important;
+    transform: translate(-50%, -50%) rotate(-75deg) scale(0.4) !important;
     pointer-events: none !important;
 }
 
 /* ═══════════════════════════════════════════════════
-   PRELOADER (BREATHING ASCII GLOW)
+   PRELOADER (BREATHING ASCII GLOW & INTERACTIVE ENTER)
    ═══════════════════════════════════════════════════ */
 #preloader {
     position: fixed;
@@ -374,12 +446,14 @@ html.lenis body {
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
     transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 1.2s ease;
 }
 
 #preloader.fade-out {
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
 }
 
 .preloader-content {
@@ -415,8 +489,8 @@ html.lenis body {
 
 .ascii-breathing {
     font-family: 'Courier New', Courier, monospace;
-    font-size: clamp(3px, 0.58vw, 6.5px);
-    line-height: 1.15;
+    font-size: clamp(3.8px, min(1.15vw, 0.9vh), 9.2px);
+    line-height: 1.1;
     white-space: pre;
     margin: 0;
     padding: 0;
@@ -424,6 +498,55 @@ html.lenis body {
     letter-spacing: 0px;
     animation: asciiBreath 2.2s ease-in-out infinite;
     user-select: none;
+}
+
+/* Interactive Enter Prompt (Minimalist Gothic Brackets, no oval) */
+.preloader-enter-btn {
+    margin-top: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Space Mono', 'Courier New', monospace;
+    font-size: clamp(11px, 1.0vw, 13px);
+    font-weight: 600;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.65);
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: enterTextGlow 2.4s ease-in-out infinite;
+}
+
+.preloader-enter-btn:hover {
+    color: #ffffff;
+    text-shadow: 0 0 16px rgba(255, 255, 255, 0.85), 0 0 28px rgba(210, 225, 255, 0.45);
+    transform: scale(1.06);
+}
+
+.preloader-enter-btn .enter-bracket {
+    color: rgba(255, 255, 255, 0.35);
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.preloader-enter-btn:hover .enter-bracket {
+    color: #ffffff;
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.85);
+}
+
+@keyframes enterTextGlow {
+    0%, 100% {
+        opacity: 0.45;
+        text-shadow: 0 0 0px rgba(255, 255, 255, 0);
+    }
+    50% {
+        opacity: 1;
+        text-shadow: 0 0 12px rgba(255, 255, 255, 0.75), 0 0 24px rgba(210, 225, 255, 0.35);
+    }
 }
 
 /* ═══════════════════════════════════════════════════
@@ -839,7 +962,8 @@ html.lenis body {
     color: var(--text-primary);
     position: relative;
     overflow: hidden;
-    background: var(--card-bg);
+    background-color: rgba(18, 18, 24, 0.65);
+    background-image: var(--card-bg);
     backdrop-filter: blur(28px) saturate(190%);
     -webkit-backdrop-filter: blur(28px) saturate(190%);
     border: 1px solid var(--card-border);
@@ -855,10 +979,10 @@ html.lenis body {
     transition: 
         opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
         transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-        background 0.35s ease,
-        border-color 0.35s ease,
-        box-shadow 0.35s ease,
-        color 0.3s ease;
+        background-color 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+        color 0.55s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: opacity, transform, box-shadow;
 }
 
@@ -937,7 +1061,8 @@ html.lenis body {
 
 /* Light Theme Overrides for Liquid Glass */
 [data-theme="light"] .link-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(245, 245, 248, 0.55) 50%, rgba(255, 255, 255, 0.75) 100%);
+    background-color: rgba(248, 248, 252, 0.85);
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(245, 245, 248, 0.55) 50%, rgba(255, 255, 255, 0.75) 100%);
     box-shadow: 
         0 10px 30px -5px rgba(0, 0, 0, 0.08),
         inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.95),
