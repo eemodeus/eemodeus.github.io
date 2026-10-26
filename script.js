@@ -352,19 +352,40 @@
     }
 
     // ═══════════════════════════════════════════════
-    // 6. LIQUID GLASS CARDS (MOUSE TRACKING & GLOW)
+    // 6. LIQUID GLASS CARDS (PHYSICAL 3D TILT & SPECULAR SHEEN)
     // ═══════════════════════════════════════════════
 
     function initLiquidGlassCards() {
         const linkCards = document.querySelectorAll('.link-card');
+        if (!linkCards.length) return;
+
         linkCards.forEach(function (card) {
+            let rafId = null;
+
             card.addEventListener('mousemove', function (e) {
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
+
                 card.style.setProperty('--mouse-x', x + 'px');
                 card.style.setProperty('--mouse-y', y + 'px');
+
+                // 3D Liquid Glass Tilt calculation (subtle & refined: max 5 deg)
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -5.0;
+                const rotateY = ((x - centerX) / centerX) * 5.0;
+
+                if (rafId) cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(function () {
+                    card.style.transform = `perspective(800px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translate3d(0, -4px, 12px)`;
+                });
             }, { passive: true });
+
+            card.addEventListener('mouseleave', function () {
+                if (rafId) cancelAnimationFrame(rafId);
+                card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translate3d(0, 0, 0)';
+            });
         });
     }
 

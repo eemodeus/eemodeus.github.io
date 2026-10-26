@@ -834,27 +834,32 @@ html.lenis body {
     align-items: center;
     gap: 14px;
     padding: 14px 18px;
-    border-radius: 16px;
+    border-radius: 18px;
     text-decoration: none;
     color: var(--text-primary);
     position: relative;
     overflow: hidden;
     background: var(--card-bg);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(28px) saturate(190%);
+    -webkit-backdrop-filter: blur(28px) saturate(190%);
     border: 1px solid var(--card-border);
-    box-shadow: var(--card-shadow), inset 0 1px 1px rgba(255, 255, 255, 0.12);
+    box-shadow: 
+        0 12px 32px -4px rgba(0, 0, 0, 0.7),
+        inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.35),
+        inset 0 -1px 1.5px 0 rgba(0, 0, 0, 0.45);
+    perspective: 800px;
+    transform-style: preserve-3d;
     
     opacity: 0;
     transform: translate3d(0, 20px, 0);
     transition: 
         opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-        background 0.3s ease,
-        border-color 0.3s ease,
-        box-shadow 0.3s ease,
+        transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+        background 0.35s ease,
+        border-color 0.35s ease,
+        box-shadow 0.35s ease,
         color 0.3s ease;
-    will-change: opacity, transform;
+    will-change: opacity, transform, box-shadow;
 }
 
 #section-links.active .link-card {
@@ -862,46 +867,116 @@ html.lenis body {
     transform: translate3d(0, 0, 0);
 }
 
-/* Liquid Glass Gloss Arc */
+/* 1. Dynamic Chamfered Glass Rim (Edge Highlight tracking cursor) */
 .link-card::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.01) 100%);
-    border-radius: 15px 15px 80% 80% / 15px 15px 20px 20px;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: radial-gradient(
+        220px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(255, 255, 255, 0.85) 0%,
+        rgba(255, 255, 255, 0.25) 35%,
+        transparent 65%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
     pointer-events: none;
-    opacity: 0.6;
-    transition: opacity 0.3s ease;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 4;
 }
 
+/* 2. Fluid Specular Surface Sheen & Liquid Caustic Wash */
 .link-card::after {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 16px;
-    background: radial-gradient(circle 120px at var(--mouse-x, 50%) var(--mouse-y, 50%), var(--glow-primary) 0%, transparent 70%);
-    opacity: 0;
+    border-radius: inherit;
+    background: 
+        radial-gradient(
+            circle 130px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+            rgba(255, 255, 255, 0.2) 0%,
+            rgba(255, 255, 255, 0.05) 50%,
+            transparent 75%
+        ),
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.14) 0%,
+            rgba(255, 255, 255, 0.02) 35%,
+            transparent 55%,
+            rgba(255, 255, 255, 0.06) 100%
+        );
     pointer-events: none;
-    transition: opacity 0.3s ease;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    z-index: 1;
+    mix-blend-mode: overlay;
 }
 
 #section-links.active .link-card:hover {
-    transform: translate3d(0, -3px, 0);
     transition-delay: 0s;
     background: var(--card-hover-bg);
-    border-color: var(--card-border-hover);
-    box-shadow: var(--card-shadow-hover), 0 0 16px var(--glow-primary);
+    border-color: rgba(255, 255, 255, 0.32);
+    box-shadow: 
+        0 22px 48px -8px rgba(0, 0, 0, 0.88),
+        0 0 24px -2px rgba(255, 255, 255, 0.16),
+        inset 0 1px 2px 0 rgba(255, 255, 255, 0.6),
+        inset 0 -1px 2px 0 rgba(0, 0, 0, 0.5);
 }
 
 .link-card:hover::before {
-    opacity: 0.9;
+    opacity: 1;
 }
 
 .link-card:hover::after {
     opacity: 1;
+}
+
+/* Light Theme Overrides for Liquid Glass */
+[data-theme="light"] .link-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(245, 245, 248, 0.55) 50%, rgba(255, 255, 255, 0.75) 100%);
+    box-shadow: 
+        0 10px 30px -5px rgba(0, 0, 0, 0.08),
+        inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.95),
+        inset 0 -1px 1px 0 rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .link-card:hover {
+    box-shadow: 
+        0 20px 42px -10px rgba(0, 0, 0, 0.16),
+        0 0 20px -2px rgba(0, 0, 0, 0.06),
+        inset 0 1px 2px 0 #ffffff,
+        inset 0 -1px 1.5px 0 rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.32);
+}
+
+[data-theme="light"] .link-card::before {
+    background: radial-gradient(
+        220px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(0, 0, 0, 0.6) 0%,
+        rgba(0, 0, 0, 0.18) 35%,
+        transparent 65%
+    );
+}
+
+[data-theme="light"] .link-card::after {
+    mix-blend-mode: multiply;
+    background: 
+        radial-gradient(
+            circle 130px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+            rgba(0, 0, 0, 0.07) 0%,
+            transparent 70%
+        ),
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.7) 0%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.5) 100%
+        );
 }
 
 /* Liquid Frosted Icon Badge */
@@ -917,7 +992,10 @@ html.lenis body {
     border: 1px solid var(--border-subtle);
     color: var(--text-primary);
     padding: 8px;
-    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+    transform: translateZ(10px);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 .link-icon svg {
@@ -927,10 +1005,10 @@ html.lenis body {
 }
 
 .link-card:hover .link-icon {
-    transform: scale(1.1);
+    transform: translateZ(20px) scale(1.08);
     border-color: var(--border-silver);
     color: var(--text-primary);
-    box-shadow: 0 0 12px var(--glow-primary);
+    box-shadow: 0 0 16px var(--glow-primary);
 }
 
 /* Info Column */
@@ -941,6 +1019,10 @@ html.lenis body {
     text-align: left;
     flex-grow: 1;
     overflow: hidden;
+    position: relative;
+    z-index: 2;
+    transform: translateZ(8px);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .link-label {
@@ -973,6 +1055,9 @@ html.lenis body {
     border: 1px solid var(--border-subtle);
     color: var(--text-primary);
     flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+    transform: translateZ(10px);
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -985,9 +1070,9 @@ html.lenis body {
 }
 
 .link-card:hover .link-arrow {
-    transform: translateX(4px);
+    transform: translateZ(18px) translateX(4px);
     border-color: var(--border-silver);
-    box-shadow: 0 0 10px var(--glow-primary);
+    box-shadow: 0 0 12px var(--glow-primary);
 }
 
 .link-card:hover .link-arrow .external-icon {
