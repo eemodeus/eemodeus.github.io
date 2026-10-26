@@ -399,13 +399,13 @@ html.lenis body {
 #preloader {
     position: fixed;
     inset: 0;
-    z-index: 99999;
-    background: var(--bg-page);
+    z-index: 90;
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 1.2s ease, background-color 0.45s ease;
+    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 1.2s ease;
 }
 
 #preloader.fade-out {
