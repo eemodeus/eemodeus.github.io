@@ -701,23 +701,13 @@
         });
     }
 
-    const DECRYPT_GLYPHS = '0123456789#%&*+=-_~/?\\|<>[]{}†‡§XYZΔΩЖФШЩЪЫЭЮ';
-    let cancelBioDecrypt = null;
-    let bioSlotsInitialized = false;
-    let bioSlotData = [];
-    let isDecrypting = false;
+    const HACKER_GLYPHS = '01#%&*+=-_~/?\\|<>[]{}XYZΔΩ';
+    let bioTypewriterTimer = null;
+    let isBioTyping = false;
     let bioRawText = '';
 
-    function escapeHtml(str) {
-        return str
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-    }
-
-    function setupBioSlots() {
+    triggerAboutBioDecrypt = function (force) {
+        if (isPreloaderActive && !force) return;
         const aboutTextEl = document.getElementById('aboutText');
         if (!aboutTextEl) return;
 
@@ -726,166 +716,46 @@
         }
         if (!bioRawText) return;
 
-        const words = bioRawText.split(' ');
-        aboutTextEl.innerHTML = words.map(function (word) {
-            const slots = word.split('').map(function (ch) {
-                return '<span class="d-slot d-revealed">' + escapeHtml(ch) + '</span>';
-            }).join('');
-            return '<span class="d-word">' + slots + '</span>';
-        }).join('<span class="d-slot d-space"> </span>');
-
-        measureBioSlots();
-    }
-
-    function measureBioSlots() {
-        const aboutTextEl = document.getElementById('aboutText');
-        if (!aboutTextEl) return;
-        const spans = aboutTextEl.querySelectorAll('.d-slot');
-        if (!spans.length) return;
-
-        aboutTextEl.style.height = '';
-        aboutTextEl.style.minHeight = '';
-        spans.forEach(function (span) {
-            span.style.width = '';
-            span.style.minWidth = '';
-            span.style.maxWidth = '';
-        });
-
-        const naturalHeight = Math.ceil(aboutTextEl.getBoundingClientRect().height);
-        const measurements = [];
-        let allValid = true;
-
-        spans.forEach(function (span) {
-            const ch = span.textContent;
-            const isSpace = span.classList.contains('d-space');
-            const rect = span.getBoundingClientRect();
-            const w = Math.ceil(rect.width * 100) / 100;
-            if (w <= 0) {
-                allValid = false;
-            }
-            measurements.push({
-                el: span,
-                char: ch,
-                isSpace: isSpace,
-                width: w
-            });
-        });
-
-        if (naturalHeight > 0) {
-            aboutTextEl.style.height = naturalHeight + 'px';
-            aboutTextEl.style.minHeight = naturalHeight + 'px';
+        if (bioTypewriterTimer) {
+            clearInterval(bioTypewriterTimer);
+            bioTypewriterTimer = null;
         }
 
-        bioSlotData = [];
-        measurements.forEach(function (item) {
-            if (item.width > 0) {
-                item.el.style.width = item.width + 'px';
-                item.el.style.minWidth = item.width + 'px';
-                item.el.style.maxWidth = item.width + 'px';
-            }
-            bioSlotData.push({
-                el: item.el,
-                char: item.char,
-                isSpace: item.isSpace
-            });
-        });
-
-        bioSlotsInitialized = (allValid && spans.length > 0 && naturalHeight > 0);
-    }
-
-    triggerAboutBioDecrypt = function (force) {
-        if (isPreloaderActive && !force) return;
-        const aboutTextEl = document.getElementById('aboutText');
-        if (!aboutTextEl) return;
-
-        if (cancelBioDecrypt) {
-            cancelBioDecrypt();
-            cancelBioDecrypt = null;
-        }
-
-        if (!bioSlotsInitialized || bioSlotData.length === 0) {
-            setupBioSlots();
-        }
-
-        if (!aboutTextEl.style.height) {
+        if (!aboutTextEl.style.minHeight) {
             const currentH = Math.ceil(aboutTextEl.getBoundingClientRect().height);
             if (currentH > 0) {
-                aboutTextEl.style.height = currentH + 'px';
                 aboutTextEl.style.minHeight = currentH + 'px';
             }
         }
 
-        const totalSlots = bioSlotData.length;
-        if (totalSlots === 0) return;
+        const total = bioRawText.length;
+        let pos = 0;
+        isBioTyping = true;
 
-        const duration = 1450;
-        const delay = 100;
-        const startTime = performance.now() + delay;
-        let animId = null;
-        isDecrypting = true;
+        bioTypewriterTimer = setInterval(function () {
+            const step = (pos > 30 && Math.random() > 0.45) ? 2 : 1;
+            pos = Math.min(total, pos + step);
 
-        bioSlotData.forEach(function (item) {
-            if (!item.isSpace) {
-                item.el.textContent = DECRYPT_GLYPHS[Math.floor(Math.random() * DECRYPT_GLYPHS.length)];
-                item.el.className = 'd-slot d-glitch';
-            }
-        });
-
-        function update(now) {
-            if (now < startTime) {
-                bioSlotData.forEach(function (item) {
-                    if (!item.isSpace) {
-                        item.el.textContent = DECRYPT_GLYPHS[Math.floor(Math.random() * DECRYPT_GLYPHS.length)];
-                    }
-                });
-                animId = requestAnimationFrame(update);
-                return;
+            const currentText = bioRawText.slice(0, pos);
+            let glyphHtml = '';
+            if (pos < total) {
+                const randomGlyph = HACKER_GLYPHS[Math.floor(Math.random() * HACKER_GLYPHS.length)];
+                glyphHtml = '<span class="bio-glyph">' + randomGlyph + '</span>';
             }
 
-            const elapsed = now - startTime;
-            const progress = Math.min(Math.max(elapsed / duration, 0), 1);
+            aboutTextEl.innerHTML = currentText + glyphHtml + '<span class="bio-cursor"></span>';
 
-            const eased = 1 - Math.pow(1 - progress, 2);
-            const revealedCount = Math.floor(eased * totalSlots);
+            if (pos >= total) {
+                clearInterval(bioTypewriterTimer);
+                bioTypewriterTimer = null;
+                isBioTyping = false;
 
-            for (let i = 0; i < totalSlots; i++) {
-                const item = bioSlotData[i];
-                if (item.isSpace) continue;
-
-                if (i < revealedCount) {
-                    if (item.el.textContent !== item.char) {
-                        item.el.textContent = item.char;
-                        item.el.className = 'd-slot d-revealed';
-                    }
-                } else {
-                    item.el.textContent = DECRYPT_GLYPHS[Math.floor(Math.random() * DECRYPT_GLYPHS.length)];
-                    item.el.className = 'd-slot d-glitch';
-                }
+                setTimeout(function () {
+                    const cur = aboutTextEl.querySelector('.bio-cursor');
+                    if (cur) cur.style.opacity = '0.35';
+                }, 2500);
             }
-
-            if (progress < 1) {
-                animId = requestAnimationFrame(update);
-            } else {
-                bioSlotData.forEach(function (item) {
-                    item.el.textContent = item.char;
-                    item.el.className = 'd-slot d-revealed';
-                });
-                animId = null;
-                isDecrypting = false;
-            }
-        }
-
-        animId = requestAnimationFrame(update);
-
-        cancelBioDecrypt = function () {
-            if (animId) cancelAnimationFrame(animId);
-            bioSlotData.forEach(function (item) {
-                item.el.textContent = item.char;
-                item.el.className = 'd-slot d-revealed';
-            });
-            animId = null;
-            isDecrypting = false;
-        };
+        }, 15);
     };
 
     checkInitialBioSection = function () {
@@ -905,12 +775,13 @@
     };
 
     function initBioDecryptEffect() {
-        setupBioSlots();
-
-        if (document.fonts && document.fonts.ready) {
-            document.fonts.ready.then(function () {
-                measureBioSlots();
-            });
+        const aboutTextEl = document.getElementById('aboutText');
+        if (aboutTextEl) {
+            bioRawText = aboutTextEl.textContent.trim().replace(/\s+/g, ' ');
+            const currentH = Math.ceil(aboutTextEl.getBoundingClientRect().height);
+            if (currentH > 0) {
+                aboutTextEl.style.minHeight = currentH + 'px';
+            }
         }
 
         let lastBioWidth = window.innerWidth;
@@ -920,16 +791,20 @@
             lastBioWidth = window.innerWidth;
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(function () {
-                if (!isDecrypting) {
-                    measureBioSlots();
+                if (!isBioTyping && aboutTextEl) {
+                    aboutTextEl.style.minHeight = '';
+                    const h = Math.ceil(aboutTextEl.getBoundingClientRect().height);
+                    if (h > 0) aboutTextEl.style.minHeight = h + 'px';
                 }
             }, 150);
         });
 
         window.addEventListener('orientationchange', function () {
             setTimeout(function () {
-                if (!isDecrypting) {
-                    measureBioSlots();
+                if (!isBioTyping && aboutTextEl) {
+                    aboutTextEl.style.minHeight = '';
+                    const h = Math.ceil(aboutTextEl.getBoundingClientRect().height);
+                    if (h > 0) aboutTextEl.style.minHeight = h + 'px';
                 }
             }, 200);
         });
