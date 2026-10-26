@@ -530,6 +530,9 @@
                 if (!targetSec) return;
 
                 pendingBioDecrypt = false;
+                if (href !== '#section-about' && typeof completeBioTextImmediately === 'function') {
+                    completeBioTextImmediately();
+                }
                 if (href === '#section-about' && typeof triggerAboutBioDecrypt === 'function') {
                     setTimeout(function () {
                         triggerAboutBioDecrypt(true);
@@ -571,6 +574,9 @@
                     entry.target.classList.add('active');
 
                     if (currentActiveSectionId !== id) {
+                        if (currentActiveSectionId === 'section-about' && typeof completeBioTextImmediately === 'function') {
+                            completeBioTextImmediately();
+                        }
                         currentActiveSectionId = id;
                         if (!isPreloaderActive && id === 'section-about' && typeof triggerAboutBioDecrypt === 'function') {
                             if (isUserScrolling) {
@@ -704,12 +710,29 @@
     const HACKER_GLYPHS = '01#%&*+=-_~/?\\|<>[]{}XYZΔΩ';
     let bioTypewriterTimer = null;
     let isBioTyping = false;
+    let bioHasPlayed = false;
     let bioRawText = '';
 
+    function completeBioTextImmediately() {
+        if (!isBioTyping) return;
+        if (bioTypewriterTimer) {
+            clearInterval(bioTypewriterTimer);
+            bioTypewriterTimer = null;
+        }
+        isBioTyping = false;
+        const aboutTextEl = document.getElementById('aboutText');
+        if (aboutTextEl && bioRawText) {
+            aboutTextEl.innerHTML = bioRawText + '<span class="bio-cursor" style="opacity: 0.35;"></span>';
+        }
+    }
+
     triggerAboutBioDecrypt = function (force) {
+        if (bioHasPlayed) return;
         if (isPreloaderActive && !force) return;
         const aboutTextEl = document.getElementById('aboutText');
         if (!aboutTextEl) return;
+
+        bioHasPlayed = true;
 
         if (!bioRawText) {
             bioRawText = aboutTextEl.textContent.trim().replace(/\s+/g, ' ');
