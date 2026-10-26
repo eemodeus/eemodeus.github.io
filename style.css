@@ -443,7 +443,7 @@ html.lenis body {
 }
 
 .ascii-breathing {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'JetBrains Mono', 'Space Mono', 'Courier New', Courier, monospace;
     font-size: clamp(3.8px, min(1.15vw, 0.9vh), 9.2px);
     line-height: 1.1;
     white-space: pre;
@@ -461,7 +461,7 @@ html.lenis body {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    font-family: 'Space Mono', 'Courier New', monospace;
+    font-family: 'JetBrains Mono', 'Space Mono', 'Courier New', monospace;
     font-size: clamp(11px, 1.0vw, 13px);
     font-weight: 600;
     letter-spacing: 0.38em;
@@ -777,12 +777,12 @@ html.lenis body {
 }
 
 .about-text {
-    font-family: var(--font-body);
-    font-size: clamp(12.5px, 1.4vw, 15px);
-    line-height: 1.78;
+    font-family: 'JetBrains Mono', 'Space Mono', 'Consolas', monospace;
+    font-size: clamp(11.5px, 1.25vw, 13.5px);
+    line-height: 1.72;
     color: var(--text-secondary);
-    font-weight: 350;
-    letter-spacing: 0.04em;
+    font-weight: 400;
+    letter-spacing: 0.025em;
     text-align: center;
     transition: color 0.45s ease;
     cursor: default;
@@ -922,12 +922,11 @@ html.lenis body {
     color: rgba(255, 255, 255, 0.4);
     font-weight: 400;
     letter-spacing: 0.05em;
-    transition: color 0.25s ease, text-shadow 0.25s ease;
+    transition: color 0.25s ease;
 }
 
 .link-main .link-text {
-    animation: enterTextGlow 3s ease-in-out infinite;
-    transition: color 0.25s ease, text-shadow 0.25s ease;
+    transition: color 0.25s ease;
 }
 
 .terminal-cursor {
@@ -946,7 +945,7 @@ html.lenis body {
     letter-spacing: 0.15em;
     color: rgba(255, 255, 255, 0.38);
     text-transform: uppercase;
-    transition: all 0.25s ease;
+    transition: color 0.25s ease;
     white-space: nowrap;
 }
 
@@ -970,12 +969,12 @@ html.lenis body {
 
 .link-item:hover .bracket {
     color: #ffffff;
-    text-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
+    text-shadow: none;
 }
 
 .link-item:hover .link-text {
     color: #ffffff;
-    text-shadow: 0 0 16px rgba(255, 255, 255, 0.95), 0 0 30px rgba(210, 225, 255, 0.6);
+    text-shadow: none;
 }
 
 .link-item:hover .terminal-cursor {
@@ -986,7 +985,7 @@ html.lenis body {
 
 .link-item:hover .link-badge {
     color: #ffffff;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.85);
+    text-shadow: none;
 }
 
 .link-item:hover .link-rail {
@@ -1075,7 +1074,7 @@ html.lenis body {
 [data-theme="light"] .link-item:hover .bracket,
 [data-theme="light"] .link-item:hover .link-text {
     color: #000000;
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+    text-shadow: none;
 }
 
 [data-theme="light"] .link-item:hover .terminal-cursor {
@@ -1085,7 +1084,7 @@ html.lenis body {
 
 [data-theme="light"] .link-item:hover .link-badge {
     color: #000000;
-    text-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+    text-shadow: none;
 }
 
 [data-theme="light"] .link-item:hover .link-rail {
@@ -1308,8 +1307,8 @@ html.lenis body {
     }
 
     .about-text {
-        font-size: 11.5px;
-        line-height: 1.58;
+        font-size: 11px;
+        line-height: 1.56;
     }
 
     .links-container {
@@ -1365,8 +1364,8 @@ html.lenis body {
     }
 
     .about-text {
-        font-size: 11px;
-        line-height: 1.6;
+        font-size: 10px;
+        line-height: 1.54;
     }
 }
 
