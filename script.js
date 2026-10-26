@@ -93,10 +93,15 @@
     let triggerAboutBioDecrypt = null;
     let checkInitialBioSection = null;
     let currentActiveSectionId = null;
+    let lastWindowWidth = window.innerWidth;
 
     function updateAppHeight() {
-        const vh = window.innerHeight;
-        document.documentElement.style.setProperty('--app-height', vh + 'px');
+        const curWidth = window.innerWidth;
+        if (Math.abs(curWidth - lastWindowWidth) > 50 || !document.documentElement.style.getPropertyValue('--app-height')) {
+            lastWindowWidth = curWidth;
+            const vh = window.innerHeight;
+            document.documentElement.style.setProperty('--app-height', vh + 'px');
+        }
     }
 
     let mouseX = -100;
@@ -218,12 +223,13 @@
     function initGrainyNoise() {
         const grainEl = document.getElementById('film-grain-overlay');
         if (grainEl && typeof window.grainy === 'function') {
+            const isTouch = window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
             window.grainy(grainEl, {
                 intensity: 0.95,
                 size: 160,
                 opacity: 0.38,
                 monochrome: true,
-                animate: true,
+                animate: !isTouch,
                 grainChaos: 0.45,
                 grainSpeed: 16
             });
@@ -430,6 +436,7 @@
         let lastSoundTime = 0;
 
         document.addEventListener('mouseover', function (e) {
+            if (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) return;
             const targetBtn = e.target.closest(INTERACTIVE_SELECTOR);
             if (!targetBtn) return;
 
@@ -465,6 +472,9 @@
 
     function initLenis() {
         if (typeof Lenis === 'undefined') return;
+        if (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
+            return;
+        }
 
         try {
             lenis = new Lenis({
@@ -492,6 +502,24 @@
     }
 
     function initAnchorNavigation() {
+        let isUserScrolling = false;
+        let scrollStopTimer = null;
+        let pendingBioDecrypt = false;
+
+        window.addEventListener('scroll', function () {
+            isUserScrolling = true;
+            clearTimeout(scrollStopTimer);
+            scrollStopTimer = setTimeout(function () {
+                isUserScrolling = false;
+                if (pendingBioDecrypt) {
+                    pendingBioDecrypt = false;
+                    if (typeof triggerAboutBioDecrypt === 'function') {
+                        triggerAboutBioDecrypt();
+                    }
+                }
+            }, 140);
+        }, { passive: true });
+
         navBtns.forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 const href = btn.getAttribute('href');
@@ -501,6 +529,7 @@
                 const targetSec = document.querySelector(href);
                 if (!targetSec) return;
 
+                pendingBioDecrypt = false;
                 if (href === '#section-about' && typeof triggerAboutBioDecrypt === 'function') {
                     setTimeout(function () {
                         triggerAboutBioDecrypt(true);
@@ -544,7 +573,13 @@
                     if (currentActiveSectionId !== id) {
                         currentActiveSectionId = id;
                         if (!isPreloaderActive && id === 'section-about' && typeof triggerAboutBioDecrypt === 'function') {
-                            triggerAboutBioDecrypt();
+                            if (isUserScrolling) {
+                                pendingBioDecrypt = true;
+                            } else {
+                                triggerAboutBioDecrypt();
+                            }
+                        } else {
+                            pendingBioDecrypt = false;
                         }
                     }
                 }
@@ -566,6 +601,9 @@
             let rafId = null;
 
             card.addEventListener('mousemove', function (e) {
+                const isMouse = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+                if (!isMouse) return;
+
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
@@ -573,18 +611,15 @@
                 card.style.setProperty('--mouse-x', x + 'px');
                 card.style.setProperty('--mouse-y', y + 'px');
 
-                const isMouse = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-                if (isMouse) {
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    const rotateX = ((y - centerY) / centerY) * -5.0;
-                    const rotateY = ((x - centerX) / centerX) * 5.0;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -5.0;
+                const rotateY = ((x - centerX) / centerX) * 5.0;
 
-                    if (rafId) cancelAnimationFrame(rafId);
-                    rafId = requestAnimationFrame(function () {
-                        card.style.transform = `perspective(800px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translate3d(0, -4px, 12px)`;
-                    });
-                }
+                if (rafId) cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(function () {
+                    card.style.transform = `perspective(800px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translate3d(0, -4px, 12px)`;
+                });
             }, { passive: true });
 
             card.addEventListener('mouseleave', function () {
@@ -878,8 +913,11 @@
             });
         }
 
+        let lastBioWidth = window.innerWidth;
         let resizeTimer = null;
         window.addEventListener('resize', function () {
+            if (Math.abs(window.innerWidth - lastBioWidth) < 20) return;
+            lastBioWidth = window.innerWidth;
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(function () {
                 if (!isDecrypting) {
