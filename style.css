@@ -628,10 +628,13 @@ html.lenis body {
 .divider-ornament-img {
     width: 76px;
     height: auto;
+    aspect-ratio: 736 / 414;
     display: block;
     object-fit: contain;
     filter: var(--divider-filter);
     transition: filter 0.45s ease;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 /* ═══════════════════════════════════════════════════
@@ -801,15 +804,24 @@ html.lenis body {
     align-items: center;
     margin-bottom: 8px;
     flex-shrink: 0;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: transform;
 }
 
 .about-header .section-title {
     margin-bottom: 2px;
     font-size: clamp(20px, 2.8vw, 26px);
+    line-height: 1.25;
+    flex-shrink: 0;
 }
 
 .about-header .ornament-divider {
     margin: 6px 0 14px 0;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .about-text-container {
@@ -820,6 +832,7 @@ html.lenis body {
     justify-content: center;
     align-items: center;
     position: relative;
+    flex-shrink: 0;
 }
 
 .about-text {
@@ -835,6 +848,9 @@ html.lenis body {
     user-select: text;
     margin: 0;
     width: 100%;
+    overflow: hidden;
+    contain: layout;
+    box-sizing: border-box;
 }
 
 /* ── DECRYPT TEXT EFFECT (ANCHORED SLOTS - NO TWITCHING / JUMPING) ── */
@@ -850,6 +866,7 @@ html.lenis body {
     text-align: center;
     line-height: inherit;
     overflow: visible;
+    box-sizing: border-box;
 }
 
 .d-slot.d-space {
@@ -867,7 +884,7 @@ html.lenis body {
     color: #ffffff;
     opacity: 0.96;
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.75), 0 0 16px rgba(255, 255, 255, 0.35);
-    font-weight: 500;
+    font-weight: 350; /* Identical to .d-revealed (350) - eliminates metric expansion */
 }
 
 /* Light Theme Glitch Glow */
@@ -875,6 +892,7 @@ html.lenis body {
     color: #0b0c10;
     opacity: 0.96;
     text-shadow: 0 0 6px rgba(0, 0, 0, 0.45), 0 0 14px rgba(0, 0, 0, 0.2);
+    font-weight: 350; /* Identical to .d-revealed (350) */
 }
 
 /* ═══════════════════════════════════════════════════

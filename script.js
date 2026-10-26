@@ -766,28 +766,57 @@
         const spans = aboutTextEl.querySelectorAll('.d-slot');
         if (!spans.length) return;
 
-        bioSlotData = [];
+        // Pass 1: Clear inline styles to measure natural unconstrained metrics
+        aboutTextEl.style.height = '';
+        aboutTextEl.style.minHeight = '';
+        spans.forEach(function (span) {
+            span.style.width = '';
+            span.style.minWidth = '';
+            span.style.maxWidth = '';
+        });
+
+        // Pass 2: Batch-read layout metrics in single browser calculation (no thrashing)
+        const naturalHeight = Math.ceil(aboutTextEl.getBoundingClientRect().height);
+        const measurements = [];
         let allValid = true;
 
         spans.forEach(function (span) {
             const ch = span.textContent;
             const isSpace = span.classList.contains('d-space');
-            span.style.minWidth = '';
             const rect = span.getBoundingClientRect();
             const w = Math.ceil(rect.width * 100) / 100;
-            if (w > 0) {
-                span.style.minWidth = w + 'px';
-            } else {
+            if (w <= 0) {
                 allValid = false;
             }
-            bioSlotData.push({
+            measurements.push({
                 el: span,
                 char: ch,
-                isSpace: isSpace
+                isSpace: isSpace,
+                width: w
             });
         });
 
-        bioSlotsInitialized = (allValid && spans.length > 0);
+        // Pass 3: Strictly lock height and slot widths - completely prevents word wrapping or header jumping
+        if (naturalHeight > 0) {
+            aboutTextEl.style.height = naturalHeight + 'px';
+            aboutTextEl.style.minHeight = naturalHeight + 'px';
+        }
+
+        bioSlotData = [];
+        measurements.forEach(function (item) {
+            if (item.width > 0) {
+                item.el.style.width = item.width + 'px';
+                item.el.style.minWidth = item.width + 'px';
+                item.el.style.maxWidth = item.width + 'px';
+            }
+            bioSlotData.push({
+                el: item.el,
+                char: item.char,
+                isSpace: item.isSpace
+            });
+        });
+
+        bioSlotsInitialized = (allValid && spans.length > 0 && naturalHeight > 0);
     }
 
     triggerAboutBioDecrypt = function (force) {
@@ -802,6 +831,15 @@
 
         if (!bioSlotsInitialized || bioSlotData.length === 0) {
             setupBioSlots();
+        }
+
+        // Ensure text block height is firmly frozen to eliminate any jitter on BIO header
+        if (!aboutTextEl.style.height) {
+            const currentH = Math.ceil(aboutTextEl.getBoundingClientRect().height);
+            if (currentH > 0) {
+                aboutTextEl.style.height = currentH + 'px';
+                aboutTextEl.style.minHeight = currentH + 'px';
+            }
         }
 
         const totalSlots = bioSlotData.length;
