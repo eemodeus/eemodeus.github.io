@@ -6,13 +6,9 @@
     <title>модеус</title>
     <meta name="theme-color" content="#030305">
     <meta name="color-scheme" content="dark light">
-
-    <!-- Open Graph / Social Sharing -->
     <meta property="og:title" content="модеус">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-
-    <!-- Immediate Theme Initialization (Zero Flash) -->
     <script>
         (function() {
             try {
@@ -21,66 +17,44 @@
             } catch (e) {}
         })();
     </script>
-
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="img/icon.png">
     <link rel="apple-touch-icon" href="img/icon.png">
-
-    <!-- Google Fonts: Cinzel, Cormorant Garamond, Cormorant SC, Montserrat, JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Cormorant+SC:wght@500;600;700&family=Montserrat:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-    <!-- Cache Invalidation -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-
-    <link rel="stylesheet" href="style.css?v=20261026_11">
+    <link rel="stylesheet" href="style.css?v=20261026_12">
 </head>
 <body>
-
-    <!-- VIDEO BACKGROUND (bg/bg-vid.mp4 + poster) -->
     <div class="video-bg-container" aria-hidden="true">
         <video class="bg-video" id="bgVideo" autoplay loop muted playsinline disablepictureinpicture preload="auto" poster="bg/bg-poster.jpg">
             <source src="bg/bg-vid.mp4" type="video/mp4">
         </video>
         <div class="video-bg-overlay"></div>
     </div>
-
-    <!-- CINEMATIC FILM GRAIN (POWERED BY GRAINY.JS) -->
     <div class="film-grain-overlay" id="film-grain-overlay" aria-hidden="true"></div>
-
-    <!-- CUSTOM GOTHIC CURSOR (cursor.png) -->
     <div id="custom-cursor" aria-hidden="true">
         <img src="img/cursor.png" alt="" class="custom-cursor-img">
     </div>
-
-    <!-- ═══════════════════ TOP SITE CONTROLS (AMBIENT & THEME) ═══════════════════ -->
     <aside class="site-controls" role="toolbar" aria-label="Управление звуком и темой">
-        <!-- Ambient Sound Toggle (On / Off) -->
         <button id="ambientToggleBtn" class="control-btn" aria-label="Включить или выключить фоновый звук" title="Фоновый эмбиент (Вкл / Выкл)">
-            <!-- Sound On icon (active) -->
             <svg id="ambientOnIcon" class="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                 <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
                 <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
             </svg>
-            <!-- Sound Muted icon (hidden by default) -->
             <svg id="ambientMuteIcon" class="control-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                 <line x1="22" y1="9" x2="16" y2="15"></line>
                 <line x1="16" y1="9" x2="22" y2="15"></line>
             </svg>
         </button>
-
-        <!-- Theme Toggle (Dark / Light) -->
         <button id="themeToggleBtn" class="control-btn" aria-label="Сменить тему сайта" title="Сменить тему (Светлая / Тёмная)">
-            <!-- Moon icon (active in Dark mode) -->
             <svg id="themeMoonIcon" class="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
             </svg>
-            <!-- Sun icon (active in Light mode) -->
             <svg id="themeSunIcon" class="control-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="5"></circle>
                 <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -94,8 +68,6 @@
             </svg>
         </button>
     </aside>
-
-    <!-- ═══════════════════ PRELOADER (BREATHING ASCII GLOW & INTERACTIVE ENTER) ═══════════════════ -->
     <div id="preloader" role="button" tabindex="0" aria-label="Войти на сайт">
         <div class="preloader-content">
             <div class="ascii-container">
@@ -108,8 +80,6 @@
             </div>
         </div>
     </div>
-
-    <!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
     <header id="site-header" class="site-header hidden" role="banner">
         <div class="site-header-glass" id="siteHeaderGlass" aria-hidden="true"></div>
         <nav id="bottom-nav" class="site-nav" aria-label="Навигация по сайту">
@@ -124,11 +94,8 @@
             </a>
         </nav>
     </header>
-
     <main id="main-content" class="hidden">
         <div id="sections-wrapper">
-
-            <!-- ── SECTION 1: HI (CINEMATIC EMERGENCE FROM DARKNESS) ── -->
             <section class="section active" id="section-hi" data-index="0">
                 <div class="section-content hi-content">
                     <div class="logo-interactive-container" id="logoContainer" role="button" tabindex="0" aria-label="МОДЕУС Логотип">
@@ -137,8 +104,6 @@
                     </div>
                 </div>
             </section>
-
-            <!-- ── SECTION 2: BIO (BAROQUE FRAME RAMKA1) ── -->
             <section class="section" id="section-about" data-index="1">
                 <div class="section-content about-content">
                     <div class="about-frame single-bio-frame">
@@ -159,17 +124,13 @@
                     </div>
                 </div>
             </section>
-
-            <!-- ── SECTION 3: LINKS (MUSIC PLATFORMS & COMMUNITY) ── -->
             <section class="section" id="section-links" data-index="2">
                 <div class="section-content links-content">
                     <h2 class="section-title">LINKS</h2>
                     <div class="ornament-divider">
                         <img src="img/333.png" alt="" class="divider-ornament-img">
                     </div>
-
                     <div class="links-container">
-                        <!-- 1. Telegram -->
                         <a href="https://t.me/emodeus" target="_blank" rel="noopener" class="link-card" data-platform="telegram">
                             <div class="link-icon">
                                 <svg viewBox="0 0 24 24" fill="currentColor">
@@ -181,8 +142,6 @@
                             </div>
                             <span class="link-arrow" aria-hidden="true"><svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></span>
                         </a>
-
-                        <!-- 2. TikTok -->
                         <a href="https://www.tiktok.com/@em0deus1" target="_blank" rel="noopener" class="link-card" data-platform="tiktok">
                             <div class="link-icon">
                                 <svg viewBox="0 0 24 24" fill="currentColor">
@@ -194,8 +153,6 @@
                             </div>
                             <span class="link-arrow" aria-hidden="true"><svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></span>
                         </a>
-
-                                                <!-- 3. Discord: emohub -->
                         <a href="https://discord.gg/4Xxym2pjEw" target="_blank" rel="noopener" class="link-card" data-platform="discord">
                             <div class="link-icon">
                                 <svg viewBox="0 0 24 24" fill="currentColor">
@@ -207,8 +164,6 @@
                             </div>
                             <span class="link-arrow" aria-hidden="true"><svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></span>
                         </a>
-
-                        <!-- 4. Primary Expandable Listen Button -->
                         <button type="button" id="listenToggleBtn" class="link-card listen-toggle-btn" aria-expanded="false" aria-controls="musicCollapse">
                             <div class="link-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -225,12 +180,8 @@
                                 </svg>
                             </span>
                         </button>
-
-                        <!-- Collapsible Music Platforms (Underneath LISTEN) -->
                         <div id="musicCollapse" class="music-collapse" aria-hidden="true">
                             <div class="music-collapse-inner links-stack">
-
-                                <!-- Яндекс Музыка -->
                                 <a href="https://music.yandex.ru/artist/15283977" target="_blank" rel="noopener" class="link-card" data-platform="yandex">
                                     <div class="link-icon">
                                         <svg viewBox="0 0 24 24" fill="currentColor">
@@ -242,8 +193,6 @@
                                     </div>
                                     <span class="link-arrow" aria-hidden="true"><svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></span>
                                 </a>
-
-                                <!-- VK Музыка -->
                                 <a href="https://vk.ru/artist/modeus" target="_blank" rel="noopener" class="link-card" data-platform="vk">
                                     <div class="link-icon">
                                         <svg viewBox="0 0 24 24" fill="currentColor">
@@ -255,8 +204,6 @@
                                     </div>
                                     <span class="link-arrow" aria-hidden="true"><svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></span>
                                 </a>
-
-                                <!-- SoundCloud -->
                                 <a href="https://soundcloud.com/emodeus" target="_blank" rel="noopener" class="link-card" data-platform="soundcloud">
                                     <div class="link-icon">
                                         <svg viewBox="0 0 24 24" fill="currentColor">
@@ -274,8 +221,6 @@
                                     </div>
                                     <span class="link-arrow" aria-hidden="true"><svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></span>
                                 </a>
-
-                                <!-- Spotify -->
                                 <a href="https://open.spotify.com/artist/2c633i8JoDucZQdshvt9Z3" target="_blank" rel="noopener" class="link-card" data-platform="spotify">
                                     <div class="link-icon">
                                         <svg viewBox="0 0 24 24" fill="currentColor">
@@ -287,8 +232,6 @@
                                     </div>
                                     <span class="link-arrow" aria-hidden="true"><svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></span>
                                 </a>
-
-                                <!-- Apple Music -->
                                 <a href="https://music.apple.com/us/artist/%D0%BC%D0%BE%D0%B4%D0%B5%D1%83%D1%81/1600546022" target="_blank" rel="noopener" class="link-card" data-platform="apple">
                                     <div class="link-icon">
                                         <svg viewBox="0 0 24 24" fill="currentColor">
@@ -300,8 +243,6 @@
                                     </div>
                                     <span class="link-arrow" aria-hidden="true"><svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></span>
                                 </a>
-
-                                <!-- YouTube Music -->
                                 <a href="https://music.youtube.com/channel/UCUVunfPOQ4lAhaNKYPo_7Ng" target="_blank" rel="noopener" class="link-card" data-platform="youtube">
                                     <div class="link-icon">
                                         <svg viewBox="0 0 24 24" fill="currentColor">
@@ -313,20 +254,15 @@
                                     </div>
                                     <span class="link-arrow" aria-hidden="true"><svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></span>
                                 </a>
-
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
-
         </div>
     </main>
-
-    <!-- Grainy Noise Generator -->
     <script src="grainy.js"></script>
-    <!-- Lenis Smooth Scroll -->
     <script src="lenis.min.js"></script>
-    <script src="script.js?v=20261026_11"></script>
+    <script src="script.js?v=20261026_12"></script>
 </body>
 </html>

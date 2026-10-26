@@ -1,8 +1,3 @@
-/*!
- * Grainy.js — Canvas-based Film Grain & Noise Generator
- * Adds procedural animated or static film grain texture to DOM elements.
- * Compatible with Element.prototype.grainy, window.grainy, and window.grained.
- */
 (function (window, document) {
     'use strict';
 
@@ -44,7 +39,6 @@
         var maxAlpha = Math.min(255, Math.max(0, Math.round(255 * options.opacity)));
         var customColor = options.color ? hexToRgb(options.color) : null;
 
-        // Populate with noise
         var data = imgData.data;
         while (numPixels--) {
             var x = Math.floor(Math.random() * canvas.width);
@@ -99,14 +93,12 @@
         var options = Object.assign({}, defaults, opts);
         var dataUri = generateNoiseDataUrl(options);
 
-        // Ensure container can house grain layer properly
         var computedPos = window.getComputedStyle(el).position;
         if (computedPos === 'static') {
             el.style.position = 'relative';
         }
         el.style.overflow = 'hidden';
 
-        // Check if an existing grain layer already exists
         var grainLayer = el.querySelector(':scope > .grainy-layer');
         if (!grainLayer) {
             grainLayer = document.createElement('div');
@@ -140,18 +132,15 @@
         return grainLayer;
     }
 
-    // Element prototype integration
     Element.prototype.grainy = function (opts) {
         return applyGrain(this, opts);
     };
 
-    // Global utility functions
     window.grainy = function (target, opts) {
         var el = typeof target === 'string' ? document.querySelector(target) : target;
         return applyGrain(el, opts);
     };
 
-    // Grained.js alias compatibility
     window.grained = function (target, opts) {
         var el = typeof target === 'string' ? document.querySelector(target) : target;
         return applyGrain(el, opts);

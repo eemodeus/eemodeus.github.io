@@ -1,12 +1,6 @@
-/* ═══════════════════════════════════════════════════
-   МОДЕУС — MAIN SCRIPT (MONOCHROME & GOTHIC EDITION)
-   Themes | Dark Ambient Web Audio | Lenis Smooth Scroll | Liquid Glass
-   ═══════════════════════════════════════════════════ */
-
 (function () {
     'use strict';
 
-    // ── ASCII FLEUR-DE-LIS (from ascii-art.txt) ──
     const FLEUR_ASCII = [
     "                                                 *",
     "                                               .%%%=",
@@ -82,7 +76,6 @@
     "                               .*+="
     ];
 
-    // ── DOM REFS ──
     const preloader        = document.getElementById('preloader');
     const asciiArtEl       = document.getElementById('ascii-art');
     const customCursor     = document.getElementById('custom-cursor');
@@ -105,10 +98,6 @@
         const vh = window.innerHeight;
         document.documentElement.style.setProperty('--app-height', vh + 'px');
     }
-
-    // ═══════════════════════════════════════════════
-    // 1. CS2 CROSSHAIR CURSOR (ULTRA-SMOOTH rAF)
-    // ═══════════════════════════════════════════════
 
     let mouseX = -100;
     let mouseY = -100;
@@ -134,7 +123,7 @@
 
             if (!cursorVisible) {
                 cursorVisible = true;
-                // Position immediately at exact mouse coordinates on first movement
+
                 customCursor.style.transform = 'translate3d(' + (mouseX - 3) + 'px, ' + (mouseY - 2) + 'px, 0)';
                 customCursor.classList.add('active');
             }
@@ -165,10 +154,6 @@
             }, 90);
         });
     }
-
-    // ═══════════════════════════════════════════════
-    // 2. PRELOADER & CINEMATIC EMERGENCE FROM DARKNESS
-    // ═══════════════════════════════════════════════
 
     function initPreloader() {
         if (asciiArtEl) {
@@ -220,20 +205,14 @@
             siteControls.classList.add('visible');
         }
 
-        // Trigger ambient sound loop immediately after preloader completes & main content appears
         if (typeof startAmbientAfterPreloader === 'function') {
             startAmbientAfterPreloader();
         }
 
-        // Check if viewport is positioned at section-about upon enter
         if (typeof checkInitialBioSection === 'function') {
             checkInitialBioSection();
         }
     }
-
-    // ═══════════════════════════════════════════════
-    // 3. CINEMATIC FILM GRAIN (POWERED BY GRAINY.JS)
-    // ═══════════════════════════════════════════════
 
     function initGrainyNoise() {
         const grainEl = document.getElementById('film-grain-overlay');
@@ -250,10 +229,6 @@
         }
     }
 
-    // ═══════════════════════════════════════════════
-    // 4. LISTEN ACCORDION DROPDOWN (MUSIC PLATFORMS)
-    // ═══════════════════════════════════════════════
-
     function initListenDropdown() {
         const toggleBtn = document.getElementById('listenToggleBtn');
         const collapseEl = document.getElementById('musicCollapse');
@@ -265,7 +240,6 @@
             toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
             collapseEl.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
 
-            // Allow smooth scroll to recalculate height
             if (lenis && typeof lenis.resize === 'function') {
                 setTimeout(function () {
                     lenis.resize();
@@ -273,10 +247,6 @@
             }
         });
     }
-
-    // ═══════════════════════════════════════════════
-    // 4. THEME TOGGLE (DARK / LIGHT INVERSION)
-    // ═══════════════════════════════════════════════
 
     function initThemeToggle() {
         const themeBtn  = document.getElementById('themeToggleBtn');
@@ -323,16 +293,11 @@
         }
     }
 
-    // ═══════════════════════════════════════════════
-    // 4.5 AUDIO ENGINE (AMBIENT, HOVER & CLICK SFX)
-    // ═══════════════════════════════════════════════
-
     function initAudioEngine() {
         const ambientToggleBtn = document.getElementById('ambientToggleBtn');
         const ambientOnIcon    = document.getElementById('ambientOnIcon');
         const ambientMuteIcon  = document.getElementById('ambientMuteIcon');
 
-        // 1. Ambient Audio Loop (sounds/amb1.wav, permanent 30% volume)
         const ambientAudio = new Audio('sounds/amb1.mp3');
         ambientAudio.loop = true;
         ambientAudio.volume = 0.3;
@@ -346,7 +311,7 @@
             if (!isAmbientMuted && ambientAudio.paused) {
                 ambientAudio.volume = 0;
                 ambientAudio.play().then(() => {
-                    // Smooth cinematic fade-in to 0.3 over 1.2s
+
                     const targetVolume = 0.3;
                     const steps = 24;
                     const volumeStep = targetVolume / steps;
@@ -367,12 +332,11 @@
                     window.removeEventListener('pointerdown', unlockAudioOnInteraction);
                     window.removeEventListener('keydown', unlockAudioOnInteraction);
                 }).catch(() => {
-                    // Browser autoplay policy holds playback until user interaction
+
                 });
             }
         };
 
-        // 2. Web Audio API for instantaneous 0ms latency SFX (navod.mp3, click.ogg)
         let audioCtx = null;
         let navBuffer = null;
         let clickBuffer = null;
@@ -417,11 +381,9 @@
             } catch (e) {}
         }
 
-        // Preload sound buffers
         loadBuffer('sounds/navod.mp3').then(buf => { navBuffer = buf; });
         loadBuffer('sounds/click.ogg').then(buf => { clickBuffer = buf; });
 
-        // User gesture unlocks audio context & plays ambient if preloader finished
         function unlockAudioOnInteraction() {
             getAudioContext();
             if (preloaderDone && !isAmbientMuted && ambientAudio.paused) {
@@ -436,7 +398,6 @@
         window.addEventListener('touchstart', unlockAudioOnInteraction, { passive: true });
         window.addEventListener('keydown', unlockAudioOnInteraction, { passive: true });
 
-        // 3. Ambient Mute/Unmute Toggle Button
         if (ambientToggleBtn) {
             ambientToggleBtn.addEventListener('click', function (e) {
                 e.stopPropagation();
@@ -456,8 +417,6 @@
             });
         }
 
-        // 4. Hover Sound (navod.mp3) on all buttons, links and interactive components
-        // Prevent multiple triggers when cursor moves across internal children of the same button
         const INTERACTIVE_SELECTOR = 'button, a, .control-btn, .nav-btn, .link-card, .logo-interactive-container, .preloader-enter-btn';
         let lastSoundTime = 0;
 
@@ -467,12 +426,12 @@
 
             const fromBtn = e.relatedTarget ? e.relatedTarget.closest(INTERACTIVE_SELECTOR) : null;
             if (fromBtn === targetBtn) {
-                // Moving between children of the same interactive element -> do not replay
+
                 return;
             }
 
             const now = performance.now();
-            if (now - lastSoundTime < 35) return; // Debounce rapid consecutive border hits
+            if (now - lastSoundTime < 35) return;
             lastSoundTime = now;
 
             if (navBuffer) {
@@ -480,17 +439,12 @@
             }
         }, { passive: true });
 
-        // 5. Global Click Sound (click.ogg) on every mouse click
         document.addEventListener('pointerdown', function () {
             if (clickBuffer) {
                 playSfx(clickBuffer, 0.45);
             }
         }, { passive: true });
     }
-
-    // ═══════════════════════════════════════════════
-    // 5. LENIS SMOOTH SCROLL & ANCHOR NAVIGATION
-    // ═══════════════════════════════════════════════
 
     let lenis = null;
 
@@ -538,7 +492,6 @@
                 const targetSec = document.querySelector(href);
                 if (!targetSec) return;
 
-                // When clicking Bio nav button, trigger decrypt effect as scroll begins
                 if (href === '#section-about' && typeof triggerAboutBioDecrypt === 'function') {
                     setTimeout(function () {
                         triggerAboutBioDecrypt(true);
@@ -559,7 +512,6 @@
             });
         });
 
-        // IntersectionObserver for bottom nav active button state & section transitions
         const sectionObserver = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
                 if (entry.isIntersecting && entry.intersectionRatio >= 0.45) {
@@ -580,7 +532,6 @@
                     });
                     entry.target.classList.add('active');
 
-                    // Trigger bio decrypt effect whenever user enters section-about
                     if (currentActiveSectionId !== id) {
                         currentActiveSectionId = id;
                         if (!isPreloaderActive && id === 'section-about' && typeof triggerAboutBioDecrypt === 'function') {
@@ -597,10 +548,6 @@
             sectionObserver.observe(sec);
         });
     }
-
-    // ═══════════════════════════════════════════════
-    // 6. LIQUID GLASS CARDS (PHYSICAL 3D TILT & SPECULAR SHEEN)
-    // ═══════════════════════════════════════════════
 
     function initLiquidGlassCards() {
         const linkCards = document.querySelectorAll('.link-card');
@@ -638,10 +585,6 @@
         });
     }
 
-    // ═══════════════════════════════════════════════
-    // 7. VIDEO BACKGROUND CONTROLLER
-    // ═══════════════════════════════════════════════
-
     function initVideoBg() {
         const video = document.getElementById('bgVideo');
         if (!video) return;
@@ -650,7 +593,6 @@
         video.defaultMuted = true;
         video.loop = true;
 
-        // Guaranteed loop across all browser engines
         video.addEventListener('ended', function () {
             video.currentTime = 0;
             video.play().catch(function () {});
@@ -673,10 +615,6 @@
 
         tryPlay();
     }
-
-    // ═══════════════════════════════════════════════
-    // 8. EASTER EGG (TRIPLE CLICK ON LOGO -> пасхалко.png)
-    // ═══════════════════════════════════════════════
 
     function initEasterEgg() {
         const logoContainer = document.getElementById('logoContainer');
@@ -719,10 +657,6 @@
         });
     }
 
-    // ═══════════════════════════════════════════════
-    // 9. DECRYPT TEXT EFFECT (ABOUT ME BIO - ANCHORED SLOTS)
-    // ═══════════════════════════════════════════════
-
     const DECRYPT_GLYPHS = '0123456789#%&*+=-_~/?\\|<>[]{}†‡§XYZΔΩЖФШЩЪЫЭЮ';
     let cancelBioDecrypt = null;
     let bioSlotsInitialized = false;
@@ -748,7 +682,6 @@
         }
         if (!bioRawText) return;
 
-        // Wrap each word in .d-word and each character in .d-slot
         const words = bioRawText.split(' ');
         aboutTextEl.innerHTML = words.map(function (word) {
             const slots = word.split('').map(function (ch) {
@@ -766,7 +699,6 @@
         const spans = aboutTextEl.querySelectorAll('.d-slot');
         if (!spans.length) return;
 
-        // Pass 1: Clear inline styles to measure natural unconstrained metrics
         aboutTextEl.style.height = '';
         aboutTextEl.style.minHeight = '';
         spans.forEach(function (span) {
@@ -775,7 +707,6 @@
             span.style.maxWidth = '';
         });
 
-        // Pass 2: Batch-read layout metrics in single browser calculation (no thrashing)
         const naturalHeight = Math.ceil(aboutTextEl.getBoundingClientRect().height);
         const measurements = [];
         let allValid = true;
@@ -796,7 +727,6 @@
             });
         });
 
-        // Pass 3: Strictly lock height and slot widths - completely prevents word wrapping or header jumping
         if (naturalHeight > 0) {
             aboutTextEl.style.height = naturalHeight + 'px';
             aboutTextEl.style.minHeight = naturalHeight + 'px';
@@ -833,7 +763,6 @@
             setupBioSlots();
         }
 
-        // Ensure text block height is firmly frozen to eliminate any jitter on BIO header
         if (!aboutTextEl.style.height) {
             const currentH = Math.ceil(aboutTextEl.getBoundingClientRect().height);
             if (currentH > 0) {
@@ -845,13 +774,12 @@
         const totalSlots = bioSlotData.length;
         if (totalSlots === 0) return;
 
-        const duration = 1450; // ms
-        const delay = 100;     // ms
+        const duration = 1450;
+        const delay = 100;
         const startTime = performance.now() + delay;
         let animId = null;
         isDecrypting = true;
 
-        // Set all non-space characters to glitched cipher rune state initially
         bioSlotData.forEach(function (item) {
             if (!item.isSpace) {
                 item.el.textContent = DECRYPT_GLYPHS[Math.floor(Math.random() * DECRYPT_GLYPHS.length)];
@@ -872,7 +800,7 @@
 
             const elapsed = now - startTime;
             const progress = Math.min(Math.max(elapsed / duration, 0), 1);
-            // Ease-out quad curve: 1 - (1 - p)^2
+
             const eased = 1 - Math.pow(1 - progress, 2);
             const revealedCount = Math.floor(eased * totalSlots);
 
@@ -960,46 +888,31 @@
         });
     }
 
-    // ═══════════════════════════════════════════════
-    // 10. INITIALIZATION
-    // ═══════════════════════════════════════════════
-
     function init() {
         updateAppHeight();
         window.addEventListener('resize', updateAppHeight);
 
-        // Film Grain via Grainy.js
         initGrainyNoise();
 
-        // Custom Gothic Cursor
         initCustomCursor();
 
-        // Video Background
         initVideoBg();
 
-        // Theme Inversion (Dark / Light)
         initThemeToggle();
 
-        // Audio Engine (Ambient loop 30%, Hover navod.mp3, Click click.ogg)
         initAudioEngine();
 
-        // Listen Accordion Dropdown
         initListenDropdown();
 
-        // Easter Egg (Triple click on logo -> пасхалко.png)
         initEasterEgg();
 
-        // Bio Decrypt Text Effect
         initBioDecryptEffect();
 
-        // Lenis Smooth Scroll & Navigation
         initLenis();
         initAnchorNavigation();
 
-        // Liquid Glass Cards Mouse Light Ripple
         initLiquidGlassCards();
 
-        // Start preloader with glowing breathing cycle -> smooth emergence
         initPreloader();
     }
 
