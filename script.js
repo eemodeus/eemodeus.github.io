@@ -172,8 +172,10 @@
         }
 
         let entered = false;
+        const autoEnterTimer = setTimeout(function () { enterSite(); }, 6500);
 
         function enterSite() {
+            clearTimeout(autoEnterTimer);
             if (entered) return;
             entered = true;
 
@@ -320,7 +322,7 @@
         const ambientMuteIcon  = document.getElementById('ambientMuteIcon');
 
         // 1. Ambient Audio Loop (sounds/amb1.wav, permanent 30% volume)
-        const ambientAudio = new Audio('sounds/amb1.wav');
+        const ambientAudio = new Audio('sounds/amb1.mp3');
         ambientAudio.loop = true;
         ambientAudio.volume = 0.3;
 
@@ -390,6 +392,7 @@
         }
 
         function playSfx(buffer, volume = 0.4) {
+            if (isAmbientMuted) return;
             try {
                 const ctx = getAudioContext();
                 if (!ctx || !buffer) return;
@@ -419,6 +422,7 @@
         }
 
         window.addEventListener('pointerdown', unlockAudioOnInteraction, { passive: true });
+        window.addEventListener('touchstart', unlockAudioOnInteraction, { passive: true });
         window.addEventListener('keydown', unlockAudioOnInteraction, { passive: true });
 
         // 3. Ambient Mute/Unmute Toggle Button
@@ -587,16 +591,18 @@
                 card.style.setProperty('--mouse-x', x + 'px');
                 card.style.setProperty('--mouse-y', y + 'px');
 
-                // 3D Liquid Glass Tilt calculation (subtle & refined: max 5 deg)
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = ((y - centerY) / centerY) * -5.0;
-                const rotateY = ((x - centerX) / centerX) * 5.0;
+                const isMouse = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+                if (isMouse) {
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -5.0;
+                    const rotateY = ((x - centerX) / centerX) * 5.0;
 
-                if (rafId) cancelAnimationFrame(rafId);
-                rafId = requestAnimationFrame(function () {
-                    card.style.transform = `perspective(800px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translate3d(0, -4px, 12px)`;
-                });
+                    if (rafId) cancelAnimationFrame(rafId);
+                    rafId = requestAnimationFrame(function () {
+                        card.style.transform = `perspective(800px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translate3d(0, -4px, 12px)`;
+                    });
+                }
             }, { passive: true });
 
             card.addEventListener('mouseleave', function () {
@@ -695,7 +701,7 @@
         const aboutTextEl = document.getElementById('aboutText');
         if (!aboutTextEl) return;
 
-        const originalText = 'здарова, меня зовут макс морозов, более извествен как модеус. родился я 11 октября 2003 года. начал заниматься музыкой под этим никнеймом в 2021 году. изначально мой творческий путь начинался с амплуа дизайнера под ником angelicheavens. большую часть своего творческого пути провел в объединении "threehearts", ливнул 4 июня 2025 года.';
+        const originalText = 'здарова, меня зовут макс морозов, более известен как модеус. родился я 11 октября 2003 года. начал заниматься музыкой под этим никнеймом в 2021 году. изначально мой творческий путь начинался с амплуа дизайнера под ником angelicheavens. большую часть своего творческого пути провел в объединении "threehearts", ливнул 4 июня 2025 года.';
 
         // Proportional character sets matching word metrics to prevent line wrapping jumps
         const UPPER_GLYPHS = 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩABCDEFGHJKLMNOPQRSTUVWXYZ';
