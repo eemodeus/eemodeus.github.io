@@ -1,6 +1,16 @@
 (function () {
     'use strict';
 
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+    if (window.location.hash) {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
     const FLEUR_ASCII = [
     "                                                 *",
     "                                               .%%%=",
@@ -91,8 +101,7 @@
     let startAmbientAfterPreloader = null;
     let isPreloaderActive = true;
     let triggerAboutBioDecrypt = null;
-    let checkInitialBioSection = null;
-    let currentActiveSectionId = null;
+    let currentActiveSectionId = 'section-hi';
     let lastWindowWidth = window.innerWidth;
 
     function updateAppHeight() {
@@ -173,6 +182,13 @@
             if (entered) return;
             entered = true;
 
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            if (lenis) {
+                lenis.scrollTo(0, { immediate: true });
+            }
+
             if (preloader) {
                 preloader.classList.add('fade-out');
                 setTimeout(function () {
@@ -198,6 +214,13 @@
     function showMainContent() {
         isPreloaderActive = false;
 
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        if (lenis) {
+            lenis.scrollTo(0, { immediate: true });
+        }
+
         if (mainContent) {
             mainContent.classList.remove('hidden');
             mainContent.classList.add('visible');
@@ -211,12 +234,28 @@
             siteControls.classList.add('visible');
         }
 
-        if (typeof startAmbientAfterPreloader === 'function') {
-            startAmbientAfterPreloader();
+        currentActiveSectionId = 'section-hi';
+        navBtns.forEach(function (btn) {
+            if (btn.getAttribute('href') === '#section-hi') {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        sections.forEach(function (sec) {
+            if (sec.id === 'section-hi') {
+                sec.classList.add('active');
+            } else {
+                sec.classList.remove('active');
+            }
+        });
+
+        if (window.location.hash && window.location.hash !== '#section-hi') {
+            history.replaceState(null, '', window.location.pathname + window.location.search);
         }
 
-        if (typeof checkInitialBioSection === 'function') {
-            checkInitialBioSection();
+        if (typeof startAmbientAfterPreloader === 'function') {
+            startAmbientAfterPreloader();
         }
     }
 
@@ -781,22 +820,6 @@
         }, 15);
     };
 
-    checkInitialBioSection = function () {
-        const bioSec = document.getElementById('section-about');
-        if (!bioSec) return;
-        const hash = window.location.hash;
-        const rect = bioSec.getBoundingClientRect();
-        const vh = window.innerHeight || document.documentElement.clientHeight;
-        if (hash === '#section-about' || (rect.top < vh * 0.55 && rect.bottom > vh * 0.45)) {
-            currentActiveSectionId = 'section-about';
-            setTimeout(function () {
-                if (typeof triggerAboutBioDecrypt === 'function') {
-                    triggerAboutBioDecrypt();
-                }
-            }, 300);
-        }
-    };
-
     function initBioDecryptEffect() {
         const aboutTextEl = document.getElementById('aboutText');
         if (aboutTextEl) {
@@ -834,6 +857,10 @@
     }
 
     function init() {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+
         updateAppHeight();
         window.addEventListener('resize', updateAppHeight);
 
@@ -860,6 +887,14 @@
 
         initPreloader();
     }
+
+    window.addEventListener('load', function () {
+        if (isPreloaderActive) {
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+        }
+    });
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
