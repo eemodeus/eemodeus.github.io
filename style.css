@@ -115,8 +115,6 @@ html.theme-transitioning .divider-ornament-img,
 html.theme-transitioning .about-content,
 html.theme-transitioning .photo-ramka,
 html.theme-transitioning .about-text,
-html.theme-transitioning .bio-cursor,
-html.theme-transitioning .bio-glyph,
 html.theme-transitioning .preloader-enter-btn,
 html.theme-transitioning svg,
 html.theme-transitioning path,
@@ -853,33 +851,26 @@ html.lenis body {
     font-weight: 400;
     letter-spacing: 0.025em;
     text-align: center;
-    transition: color 0.45s ease;
     cursor: default;
     user-select: text;
     margin: 0;
     width: 100%;
     box-sizing: border-box;
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(8px);
+    transition: 
+        opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+        filter 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+        color 0.45s ease;
+    will-change: opacity, filter, transform;
 }
 
-.bio-cursor {
-    display: inline-block;
-    width: 0.55em;
-    height: 1.05em;
-    vertical-align: -0.15em;
-    background-color: currentColor;
-    margin-left: 2px;
-    animation: bioCursorBlink 0.65s steps(1) infinite;
-    transition: opacity 0.4s ease;
-}
-
-@keyframes bioCursorBlink {
-    0%, 49% { opacity: 1; }
-    50%, 100% { opacity: 0; }
-}
-
-.bio-glyph {
-    color: var(--text-primary);
-    font-weight: 700;
+.about-text.is-visible {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0);
 }
 
 #section-links {

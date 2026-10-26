@@ -569,9 +569,6 @@
                 if (!targetSec) return;
 
                 pendingBioDecrypt = false;
-                if (href !== '#section-about' && typeof completeBioTextImmediately === 'function') {
-                    completeBioTextImmediately();
-                }
                 if (href === '#section-about' && typeof triggerAboutBioDecrypt === 'function') {
                     setTimeout(function () {
                         triggerAboutBioDecrypt(true);
@@ -613,9 +610,6 @@
                     entry.target.classList.add('active');
 
                     if (currentActiveSectionId !== id) {
-                        if (currentActiveSectionId === 'section-about' && typeof completeBioTextImmediately === 'function') {
-                            completeBioTextImmediately();
-                        }
                         currentActiveSectionId = id;
                         if (!isPreloaderActive && id === 'section-about' && typeof triggerAboutBioDecrypt === 'function') {
                             if (isUserScrolling) {
@@ -746,24 +740,7 @@
         });
     }
 
-    const HACKER_GLYPHS = '01#%&*+=-_~/?\\|<>[]{}XYZΔΩ';
-    let bioTypewriterTimer = null;
-    let isBioTyping = false;
     let bioHasPlayed = false;
-    let bioRawText = '';
-
-    function completeBioTextImmediately() {
-        if (!isBioTyping) return;
-        if (bioTypewriterTimer) {
-            clearInterval(bioTypewriterTimer);
-            bioTypewriterTimer = null;
-        }
-        isBioTyping = false;
-        const aboutTextEl = document.getElementById('aboutText');
-        if (aboutTextEl && bioRawText) {
-            aboutTextEl.innerHTML = bioRawText + '<span class="bio-cursor" style="opacity: 0.35;"></span>';
-        }
-    }
 
     triggerAboutBioDecrypt = function (force) {
         if (bioHasPlayed) return;
@@ -772,88 +749,13 @@
         if (!aboutTextEl) return;
 
         bioHasPlayed = true;
-
-        if (!bioRawText) {
-            bioRawText = aboutTextEl.textContent.trim().replace(/\s+/g, ' ');
-        }
-        if (!bioRawText) return;
-
-        if (bioTypewriterTimer) {
-            clearInterval(bioTypewriterTimer);
-            bioTypewriterTimer = null;
-        }
-
-        if (!aboutTextEl.style.minHeight) {
-            const currentH = Math.ceil(aboutTextEl.getBoundingClientRect().height);
-            if (currentH > 0) {
-                aboutTextEl.style.minHeight = currentH + 'px';
-            }
-        }
-
-        const total = bioRawText.length;
-        let pos = 0;
-        isBioTyping = true;
-
-        bioTypewriterTimer = setInterval(function () {
-            const step = (pos > 30 && Math.random() > 0.45) ? 2 : 1;
-            pos = Math.min(total, pos + step);
-
-            const currentText = bioRawText.slice(0, pos);
-            let glyphHtml = '';
-            if (pos < total) {
-                const randomGlyph = HACKER_GLYPHS[Math.floor(Math.random() * HACKER_GLYPHS.length)];
-                glyphHtml = '<span class="bio-glyph">' + randomGlyph + '</span>';
-            }
-
-            aboutTextEl.innerHTML = currentText + glyphHtml + '<span class="bio-cursor"></span>';
-
-            if (pos >= total) {
-                clearInterval(bioTypewriterTimer);
-                bioTypewriterTimer = null;
-                isBioTyping = false;
-
-                setTimeout(function () {
-                    const cur = aboutTextEl.querySelector('.bio-cursor');
-                    if (cur) cur.style.opacity = '0.35';
-                }, 2500);
-            }
-        }, 15);
+        aboutTextEl.classList.add('is-visible');
     };
 
     function initBioDecryptEffect() {
         const aboutTextEl = document.getElementById('aboutText');
-        if (aboutTextEl) {
-            bioRawText = aboutTextEl.textContent.trim().replace(/\s+/g, ' ');
-            const currentH = Math.ceil(aboutTextEl.getBoundingClientRect().height);
-            if (currentH > 0) {
-                aboutTextEl.style.minHeight = currentH + 'px';
-            }
-        }
-
-        let lastBioWidth = window.innerWidth;
-        let resizeTimer = null;
-        window.addEventListener('resize', function () {
-            if (Math.abs(window.innerWidth - lastBioWidth) < 20) return;
-            lastBioWidth = window.innerWidth;
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function () {
-                if (!isBioTyping && aboutTextEl) {
-                    aboutTextEl.style.minHeight = '';
-                    const h = Math.ceil(aboutTextEl.getBoundingClientRect().height);
-                    if (h > 0) aboutTextEl.style.minHeight = h + 'px';
-                }
-            }, 150);
-        });
-
-        window.addEventListener('orientationchange', function () {
-            setTimeout(function () {
-                if (!isBioTyping && aboutTextEl) {
-                    aboutTextEl.style.minHeight = '';
-                    const h = Math.ceil(aboutTextEl.getBoundingClientRect().height);
-                    if (h > 0) aboutTextEl.style.minHeight = h + 'px';
-                }
-            }, 200);
-        });
+        if (!aboutTextEl) return;
+        aboutTextEl.classList.remove('is-visible');
     }
 
     function init() {
