@@ -25,7 +25,8 @@
     </script>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="img/333.png">
+    <link rel="icon" type="image/png" href="img/icon.png">
+    <link rel="apple-touch-icon" href="img/icon.png">
 
     <!-- Google Fonts: Cinzel, Cormorant Garamond, Cormorant SC, Montserrat, JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,7 +38,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <link rel="stylesheet" href="style.css?v=20261026_01">
+    <link rel="stylesheet" href="style.css?v=20261026_06">
 </head>
 <body>
 
@@ -49,31 +50,16 @@
         <div class="video-bg-overlay"></div>
     </div>
 
-    <!-- CINEMATIC FILM GRAIN (35MM NOISE OVERLAY) -->
-    <div class="film-grain-overlay" aria-hidden="true"></div>
+    <!-- CINEMATIC FILM GRAIN (POWERED BY GRAINY.JS) -->
+    <div class="film-grain-overlay" id="film-grain-overlay" aria-hidden="true"></div>
 
     <!-- CUSTOM GOTHIC CURSOR (cursor.png) -->
     <div id="custom-cursor" aria-hidden="true">
         <img src="img/cursor.png" alt="" class="custom-cursor-img">
     </div>
 
-    <!-- ═══════════════════ TOP SITE CONTROLS (AMBIENT & THEME) ═══════════════════ -->
-    <aside class="site-controls" role="toolbar" aria-label="Управление атмосферой и темой">
-        <!-- Ambient Sound Toggle -->
-        <button id="ambientToggleBtn" class="control-btn" aria-label="Включить фоновый эмбиент" title="Фоновый эмбиент (Вкл/Выкл)">
-            <svg id="ambientIconOn" class="control-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-            </svg>
-            <svg id="ambientIconOff" class="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <line x1="23" y1="9" x2="17" y2="15"></line>
-                <line x1="17" y1="9" x2="23" y2="15"></line>
-            </svg>
-            <span class="control-ripple" aria-hidden="true"></span>
-        </button>
-
+    <!-- ═══════════════════ TOP SITE CONTROLS (THEME) ═══════════════════ -->
+    <aside class="site-controls" role="toolbar" aria-label="Управление темой">
         <!-- Theme Toggle (Dark / Light) -->
         <button id="themeToggleBtn" class="control-btn" aria-label="Сменить тему сайта" title="Сменить тему (Светлая / Тёмная)">
             <!-- Moon icon (active in Dark mode) -->
@@ -92,7 +78,6 @@
                 <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
                 <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
             </svg>
-            <span class="control-ripple" aria-hidden="true"></span>
         </button>
     </aside>
 
@@ -107,6 +92,7 @@
 
     <!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
     <header id="site-header" class="site-header hidden" role="banner">
+        <div class="site-header-glass" id="siteHeaderGlass" aria-hidden="true"></div>
         <nav id="bottom-nav" class="site-nav" aria-label="Навигация по сайту">
             <a href="#section-hi" class="nav-btn active" data-target="0">
                 <span class="nav-label">Hi</span>
@@ -126,18 +112,18 @@
             <!-- ── SECTION 1: HI (CINEMATIC EMERGENCE FROM DARKNESS) ── -->
             <section class="section active" id="section-hi" data-index="0">
                 <div class="section-content hi-content">
-                    <div class="logo-interactive-container" id="logoContainer">
-                        <div class="logo-ambient-glow" aria-hidden="true"></div>
+                    <div class="logo-interactive-container" id="logoContainer" role="button" tabindex="0" aria-label="МОДЕУС Логотип">
+                        <img src="img/пасхалко.png" alt="Пасхалко" class="easter-egg-img" id="easterEggImg" aria-hidden="true">
                         <img src="img/1233222_clean.png" alt="МОДЕУС" class="artist-logo" id="artistLogo">
                     </div>
                 </div>
             </section>
 
-            <!-- ── SECTION 2: BIO (BAROQUE FRAME RAMKA3) ── -->
+            <!-- ── SECTION 2: BIO (BAROQUE FRAME RAMKA1) ── -->
             <section class="section" id="section-about" data-index="1">
                 <div class="section-content about-content">
                     <div class="about-frame single-bio-frame">
-                        <img src="img/ramka3.png" alt="" class="frame-img">
+                        <img src="img/ramka1.png" alt="" class="frame-img">
                         <div class="about-inner">
                             <div class="about-header" id="aboutHeader">
                                 <h2 class="section-title" id="aboutTitle">BIO</h2>
@@ -147,7 +133,7 @@
                             </div>
                             <div class="about-text-container">
                                 <p class="about-text" id="aboutText">
-                                    Морозов Максим Алексеевич (родился 11 октября 2003 года в Томске) — российский исполнитель и дизайнер, бывший участник творческого объединения threehearts.
+                                    здарова, меня зовут макс морозов, более извествен как модеус. родился я 11 октября 2003 года. начал заниматься музыкой под этим никнеймом в 2021 году. изначально мой творческий путь начинался с амплуа дизайнера под ником angelicheavens. большую часть своего творческого пути провел в объединении &quot;threehearts&quot;, ливнул 4 июня 2025 года.
                                 </p>
                             </div>
                         </div>
@@ -162,99 +148,9 @@
                     <div class="ornament-divider">
                         <img src="img/333.png" alt="" class="divider-ornament-img">
                     </div>
-                    <div class="links-grid">
 
-                        <!-- 1. Яндекс Музыка -->
-                        <a href="https://music.yandex.ru/search?text=модеус" target="_blank" rel="noopener" class="link-card" data-platform="yandex">
-                            <div class="link-icon">
-                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 2C6.477 2 2 6.477 2 12c0 5.523 4.477 10 10 10s10-4.477 10-10c0-5.523-4.477-10-10-10zm-1 5h2v6.5a2.5 2.5 0 1 1-2-2.45V7zm5.5 8.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
-                                </svg>
-                            </div>
-                            <div class="link-info">
-                                <span class="link-label">Яндекс Музыка</span>
-                                <span class="link-sub">Стриминг</span>
-                            </div>
-                            <span class="link-arrow">→</span>
-                        </a>
-
-                        <!-- 2. VK Музыка -->
-                        <a href="https://vk.com/artist/modeus" target="_blank" rel="noopener" class="link-card" data-platform="vk">
-                            <div class="link-icon">
-                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 2C6.477 2 2 6.477 2 12c0 5.523 4.477 10 10 10s10-4.477 10-10c0-5.523-4.477-10-10-10zm5.12 11.23c.48.47 1 .95 1.44 1.48.2.23.38.48.51.76.19.4-.04.85-.46.88l-2.47.01c-.63.05-1.14-.19-1.56-.63-.35-.37-.67-.77-1.01-1.15-.14-.15-.29-.29-.47-.38-.33-.16-.62-.08-.79.25-.18.34-.23.72-.25 1.1-.03.54-.25.77-.79.79-1.22.05-2.38-.17-3.46-.77-1.05-.59-1.87-1.42-2.55-2.38-1.33-1.89-2.27-3.99-3.08-6.17-.15-.42-.01-.65.43-.66l2.58-.01c.29 0 .51.13.63.39.52 1.2 1.17 2.33 1.96 3.37.21.28.43.56.73.74.25.15.46.08.58-.19.08-.18.12-.38.13-.58.05-.88.06-1.76-.11-2.63-.11-.53-.42-.87-.96-.98-.2-.04-.17-.12-.07-.26.15-.2.37-.32.68-.33l3.05.01c.39.08.49.25.54.64.01.07.02.14.02.21v3.31c0 .24.13.48.37.56.24.08.43-.04.59-.21.75-.8 1.34-1.7 1.83-2.67.18-.36.33-.74.47-1.12.1-.28.27-.43.59-.43l2.76-.01c.08 0 .17 0 .25.02.44.09.56.3.43.73-.25.86-.68 1.63-1.18 2.36-.51.74-1.09 1.42-1.63 2.14-.19.25-.18.42.04.66.41.43.85.83 1.28 1.25z"/>
-                                </svg>
-                            </div>
-                            <div class="link-info">
-                                <span class="link-label">VK Музыка</span>
-                                <span class="link-sub">Карточка артиста</span>
-                            </div>
-                            <span class="link-arrow">→</span>
-                        </a>
-
-                        <!-- 3. SoundCloud -->
-                        <a href="https://soundcloud.com/emodeus" target="_blank" rel="noopener" class="link-card" data-platform="soundcloud">
-                            <div class="link-icon">
-                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <rect x="0.5" y="12" width="1.2" height="4.5" rx="0.6"/>
-                                    <rect x="2.5" y="10.8" width="1.2" height="5.7" rx="0.6"/>
-                                    <rect x="4.5" y="9.8" width="1.2" height="6.7" rx="0.6"/>
-                                    <rect x="6.5" y="9.2" width="1.2" height="7.3" rx="0.6"/>
-                                    <rect x="8.5" y="8.8" width="1.2" height="7.7" rx="0.6"/>
-                                    <rect x="10.5" y="8.2" width="1.2" height="8.3" rx="0.6"/>
-                                    <path d="M12.5 8.2V16.5H20.8C22.29 16.5 23.5 15.29 23.5 13.8C23.5 12.39 22.42 11.23 21.03 11.11C20.78 8.94 18.96 7.25 16.73 7.25C15.74 7.25 14.83 7.61 14.12 8.21C13.67 7.82 13.08 7.58 12.44 7.58C12.46 7.79 12.48 8 12.5 8.2Z"/>
-                                </svg>
-                            </div>
-                            <div class="link-info">
-                                <span class="link-label">SoundCloud</span>
-                                <span class="link-sub">Эксклюзив & Демки</span>
-                            </div>
-                            <span class="link-arrow">→</span>
-                        </a>
-
-                        <!-- 4. Spotify -->
-                        <a href="https://open.spotify.com/search/модеус" target="_blank" rel="noopener" class="link-card" data-platform="spotify">
-                            <div class="link-icon">
-                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.494 17.306c-.215.353-.674.464-1.027.249-2.812-1.718-6.353-2.107-10.524-1.155-.403.092-.806-.16-.898-.563-.092-.403.16-.806.563-.898 4.567-1.043 8.484-.598 11.637 1.34.353.215.464.674.249 1.027zm1.468-3.262c-.27.44-.847.578-1.287.308-3.22-1.979-8.128-2.552-11.936-1.396-.496.151-1.023-.133-1.174-.629-.151-.496.133-1.023.629-1.174 4.356-1.322 9.774-.682 13.46 1.583.44.27.578.847.308 1.287zm.126-3.41C15.234 8.35 8.887 8.14 5.176 9.267c-.59.18-1.218-.155-1.398-.745-.18-.59.155-1.218.745-1.398 4.26-1.293 11.272-1.05 15.688 1.572.532.316.706 1.006.39 1.538-.316.532-1.006.706-1.538.39z"/>
-                                </svg>
-                            </div>
-                            <div class="link-info">
-                                <span class="link-label">Spotify</span>
-                                <span class="link-sub">Дискография</span>
-                            </div>
-                            <span class="link-arrow">→</span>
-                        </a>
-
-                        <!-- 5. Apple Music -->
-                        <a href="https://music.apple.com/search?term=модеус" target="_blank" rel="noopener" class="link-card" data-platform="apple">
-                            <div class="link-icon">
-                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.38c.62-.75 1.04-1.8 0.93-2.85-.9.04-2 .6-2.65 1.35-.56.64-1.06 1.7-0.93 2.73 1.01.08 2.03-.48 2.65-1.23z"/>
-                                </svg>
-                            </div>
-                            <div class="link-info">
-                                <span class="link-label">Apple Music</span>
-                                <span class="link-sub">Стриминг</span>
-                            </div>
-                            <span class="link-arrow">→</span>
-                        </a>
-
-                        <!-- 6. YouTube Music -->
-                        <a href="https://music.youtube.com/search?q=модеус" target="_blank" rel="noopener" class="link-card" data-platform="youtube">
-                            <div class="link-icon">
-                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.49 0-4.5-2.01-4.5-4.5S9.51 7.5 12 7.5s4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5zm0-5.5c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zm-2-2.5l5 3.5-5 3.5v-7z"/>
-                                </svg>
-                            </div>
-                            <div class="link-info">
-                                <span class="link-label">YouTube Music</span>
-                                <span class="link-sub">Видео & Релизы</span>
-                            </div>
-                            <span class="link-arrow">→</span>
-                        </a>
-
-                        <!-- 7. Telegram -->
+                    <div class="links-container">
+                        <!-- 1. Telegram -->
                         <a href="https://t.me/emodeus" target="_blank" rel="noopener" class="link-card" data-platform="telegram">
                             <div class="link-icon">
                                 <svg viewBox="0 0 24 24" fill="currentColor">
@@ -263,12 +159,11 @@
                             </div>
                             <div class="link-info">
                                 <span class="link-label">Telegram</span>
-                                <span class="link-sub">Официальный канал</span>
                             </div>
-                            <span class="link-arrow">→</span>
+                            <span class="link-arrow" aria-hidden="true"><svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></span>
                         </a>
 
-                        <!-- 8. TikTok -->
+                        <!-- 2. TikTok -->
                         <a href="https://www.tiktok.com/@em0deus1" target="_blank" rel="noopener" class="link-card" data-platform="tiktok">
                             <div class="link-icon">
                                 <svg viewBox="0 0 24 24" fill="currentColor">
@@ -277,11 +172,118 @@
                             </div>
                             <div class="link-info">
                                 <span class="link-label">TikTok</span>
-                                <span class="link-sub">Сниппеты & Лайф</span>
                             </div>
-                            <span class="link-arrow">→</span>
+                            <span class="link-arrow" aria-hidden="true"><svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></span>
                         </a>
 
+                        <!-- 3. Primary Expandable Listen Button -->
+                        <button type="button" id="listenToggleBtn" class="link-card listen-toggle-btn" aria-expanded="false" aria-controls="musicCollapse">
+                            <div class="link-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+                                    <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+                                </svg>
+                            </div>
+                            <div class="link-info">
+                                <span class="link-label">LISTEN</span>
+                            </div>
+                            <span class="link-arrow listen-chevron">
+                                <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </span>
+                        </button>
+
+                        <!-- Collapsible Music Platforms (Underneath LISTEN) -->
+                        <div id="musicCollapse" class="music-collapse" aria-hidden="true">
+                            <div class="music-collapse-inner links-stack">
+
+                                <!-- Яндекс Музыка -->
+                                <a href="https://music.yandex.ru/artist/15283977" target="_blank" rel="noopener" class="link-card" data-platform="yandex">
+                                    <div class="link-icon">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2C6.477 2 2 6.477 2 12c0 5.523 4.477 10 10 10s10-4.477 10-10c0-5.523-4.477-10-10-10zm-1 5h2v6.5a2.5 2.5 0 1 1-2-2.45V7zm5.5 8.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="link-info">
+                                        <span class="link-label">Яндекс Музыка</span>
+                                    </div>
+                                    <span class="link-arrow" aria-hidden="true"><svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></span>
+                                </a>
+
+                                <!-- VK Музыка -->
+                                <a href="https://vk.ru/artist/modeus" target="_blank" rel="noopener" class="link-card" data-platform="vk">
+                                    <div class="link-icon">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2C6.477 2 2 6.477 2 12c0 5.523 4.477 10 10 10s10-4.477 10-10c0-5.523-4.477-10-10-10zm5.12 11.23c.48.47 1 .95 1.44 1.48.2.23.38.48.51.76.19.4-.04.85-.46.88l-2.47.01c-.63.05-1.14-.19-1.56-.63-.35-.37-.67-.77-1.01-1.15-.14-.15-.29-.29-.47-.38-.33-.16-.62-.08-.79.25-.18.34-.23.72-.25 1.1-.03.54-.25.77-.79.79-1.22.05-2.38-.17-3.46-.77-1.05-.59-1.87-1.42-2.55-2.38-1.33-1.89-2.27-3.99-3.08-6.17-.15-.42-.01-.65.43-.66l2.58-.01c.29 0 .51.13.63.39.52 1.2 1.17 2.33 1.96 3.37.21.28.43.56.73.74.25.15.46.08.58-.19.08-.18.12-.38.13-.58.05-.88.06-1.76-.11-2.63-.11-.53-.42-.87-.96-.98-.2-.04-.17-.12-.07-.26.15-.2.37-.32.68-.33l3.05.01c.39.08.49.25.54.64.01.07.02.14.02.21v3.31c0 .24.13.48.37.56.24.08.43-.04.59-.21.75-.8 1.34-1.7 1.83-2.67.18-.36.33-.74.47-1.12.1-.28.27-.43.59-.43l2.76-.01c.08 0 .17 0 .25.02.44.09.56.3.43.73-.25.86-.68 1.63-1.18 2.36-.51.74-1.09 1.42-1.63 2.14-.19.25-.18.42.04.66.41.43.85.83 1.28 1.25z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="link-info">
+                                        <span class="link-label">VK Музыка</span>
+                                    </div>
+                                    <span class="link-arrow" aria-hidden="true"><svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></span>
+                                </a>
+
+                                <!-- SoundCloud -->
+                                <a href="https://soundcloud.com/emodeus" target="_blank" rel="noopener" class="link-card" data-platform="soundcloud">
+                                    <div class="link-icon">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <rect x="0.5" y="12" width="1.2" height="4.5" rx="0.6"/>
+                                            <rect x="2.5" y="10.8" width="1.2" height="5.7" rx="0.6"/>
+                                            <rect x="4.5" y="9.8" width="1.2" height="6.7" rx="0.6"/>
+                                            <rect x="6.5" y="9.2" width="1.2" height="7.3" rx="0.6"/>
+                                            <rect x="8.5" y="8.8" width="1.2" height="7.7" rx="0.6"/>
+                                            <rect x="10.5" y="8.2" width="1.2" height="8.3" rx="0.6"/>
+                                            <path d="M12.5 8.2V16.5H20.8C22.29 16.5 23.5 15.29 23.5 13.8C23.5 12.39 22.42 11.23 21.03 11.11C20.78 8.94 18.96 7.25 16.73 7.25C15.74 7.25 14.83 7.61 14.12 8.21C13.67 7.82 13.08 7.58 12.44 7.58C12.46 7.79 12.48 8 12.5 8.2Z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="link-info">
+                                        <span class="link-label">SoundCloud</span>
+                                    </div>
+                                    <span class="link-arrow" aria-hidden="true"><svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></span>
+                                </a>
+
+                                <!-- Spotify -->
+                                <a href="https://open.spotify.com/artist/2c633i8JoDucZQdshvt9Z3" target="_blank" rel="noopener" class="link-card" data-platform="spotify">
+                                    <div class="link-icon">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.494 17.306c-.215.353-.674.464-1.027.249-2.812-1.718-6.353-2.107-10.524-1.155-.403.092-.806-.16-.898-.563-.092-.403.16-.806.563-.898 4.567-1.043 8.484-.598 11.637 1.34.353.215.464.674.249 1.027zm1.468-3.262c-.27.44-.847.578-1.287.308-3.22-1.979-8.128-2.552-11.936-1.396-.496.151-1.023-.133-1.174-.629-.151-.496.133-1.023.629-1.174 4.356-1.322 9.774-.682 13.46 1.583.44.27.578.847.308 1.287zm.126-3.41C15.234 8.35 8.887 8.14 5.176 9.267c-.59.18-1.218-.155-1.398-.745-.18-.59.155-1.218.745-1.398 4.26-1.293 11.272-1.05 15.688 1.572.532.316.706 1.006.39 1.538-.316.532-1.006.706-1.538.39z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="link-info">
+                                        <span class="link-label">Spotify</span>
+                                    </div>
+                                    <span class="link-arrow" aria-hidden="true"><svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></span>
+                                </a>
+
+                                <!-- Apple Music -->
+                                <a href="https://music.apple.com/us/artist/%D0%BC%D0%BE%D0%B4%D0%B5%D1%83%D1%81/1600546022" target="_blank" rel="noopener" class="link-card" data-platform="apple">
+                                    <div class="link-icon">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.38c.62-.75 1.04-1.8 0.93-2.85-.9.04-2 .6-2.65 1.35-.56.64-1.06 1.7-0.93 2.73 1.01.08 2.03-.48 2.65-1.23z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="link-info">
+                                        <span class="link-label">Apple Music</span>
+                                    </div>
+                                    <span class="link-arrow" aria-hidden="true"><svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></span>
+                                </a>
+
+                                <!-- YouTube Music -->
+                                <a href="https://music.youtube.com/channel/UCUVunfPOQ4lAhaNKYPo_7Ng" target="_blank" rel="noopener" class="link-card" data-platform="youtube">
+                                    <div class="link-icon">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.49 0-4.5-2.01-4.5-4.5S9.51 7.5 12 7.5s4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5zm0-5.5c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zm-2-2.5l5 3.5-5 3.5v-7z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="link-info">
+                                        <span class="link-label">YouTube Music</span>
+                                    </div>
+                                    <span class="link-arrow" aria-hidden="true"><svg class="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></span>
+                                </a>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -289,8 +291,10 @@
         </div>
     </main>
 
+    <!-- Grainy Noise Generator -->
+    <script src="grainy.js"></script>
     <!-- Lenis Smooth Scroll -->
     <script src="lenis.min.js"></script>
-    <script src="script.js?v=20261026_01"></script>
+    <script src="script.js?v=20261026_02"></script>
 </body>
 </html>

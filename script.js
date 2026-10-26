@@ -176,175 +176,46 @@
     }
 
     // ═══════════════════════════════════════════════
-    // 3. DARK AMBIENT AUDIO ENGINE (WEB AUDIO API)
+    // 3. CINEMATIC FILM GRAIN (POWERED BY GRAINY.JS)
     // ═══════════════════════════════════════════════
 
-    class DarkAmbientEngine {
-        constructor() {
-            this.ctx = null;
-            this.masterGain = null;
-            this.isPlaying = false;
-            this.nodes = [];
-        }
-
-        initContext() {
-            if (this.ctx) return;
-            const AudioCtx = window.AudioContext || window.webkitAudioContext;
-            if (!AudioCtx) return;
-            this.ctx = new AudioCtx();
-
-            this.masterGain = this.ctx.createGain();
-            this.masterGain.gain.setValueAtTime(0, this.ctx.currentTime);
-            this.masterGain.connect(this.ctx.destination);
-        }
-
-        start() {
-            this.initContext();
-            if (!this.ctx) return;
-            if (this.ctx.state === 'suspended') {
-                this.ctx.resume();
-            }
-
-            if (this.isPlaying) return;
-            this.isPlaying = true;
-
-            const t = this.ctx.currentTime;
-
-            // Low cathedral drone: A1 (55Hz) and E2 (82.4Hz) with slow detuning
-            const osc1 = this.ctx.createOscillator();
-            osc1.type = 'sine';
-            osc1.frequency.setValueAtTime(55, t);
-
-            const osc2 = this.ctx.createOscillator();
-            osc2.type = 'triangle';
-            osc2.frequency.setValueAtTime(82.4, t);
-
-            // Sub octave bass: A0 (27.5Hz)
-            const sub = this.ctx.createOscillator();
-            sub.type = 'sine';
-            sub.frequency.setValueAtTime(27.5, t);
-
-            // Biquad lowpass filter with slow resonant sweep
-            const filter = this.ctx.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(320, t);
-            filter.Q.setValueAtTime(2.5, t);
-
-            // LFO modulating the filter cutoff frequency (0.06 Hz)
-            const lfo = this.ctx.createOscillator();
-            lfo.frequency.setValueAtTime(0.06, t);
-            const lfoGain = this.ctx.createGain();
-            lfoGain.gain.setValueAtTime(140, t);
-            lfo.connect(lfoGain);
-            lfoGain.connect(filter.frequency);
-
-            // Tape hiss / cathedral wind air simulation (noise buffer)
-            const bufferSize = this.ctx.sampleRate * 2;
-            const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-            const output = noiseBuffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) {
-                output[i] = (Math.random() * 2 - 1) * 0.015;
-            }
-            const noise = this.ctx.createBufferSource();
-            noise.buffer = noiseBuffer;
-            noise.loop = true;
-
-            const noiseFilter = this.ctx.createBiquadFilter();
-            noiseFilter.type = 'bandpass';
-            noiseFilter.frequency.setValueAtTime(650, t);
-            noiseFilter.Q.setValueAtTime(1.8, t);
-
-            const noiseGain = this.ctx.createGain();
-            noiseGain.gain.setValueAtTime(0.22, t);
-            noise.connect(noiseFilter);
-            noiseFilter.connect(noiseGain);
-            noiseGain.connect(this.masterGain);
-
-            // Connect oscillators to filter and master gain
-            const droneGain = this.ctx.createGain();
-            droneGain.gain.setValueAtTime(0.38, t);
-
-            osc1.connect(filter);
-            osc2.connect(filter);
-            sub.connect(filter);
-            filter.connect(droneGain);
-            droneGain.connect(this.masterGain);
-
-            // Start generators
-            osc1.start(t);
-            osc2.start(t);
-            sub.start(t);
-            lfo.start(t);
-            noise.start(t);
-
-            this.nodes = [osc1, osc2, sub, lfo, noise];
-
-            // Smooth fade-in over 1.6s
-            this.masterGain.gain.cancelScheduledValues(t);
-            this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, t);
-            this.masterGain.gain.linearRampToValueAtTime(0.45, t + 1.6);
-        }
-
-        stop() {
-            if (!this.isPlaying || !this.ctx) return;
-            const t = this.ctx.currentTime;
-
-            // Smooth fade-out over 1.2s
-            this.masterGain.gain.cancelScheduledValues(t);
-            this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, t);
-            this.masterGain.gain.linearRampToValueAtTime(0.0001, t + 1.2);
-
-            setTimeout(() => {
-                this.nodes.forEach(n => {
-                    try { n.stop(); n.disconnect(); } catch (e) {}
-                });
-                this.nodes = [];
-                this.isPlaying = false;
-            }, 1250);
-        }
-
-        toggle() {
-            if (this.isPlaying) {
-                this.stop();
-                return false;
-            } else {
-                this.start();
-                return true;
-            }
+    function initGrainyNoise() {
+        const grainEl = document.getElementById('film-grain-overlay');
+        if (grainEl && typeof window.grainy === 'function') {
+            window.grainy(grainEl, {
+                intensity: 0.95,
+                size: 160,
+                opacity: 0.38,
+                monochrome: true,
+                animate: true,
+                grainChaos: 0.45,
+                grainSpeed: 16
+            });
         }
     }
 
-    function initAmbientSound() {
-        const ambientBtn = document.getElementById('ambientToggleBtn');
-        const iconOn     = document.getElementById('ambientIconOn');
-        const iconOff    = document.getElementById('ambientIconOff');
+    // ═══════════════════════════════════════════════
+    // 4. LISTEN ACCORDION DROPDOWN (MUSIC PLATFORMS)
+    // ═══════════════════════════════════════════════
 
-        const ambientEngine = new DarkAmbientEngine();
+    function initListenDropdown() {
+        const toggleBtn = document.getElementById('listenToggleBtn');
+        const collapseEl = document.getElementById('musicCollapse');
+        if (!toggleBtn || !collapseEl) return;
 
-        function updateUI(playing) {
-            if (playing) {
-                if (ambientBtn) {
-                    ambientBtn.classList.add('playing');
-                    ambientBtn.title = "Выключить фоновый эмбиент";
-                }
-                if (iconOn) iconOn.classList.remove('hidden');
-                if (iconOff) iconOff.classList.add('hidden');
-            } else {
-                if (ambientBtn) {
-                    ambientBtn.classList.remove('playing');
-                    ambientBtn.title = "Включить фоновый эмбиент";
-                }
-                if (iconOn) iconOn.classList.add('hidden');
-                if (iconOff) iconOff.classList.remove('hidden');
+        toggleBtn.addEventListener('click', function () {
+            const isOpen = collapseEl.classList.toggle('is-open');
+            toggleBtn.classList.toggle('is-open', isOpen);
+            toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            collapseEl.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+
+            // Allow smooth scroll to recalculate height
+            if (lenis && typeof lenis.resize === 'function') {
+                setTimeout(function () {
+                    lenis.resize();
+                }, 350);
             }
-        }
-
-        if (ambientBtn) {
-            ambientBtn.addEventListener('click', function () {
-                const isPlaying = ambientEngine.toggle();
-                updateUI(isPlaying);
-            });
-        }
+        });
     }
 
     // ═══════════════════════════════════════════════
@@ -534,12 +405,177 @@
     }
 
     // ═══════════════════════════════════════════════
-    // 8. INITIALIZATION
+    // 8. EASTER EGG (TRIPLE CLICK ON LOGO -> пасхалко.png)
+    // ═══════════════════════════════════════════════
+
+    function initEasterEgg() {
+        const logoContainer = document.getElementById('logoContainer');
+        const easterEggImg  = document.getElementById('easterEggImg');
+        const artistLogo    = document.getElementById('artistLogo');
+        if (!logoContainer || !easterEggImg) return;
+
+        let clickCount = 0;
+        let clickTimer = null;
+
+        logoContainer.addEventListener('click', (e) => {
+            if (e.target === easterEggImg) {
+                easterEggImg.classList.remove('is-visible');
+                return;
+            }
+
+            clickCount++;
+            clearTimeout(clickTimer);
+
+            if (artistLogo) {
+                artistLogo.style.transform = 'translateZ(0) scale(0.97)';
+                setTimeout(() => {
+                    artistLogo.style.transform = '';
+                }, 150);
+            }
+
+            if (clickCount >= 3) {
+                easterEggImg.classList.toggle('is-visible');
+                clickCount = 0;
+            } else {
+                clickTimer = setTimeout(() => {
+                    clickCount = 0;
+                }, 1200);
+            }
+        });
+
+        easterEggImg.addEventListener('click', (e) => {
+            e.stopPropagation();
+            easterEggImg.classList.remove('is-visible');
+        });
+    }
+
+    // ═══════════════════════════════════════════════
+    // 9. DECRYPT TEXT EFFECT (BIO CIPHER REVEAL)
+    // ═══════════════════════════════════════════════
+
+    function initBioDecryptEffect() {
+        const aboutTextEl = document.getElementById('aboutText');
+        if (!aboutTextEl) return;
+
+        const originalText = 'здарова, меня зовут макс морозов, более извествен как модеус. родился я 11 октября 2003 года. начал заниматься музыкой под этим никнеймом в 2021 году. изначально мой творческий путь начинался с амплуа дизайнера под ником angelicheavens. большую часть своего творческого пути провел в объединении "threehearts", ливнул 4 июня 2025 года.';
+
+        // Proportional character sets matching word metrics to prevent line wrapping jumps
+        const UPPER_GLYPHS = 'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩABCDEFGHJKLMNOPQRSTUVWXYZ';
+        const LOWER_GLYPHS = 'абвгдежзиклмнопрстуфхцчшщabcdefghijkmnopqrstuvwxyz0123456789';
+        const DIGIT_GLYPHS = '0123456789#%*+-';
+
+        function getScrambleChar(targetChar) {
+            if (targetChar === ' ') return ' ';
+            if (/[.,—()«»\-:"']/.test(targetChar)) return targetChar;
+            if (/[А-ЯA-Z]/.test(targetChar)) {
+                return UPPER_GLYPHS[Math.floor(Math.random() * UPPER_GLYPHS.length)];
+            }
+            if (/[0-9]/.test(targetChar)) {
+                return DIGIT_GLYPHS[Math.floor(Math.random() * DIGIT_GLYPHS.length)];
+            }
+            return LOWER_GLYPHS[Math.floor(Math.random() * LOWER_GLYPHS.length)];
+        }
+
+        let isRunning = false;
+        let animFrame = null;
+        let hasRunOnce = false;
+
+        function runDecrypt() {
+            if (isRunning) {
+                cancelAnimationFrame(animFrame);
+            }
+            isRunning = true;
+
+            // Lock exact height of the text block so nothing can shift or jump
+            const currentHeight = aboutTextEl.offsetHeight;
+            if (currentHeight > 0) {
+                aboutTextEl.style.minHeight = currentHeight + 'px';
+            }
+
+            const totalChars = originalText.length;
+            let iteration = 0;
+            const speed = 2.2;
+
+            function update() {
+                let output = '';
+                let completeCount = 0;
+
+                for (let i = 0; i < totalChars; i++) {
+                    const char = originalText[i];
+                    if (char === ' ') {
+                        output += ' ';
+                        completeCount++;
+                        continue;
+                    }
+
+                    const revealThreshold = (i * 0.42) + 6;
+                    const scrambleStart = i * 0.42;
+
+                    if (iteration >= revealThreshold) {
+                        output += char;
+                        completeCount++;
+                    } else if (iteration >= scrambleStart) {
+                        output += getScrambleChar(char);
+                    } else {
+                        output += getScrambleChar(char);
+                    }
+                }
+
+                aboutTextEl.textContent = output;
+
+                if (completeCount >= totalChars) {
+                    aboutTextEl.textContent = originalText;
+                    isRunning = false;
+                } else {
+                    iteration += speed;
+                    animFrame = requestAnimationFrame(update);
+                }
+            }
+
+            animFrame = requestAnimationFrame(update);
+        }
+
+        function triggerOnce() {
+            if (hasRunOnce) return;
+            hasRunOnce = true;
+            runDecrypt();
+        }
+
+        // 1. Trigger when Section 2 (Bio) comes into view (one time only)
+        const bioSection = document.getElementById('section-about');
+        if (bioSection && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !hasRunOnce) {
+                        triggerOnce();
+                        observer.disconnect();
+                    }
+                });
+            }, { threshold: 0.25 });
+            observer.observe(bioSection);
+        }
+
+        // 2. Trigger on Bio navigation button click (one time only)
+        const bioNavBtn = document.querySelector('.nav-btn[data-target="1"]');
+        if (bioNavBtn) {
+            bioNavBtn.addEventListener('click', () => {
+                if (!hasRunOnce) {
+                    setTimeout(triggerOnce, 250);
+                }
+            });
+        }
+    }
+
+    // ═══════════════════════════════════════════════
+    // 10. INITIALIZATION
     // ═══════════════════════════════════════════════
 
     function init() {
         updateAppHeight();
         window.addEventListener('resize', updateAppHeight);
+
+        // Film Grain via Grainy.js
+        initGrainyNoise();
 
         // Custom Gothic Cursor
         initCustomCursor();
@@ -550,8 +586,14 @@
         // Theme Inversion (Dark / Light)
         initThemeToggle();
 
-        // Dark Ambient Web Audio Engine
-        initAmbientSound();
+        // Listen Accordion Dropdown
+        initListenDropdown();
+
+        // Easter Egg (Triple click on logo -> пасхалко.png)
+        initEasterEgg();
+
+        // Bio Decrypt Text Effect
+        initBioDecryptEffect();
 
         // Lenis Smooth Scroll & Navigation
         initLenis();
