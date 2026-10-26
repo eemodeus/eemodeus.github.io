@@ -139,6 +139,7 @@ html.theme-transitioning .divider-ornament-img,
 html.theme-transitioning .about-content,
 html.theme-transitioning .photo-ramka,
 html.theme-transitioning .about-text,
+html.theme-transitioning .d-slot,
 html.theme-transitioning .preloader-enter-btn,
 html.theme-transitioning svg,
 html.theme-transitioning path,
@@ -834,6 +835,46 @@ html.lenis body {
     user-select: text;
     margin: 0;
     width: 100%;
+}
+
+/* ── DECRYPT TEXT EFFECT (ANCHORED SLOTS - NO TWITCHING / JUMPING) ── */
+.d-word {
+    display: inline-block;
+    white-space: nowrap;
+    vertical-align: top;
+}
+
+.d-slot {
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    line-height: inherit;
+    overflow: visible;
+}
+
+.d-slot.d-space {
+    width: 0.32em;
+}
+
+.d-slot.d-revealed {
+    color: var(--text-secondary);
+    text-shadow: none;
+    font-weight: 350;
+    transition: color 0.35s ease;
+}
+
+.d-slot.d-glitch {
+    color: #ffffff;
+    opacity: 0.96;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.75), 0 0 16px rgba(255, 255, 255, 0.35);
+    font-weight: 500;
+}
+
+/* Light Theme Glitch Glow */
+[data-theme="light"] .d-slot.d-glitch {
+    color: #0b0c10;
+    opacity: 0.96;
+    text-shadow: 0 0 6px rgba(0, 0, 0, 0.45), 0 0 14px rgba(0, 0, 0, 0.2);
 }
 
 /* ═══════════════════════════════════════════════════
