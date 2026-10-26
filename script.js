@@ -180,6 +180,7 @@
 
         if (preloader) {
             preloader.addEventListener('click', enterSite);
+            preloader.addEventListener('touchstart', enterSite, { passive: true });
         }
 
         window.addEventListener('keydown', function (e) {
@@ -268,13 +269,17 @@
             } catch (e) {}
 
             if (theme === 'light') {
-                if (moonIcon) moonIcon.classList.add('hidden');
-                if (sunIcon) sunIcon.classList.remove('hidden');
-                if (themeBtn) themeBtn.title = "Переключить на ночную тему";
-            } else {
                 if (moonIcon) moonIcon.classList.remove('hidden');
                 if (sunIcon) sunIcon.classList.add('hidden');
+                if (themeBtn) themeBtn.title = "Переключить на ночную тему";
+            } else {
+                if (moonIcon) moonIcon.classList.add('hidden');
+                if (sunIcon) sunIcon.classList.remove('hidden');
                 if (themeBtn) themeBtn.title = "Переключить на дневную тему";
+            }
+            const metaTheme = document.querySelector('meta[name="theme-color"]');
+            if (metaTheme) {
+                metaTheme.setAttribute('content', theme === 'light' ? '#f5f5f8' : '#030305');
             }
 
             if (animate) {
@@ -285,7 +290,7 @@
             }
         }
 
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
         applyTheme(currentTheme, false);
 
         if (themeBtn) {

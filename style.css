@@ -1,5 +1,5 @@
 :root,
-[data-theme="dark"] {
+[data-theme="light"] {
     --app-height: 100vh;
     --header-height: 60px;
     --safe-top: env(safe-area-inset-top, 0px);
@@ -8,47 +8,6 @@
     --safe-right: env(safe-area-inset-right, 0px);
     --scroll-margin-top: var(--safe-top, 0px);
 
-    --bg-page: #030305;
-    --video-overlay: radial-gradient(circle at 50% 50%, rgba(3, 3, 5, 0.45) 0%, rgba(0, 0, 0, 0.85) 100%);
-    --video-vignette: inset 0 0 140px rgba(0, 0, 0, 0.95);
-    --video-filter: brightness(0.8) contrast(1.05);
-
-    --text-primary: #ffffff;
-    --text-secondary: #dcdfe6;
-    --text-muted: #888d9a;
-    --text-dim: #454852;
-    --border-subtle: rgba(255, 255, 255, 0.1);
-    --border-silver: rgba(255, 255, 255, 0.28);
-    --border-highlight: rgba(255, 255, 255, 0.45);
-    --glow-primary: rgba(255, 255, 255, 0.45);
-
-    --card-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.008) 50%, rgba(255, 255, 255, 0.025) 100%);
-    --card-hover-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.025) 50%, rgba(255, 255, 255, 0.07) 100%);
-    --card-border: rgba(255, 255, 255, 0.1);
-    --card-border-hover: rgba(255, 255, 255, 0.35);
-    --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.7);
-    --card-shadow-hover: 0 18px 40px -5px rgba(0, 0, 0, 0.85);
-    --icon-badge-bg: rgba(255, 255, 255, 0.06);
-
-    --nav-bar-bg: transparent;
-    --nav-bar-border: transparent;
-    --header-glass-bg: linear-gradient(to top, rgba(3, 3, 5, 0.55) 0%, rgba(3, 3, 5, 0.25) 45%, rgba(3, 3, 5, 0) 100%);
-
-    --logo-filter: invert(0) brightness(1);
-    --logo-hover-filter: brightness(1.06) drop-shadow(0 0 10px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 24px rgba(255, 255, 255, 0.35));
-    --ramka-filter: invert(0) brightness(1) drop-shadow(0 0 10px rgba(255, 255, 255, 0.75)) drop-shadow(0 0 24px rgba(255, 255, 255, 0.45)) drop-shadow(0 0 42px rgba(220, 235, 255, 0.3)) drop-shadow(0 20px 45px rgba(0, 0, 0, 0.95));
-    --divider-filter: invert(0) brightness(1) drop-shadow(0 0 8px rgba(255, 255, 255, 0.35));
-    --cursor-filter: invert(0) brightness(1) drop-shadow(0 0 4px rgba(255, 255, 255, 0.45)) drop-shadow(0 3px 6px rgba(0, 0, 0, 0.85));
-    --easter-egg-filter: brightness(0) invert(1) drop-shadow(0 0 22px rgba(255, 255, 255, 0.55)) drop-shadow(0 15px 35px rgba(0, 0, 0, 0.95));
-
-    --grain-blend: overlay;
-    --grain-opacity: 0.45;
-
-    --font-display: 'Cinzel', 'Cormorant SC', Georgia, serif;
-    --font-body: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
-[data-theme="light"] {
     --bg-page: #f5f5f8;
     --video-overlay: radial-gradient(circle at 50% 50%, rgba(245, 245, 248, 0.76) 0%, rgba(228, 229, 235, 0.95) 100%);
     --video-vignette: inset 0 0 120px rgba(180, 185, 200, 0.55);
@@ -84,6 +43,48 @@
 
     --grain-blend: multiply;
     --grain-opacity: 0.32;
+
+    --font-display: 'Cinzel', 'Cormorant SC', Georgia, serif;
+    --font-body: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Space Mono', 'Consolas', monospace;
+}
+
+[data-theme="dark"] {
+    --bg-page: #030305;
+    --video-overlay: radial-gradient(circle at 50% 50%, rgba(3, 3, 5, 0.45) 0%, rgba(0, 0, 0, 0.85) 100%);
+    --video-vignette: inset 0 0 140px rgba(0, 0, 0, 0.95);
+    --video-filter: brightness(0.8) contrast(1.05);
+
+    --text-primary: #ffffff;
+    --text-secondary: #dcdfe6;
+    --text-muted: #888d9a;
+    --text-dim: #454852;
+    --border-subtle: rgba(255, 255, 255, 0.1);
+    --border-silver: rgba(255, 255, 255, 0.28);
+    --border-highlight: rgba(255, 255, 255, 0.45);
+    --glow-primary: rgba(255, 255, 255, 0.45);
+
+    --card-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.008) 50%, rgba(255, 255, 255, 0.025) 100%);
+    --card-hover-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.025) 50%, rgba(255, 255, 255, 0.07) 100%);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --card-border-hover: rgba(255, 255, 255, 0.35);
+    --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.7);
+    --card-shadow-hover: 0 18px 40px -5px rgba(0, 0, 0, 0.85);
+    --icon-badge-bg: rgba(255, 255, 255, 0.06);
+
+    --nav-bar-bg: transparent;
+    --nav-bar-border: transparent;
+    --header-glass-bg: linear-gradient(to top, rgba(3, 3, 5, 0.55) 0%, rgba(3, 3, 5, 0.25) 45%, rgba(3, 3, 5, 0) 100%);
+
+    --logo-filter: invert(0) brightness(1);
+    --logo-hover-filter: brightness(1.06) drop-shadow(0 0 10px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 24px rgba(255, 255, 255, 0.35));
+    --ramka-filter: invert(0) brightness(1) drop-shadow(0 0 10px rgba(255, 255, 255, 0.75)) drop-shadow(0 0 24px rgba(255, 255, 255, 0.45)) drop-shadow(0 0 42px rgba(220, 235, 255, 0.3)) drop-shadow(0 20px 45px rgba(0, 0, 0, 0.95));
+    --divider-filter: invert(0) brightness(1) drop-shadow(0 0 8px rgba(255, 255, 255, 0.35));
+    --cursor-filter: invert(0) brightness(1) drop-shadow(0 0 4px rgba(255, 255, 255, 0.45)) drop-shadow(0 3px 6px rgba(0, 0, 0, 0.85));
+    --easter-egg-filter: brightness(0) invert(1) drop-shadow(0 0 22px rgba(255, 255, 255, 0.55)) drop-shadow(0 15px 35px rgba(0, 0, 0, 0.95));
+
+    --grain-blend: overlay;
+    --grain-opacity: 0.45;
 }
 
 @supports (height: 100dvh) {
@@ -171,6 +172,8 @@ body {
     color: var(--text-secondary);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
@@ -397,12 +400,12 @@ html.lenis body {
     position: fixed;
     inset: 0;
     z-index: 99999;
-    background: #000000;
+    background: var(--bg-page);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 1.2s ease;
+    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 1.2s ease, background-color 0.45s ease;
 }
 
 #preloader.fade-out {
@@ -425,6 +428,21 @@ html.lenis body {
     display: block;
     user-select: none;
     line-height: 1;
+}
+
+@keyframes asciiBreathLight {
+    0%, 100% {
+        opacity: 0.3;
+        color: #8c909e;
+        text-shadow: none;
+        transform: scale(0.995);
+    }
+    50% {
+        opacity: 1;
+        color: #050508;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        transform: scale(1.006);
+    }
 }
 
 @keyframes asciiBreath {
@@ -451,8 +469,12 @@ html.lenis body {
     padding: 0;
     display: block;
     letter-spacing: 0px;
-    animation: asciiBreath 2.2s ease-in-out infinite;
+    animation: asciiBreathLight 2.2s ease-in-out infinite;
     user-select: none;
+}
+
+[data-theme="dark"] .ascii-breathing {
+    animation-name: asciiBreath;
 }
 
 .preloader-enter-btn {
@@ -461,35 +483,46 @@ html.lenis body {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    font-family: 'JetBrains Mono', 'Space Mono', 'Courier New', monospace;
-    font-size: clamp(11px, 1.0vw, 13px);
+    font-family: 'JetBrains Mono', 'Space Mono', monospace;
+    font-size: clamp(11.5px, 1.0vw, 13px);
     font-weight: 600;
-    letter-spacing: 0.38em;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.65);
+    color: rgba(10, 10, 13, 0.65);
     padding: 8px 16px;
     border: none;
     background: transparent;
     cursor: pointer;
     user-select: none;
     transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    animation: enterTextGlow 2.4s ease-in-out infinite;
+    animation: enterTextGlowLight 2.4s ease-in-out infinite;
 }
 
 .preloader-enter-btn:hover {
-    color: #ffffff;
-    text-shadow: 0 0 16px rgba(255, 255, 255, 0.85), 0 0 28px rgba(210, 225, 255, 0.45);
+    color: #000000;
+    text-shadow: 0 0 14px rgba(0, 0, 0, 0.35);
     transform: scale(1.06);
 }
 
 .preloader-enter-btn .enter-bracket {
-    color: rgba(255, 255, 255, 0.35);
+    color: rgba(10, 10, 13, 0.35);
     transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
 .preloader-enter-btn:hover .enter-bracket {
-    color: #ffffff;
-    text-shadow: 0 0 12px rgba(255, 255, 255, 0.85);
+    color: #000000;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes enterTextGlowLight {
+    0%, 100% {
+        opacity: 0.45;
+        text-shadow: none;
+    }
+    50% {
+        opacity: 1;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.35);
+    }
 }
 
 @keyframes enterTextGlow {
@@ -501,6 +534,22 @@ html.lenis body {
         opacity: 1;
         text-shadow: 0 0 12px rgba(255, 255, 255, 0.75), 0 0 24px rgba(210, 225, 255, 0.35);
     }
+}
+
+[data-theme="dark"] .preloader-enter-btn {
+    color: rgba(255, 255, 255, 0.65);
+    animation-name: enterTextGlow;
+}
+[data-theme="dark"] .preloader-enter-btn:hover {
+    color: #ffffff;
+    text-shadow: 0 0 16px rgba(255, 255, 255, 0.85), 0 0 28px rgba(210, 225, 255, 0.45);
+}
+[data-theme="dark"] .preloader-enter-btn .enter-bracket {
+    color: rgba(255, 255, 255, 0.35);
+}
+[data-theme="dark"] .preloader-enter-btn:hover .enter-bracket {
+    color: #ffffff;
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.85);
 }
 
 #main-content {
@@ -1185,13 +1234,13 @@ html.lenis body {
     background: none;
     border: none;
     color: var(--text-dim);
-    font-family: var(--font-display);
-    font-size: 15px;
+    font-family: 'JetBrains Mono', 'Space Mono', monospace;
+    font-size: 13.5px;
     font-weight: 500;
-    letter-spacing: 0.22em;
-    text-indent: 0.22em;
-    padding: 8px 18px;
-    transition: all 0.35s ease;
+    letter-spacing: 0.16em;
+    text-indent: 0.16em;
+    padding: 8px 14px;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
     position: relative;
     text-transform: uppercase;
     text-decoration: none;
@@ -1199,6 +1248,7 @@ html.lenis body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .nav-btn::after {
@@ -1207,24 +1257,24 @@ html.lenis body {
     bottom: 2px;
     left: 50%;
     width: 0;
-    height: 1px;
+    height: 1.5px;
     background: var(--text-primary);
     box-shadow: 0 0 8px var(--glow-primary);
-    transition: all 0.35s ease;
+    transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s ease;
     transform: translateX(-50%);
 }
 
 .nav-btn:hover {
-    color: var(--text-secondary);
+    color: var(--text-primary);
 }
 
 .nav-btn.active {
     color: var(--text-primary);
-    text-shadow: 0 0 10px var(--glow-primary);
+    text-shadow: 0 0 8px var(--glow-primary);
 }
 
 .nav-btn.active::after {
-    width: 55%;
+    width: 60%;
 }
 
 @media (max-width: 1100px) {
@@ -1335,8 +1385,10 @@ html.lenis body {
     }
 
     .nav-btn {
-        padding: 6px 12px;
-        font-size: 13px;
+        padding: 6px 10px;
+        font-size: 12.5px;
+        letter-spacing: 0.12em;
+        text-indent: 0.12em;
     }
 }
 
